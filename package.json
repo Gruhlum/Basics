@@ -1,0 +1,23 @@
+{
+  "name": "com.hextecgames.basics",
+  "version": "1.0.2",
+  "displayName": "Basics",
+  "description": "My Package",
+  "unity": "2019.1",
+  "dependencies": {
+    "com.unity.textmeshpro": "3.0.0",
+    "com.mackysoft.serializereference-extensions": "1.0.0"
+  },
+  "author": {
+    "name": "HexTecGames",
+    "email": "HexTecGames0@gmail.com"
+  },
+  "samples": [
+    {
+      "displayName": "Basic Folders",
+      "description": "Empty Folder Structure",
+      "path": "Samples/Folders"
+    }
+  ],
+  "hideInEditor": false
+}
