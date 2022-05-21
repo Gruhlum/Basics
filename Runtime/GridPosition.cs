@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -14,6 +15,18 @@ namespace Exile
         {
             this.x = x;
             this.y = y;
+        }
+
+        public override bool Equals(object obj)
+        {
+            return obj is GridPosition position &&
+                   x == position.x &&
+                   y == position.y;
+        }
+
+        public override int GetHashCode()
+        {
+            return HashCode.Combine(x, y);
         }
 
         public override string ToString()

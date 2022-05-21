@@ -11,16 +11,9 @@ namespace Exile
 	{
 		[SerializeField] private TextMeshProUGUI textGUI;
 		
-
-		public void Setup(IntValue intValue)
+		public void UpdateText(int intValue)
         {
-            textGUI.text = intValue.Value.ToString();
-            intValue.ValueChanged += IntValue_ValueChanged;
-        }
-
-        private void IntValue_ValueChanged(int value)
-        {
-            textGUI.text = value.ToString();
+            textGUI.text = intValue.ToString();
         }
     }
 }

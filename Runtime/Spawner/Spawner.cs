@@ -34,7 +34,7 @@ namespace HexTecGames.Basics
         }
         [SerializeField] private Transform parent = default;
 
-        [HideInInspector] private readonly List<T> behaviours = new List<T>();
+        private readonly List<T> behaviours = new List<T>();
 
 
         public T Spawn()
@@ -68,7 +68,7 @@ namespace HexTecGames.Basics
         }
         public int TotalActiveBehaviours()
         {
-            return behaviours.FindAll(x => x.gameObject.activeInHierarchy).Count;
+            return behaviours.FindAll(x => x.gameObject.activeSelf).Count;
         }
         public IEnumerable<T> GetBehaviours()
         {
@@ -76,13 +76,17 @@ namespace HexTecGames.Basics
         }
         public IEnumerable<T> GetActiveBehaviours()
         {
-            List<T> results = behaviours.FindAll(x => x.gameObject.activeInHierarchy);
+            List<T> results = behaviours.FindAll(x => x.gameObject.activeSelf);
             return results;
         }
 
-        public void ConsumeInstances(List<T> list)
+        public void AddInstances(List<T> list, bool setParent = false)
         {
             behaviours.AddRange(list);
+            if (setParent)
+            {
+                list.ForEach(x => x.transform.SetParent(Parent));
+            }
         }
 
         public void DeactivateAll()

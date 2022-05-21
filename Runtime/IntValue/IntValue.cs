@@ -9,7 +9,7 @@ namespace HexTecGames.Basics
     public class IntValue
 	{
         public ValueType Type;
-        public int Value
+        public virtual int Value
         {
             get
             {

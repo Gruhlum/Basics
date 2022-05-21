@@ -106,7 +106,6 @@ namespace HexTecGames.Basics
                 else Debug.LogWarning("Could not find IntValue (" + Type.name + ") on " + TargetObject.name);
             }
         }
-
         public void Clicked()
         {
             OnClicked?.Invoke(this);
