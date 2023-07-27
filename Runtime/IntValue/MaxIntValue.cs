@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -17,6 +18,7 @@ namespace HexTecGames.Basics
             set
             {
                 maxValue = value;
+                MaxValueChanged?.Invoke(maxValue);
             }
         }
         [SerializeField] private int maxValue = default;
@@ -34,11 +36,33 @@ namespace HexTecGames.Basics
                     value = MaxValue;
                 }
                 base.Value = value;
-                Debug.Log("hi");
-                ValChanged.Invoke(value.ToString());
+            }
+        }
+        public Action<int> MaxValueChanged;
+
+        public bool IsFull
+        {
+            get
+            {
+                return MaxValue == Value;
             }
         }
 
-        public UnityEvent<string> ValChanged;
+        public float Percent
+        {
+            get
+            {
+                return (float)Value / (float)MaxValue;
+            }
+        }
+        public void SetMaxAndCurrent(int value)
+        {
+            MaxValue = value;
+            Value = value;
+        }
+        public void FillUp()
+        {
+            Value = MaxValue;
+        }
     }
 }

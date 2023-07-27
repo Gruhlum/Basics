@@ -6,40 +6,13 @@ using UnityEngine;
 namespace HexTecGames.Basics
 {
     [System.Serializable]
-    public class Spawner<T> where T : Component
-    {
-        public T Prefab
-        {
-            get
-            {
-                return prefab;
-            }
-            set
-            {
-                prefab = value;
-            }
-        }
-        [SerializeField] private T prefab = default;
-
-        public Transform Parent
-        {
-            get
-            {
-                return parent;
-            }
-            set
-            {
-                parent = value;
-            }
-        }
-        [SerializeField] private Transform parent = default;
-
+    public class Spawner<T> : BasicSpawner<T> where T : Component
+    {       
         private readonly List<T> behaviours = new List<T>();
 
-
-        public T Spawn()
+        public override T Spawn()
         {
-            if (prefab == null)
+            if (Prefab == null)
             {
                 Debug.LogWarning("Prefab is not assigned!");
                 return null;
@@ -56,10 +29,15 @@ namespace HexTecGames.Basics
             }
             else
             {
-                T behaviour = Object.Instantiate(prefab, parent);
+                T behaviour = Object.Instantiate(Prefab, Parent);
                 behaviours.Add(behaviour);
                 return behaviour;
             }
+        }
+
+        public void Remove(T t)
+        {
+            behaviours.Remove(t);
         }
 
         public int TotalBehaviours()
@@ -93,7 +71,7 @@ namespace HexTecGames.Basics
         {
             if (Application.isPlaying == false)
             {
-                RemoveEmptyElements();
+                TryDestroyAll();
             }
             foreach (var behaviour in behaviours)
             {
@@ -110,6 +88,21 @@ namespace HexTecGames.Basics
                     behaviours.RemoveAt(i);
                 }
             }
+        }
+        public void DestroyUnused()
+        {
+            for (int i = behaviours.Count - 1; i >= 0; i--)
+            {
+                if (behaviours[i].gameObject.activeSelf == false)
+                {
+                    Object.DestroyImmediate(behaviours[i].gameObject);
+                }
+            }
+        }
+        public override void TryDestroyAll()
+        {
+            base.TryDestroyAll();
+            behaviours.Clear();
         }
     }
 }

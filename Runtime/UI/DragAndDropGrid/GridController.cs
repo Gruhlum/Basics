@@ -83,7 +83,7 @@ namespace HexTecGames.Basics
                     {
                         grid.RemoveItem(activeItem);
                     }
-                    grid.InsertItem(activeItem);
+                    grid.InsertItem(activeItem, true);
                     break;
                 }
                 else if (grid == HoverGrid)

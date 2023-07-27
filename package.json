@@ -1,9 +1,9 @@
 {
   "name": "com.hextecgames.basics",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "displayName": "Basics",
   "description": "My Package",
-  "unity": "2019.1",
+  "unity": "2020.1",
   "dependencies": {
     "com.unity.textmeshpro": "3.0.0",
     "com.mackysoft.serializereference-extensions": "1.0.0"

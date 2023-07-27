@@ -10,6 +10,7 @@ namespace HexTecGames.Basics
 {
     public enum Constrain { Column, Row };
     public enum Alignment { TopLeft, TopRight, BottomLeft, BottomRight };
+    public enum ControlMode { Calculations, Buttons }
     [ExecuteAlways]
     public class DragAndDropGrid : MonoBehaviour
     {
@@ -17,6 +18,7 @@ namespace HexTecGames.Basics
 
         [Min(1)]
         public int MaxLength = 3;
+        //TODO: public bool AllowRearranging;
 
         [Header("Other Grids")]
         public GridController gridController = default;
@@ -31,6 +33,12 @@ namespace HexTecGames.Basics
 
         public int BorderX;
         public int BorderY;
+
+        [Header("Items")]
+        public ControlMode ControlMode;
+
+        public int OverwriteWidth;
+        public int OverwriteHeight;
 
         public int MinItems;
         public int MaxItems;
@@ -60,7 +68,7 @@ namespace HexTecGames.Basics
             {
                 return selectedItem;
             }
-            private set
+            set
             {
                 if (selectedItem != null)
                 {
@@ -75,6 +83,7 @@ namespace HexTecGames.Basics
                 {
                     gridController.GridItemSelected(this, selectedItem);
                 }
+                SelectedItemChanged?.Invoke(selectedItem);
             }
         }
         private RectTransform selectedItem;
@@ -91,6 +100,7 @@ namespace HexTecGames.Basics
 
         public event Action<RectTransform, DragAndDropGrid> ReceivedItem;
         public event Action<RectTransform, DragAndDropGrid> SentItem;
+        public event Action<RectTransform> SelectedItemChanged;
         private void Reset()
         {
             rectT = GetComponent<RectTransform>();
@@ -102,7 +112,10 @@ namespace HexTecGames.Basics
             if (Application.isPlaying)
             {
                 //TODO: check why this fucks it up
-                Refresh();
+                //Refresh();
+                UpdateItemSize();
+                ResizeTransform();
+                UpdateGridItems();
             }
         }
         private void Awake()
@@ -111,7 +124,6 @@ namespace HexTecGames.Basics
             {
                 tracker.Add(this, rectT, DrivenTransformProperties.SizeDelta);
             }
-
             Refresh();
         }
 
@@ -125,27 +137,21 @@ namespace HexTecGames.Basics
                 return;
             }
 
-            if (Input.GetMouseButtonDown(0))
+            if (ControlMode == ControlMode.Calculations && Input.GetMouseButtonDown(0) && IsInsideGrid())
             {
-                if (IsInsideGrid())
+                int index = GetIndexOfMouse();
+                if (index < items.Count)
                 {
-                    int index = GetIndexOfMouse();
-                    if (index < items.Count)
-                    {
-                        //Debug.Log(index + " - " + items.Count);
-                        SelectedItem = items[index];
-                    }
+                    SelectedItem = items[index];
                 }
             }
-
-            if (SelectedItem != null)
+            else if (SelectedItem != null)
             {
-
                 if (Input.GetMouseButton(0))
                 {
                     if (IsInsideGrid())
                     {
-                        RemoveItem(selectedItem);
+                        items.Remove(selectedItem);
                         InsertItem(selectedItem);
                     }
                     DragItem();
@@ -158,19 +164,48 @@ namespace HexTecGames.Basics
             }
         }
         public void RemoveItem(RectTransform rectT)
-        {
+        {           
+            if (SelectedItem == rectT)
+            {
+                SelectedItem = null;
+            }
             items.Remove(rectT);
+            Refresh();
+        }
+        public void AddItems(List<RectTransform> items)
+        {
+            foreach (var rectT in items)
+            {
+                items.Add(rectT);
+                rectT.SetParent(transform);
+                rectT.SetAsLastSibling();
+            }
+            Refresh();
         }
         public void AddItem(RectTransform rectT)
         {
+            if (ControlMode == ControlMode.Buttons)
+            {
+                DragAndDropItem item = rectT.GetComponent<DragAndDropItem>();
+                if (item == null)
+                {
+                    Debug.LogWarning("Missing Button Component");
+                    return;
+                }
+                item.Grid = this;
+            }
             items.Add(rectT);
             rectT.SetParent(transform);
+            rectT.SetAsLastSibling();
             Refresh();
         }
-        public void InsertItem(RectTransform rectT)
+        public void InsertItem(RectTransform rectT, bool check = false)
         {
             items.Insert(GetIndexOfMouse(), rectT);
-            ResizeTransform();
+            if (!check)
+            {
+                ResizeTransform();               
+            }
             UpdateGridItems();
         }
         public bool ContainsItem(RectTransform rectT)
@@ -180,6 +215,7 @@ namespace HexTecGames.Basics
         public void ReceiveItem(RectTransform item, DragAndDropGrid other)
         {
             item.SetParent(transform);
+            ResizeTransform();
             UpdateGridItems();
             ReceivedItem?.Invoke(item, other);
         }
@@ -190,7 +226,10 @@ namespace HexTecGames.Basics
             UpdateGridItems();
             SentItem?.Invoke(item, other);
         }
-
+        public void ItemClicked(RectTransform item)
+        {
+            SelectedItem = item;
+        }
         private int GetColumnCount(int min = 0)
         {
             int extra = AddEmptySpace ? 1 : 0;
@@ -242,21 +281,36 @@ namespace HexTecGames.Basics
         }
         private void UpdateItemSize()
         {
-            if (items.Count == 0)
+            if (OverwriteWidth > 0)
             {
-                return;
+                itemWidth = OverwriteWidth;
             }
-            itemWidth = items.Max(x => x.sizeDelta.x);
-            itemHeight = items.Max(x => x.sizeDelta.y);
+            else if (items.Count > 0)
+            {
+                itemWidth = items.Max(x => x.sizeDelta.x);
+            }
+
+            if (OverwriteHeight > 0)
+            {
+                itemHeight = OverwriteHeight;
+            }
+            else if (items.Count > 0)
+            {
+                itemHeight = items.Max(x => x.sizeDelta.y);
+            }
         }
         public void ResizeTransform()
         {
+            if (rectT == null)
+            {
+                return;
+            }
             if (items.Count == 0)
             {
                 rectT.sizeDelta = Vector2.zero;
             }
             else rectT.sizeDelta = new Vector2(GetColumnCount(MinItems) * TotalSpacingX + BorderX, GetRowCount(MinItems) * TotalSpacingY + BorderY);
-        }     
+        }
 
         public bool IsInsideGrid()
         {
@@ -278,7 +332,7 @@ namespace HexTecGames.Basics
             Vector3[] corners = new Vector3[4];
             rectT.GetWorldCorners(corners);
             Vector2 topRightCorner = Camera.main.WorldToScreenPoint(corners[1]);
-            
+
             //Debug.Log(topRightCorner);
             //Vector2 topRightCorner = Camera.main.WorldToScreenPoint(transform.position);
             //topRightCorner.x -= rectT.sizeDelta.x / 2f - BorderX / 2f;
@@ -310,6 +364,11 @@ namespace HexTecGames.Basics
         {
             for (int i = 0; i < items.Count; i++)
             {
+                //if (i == 6)
+                //{
+                //    Debug.Log(CalculateItemPosition(i) + " - " + (Camera.main.ScreenToWorldPoint(new Vector2(Camera.main.pixelWidth / 2f, Camera.main.pixelHeight / 2f))));
+                //    Debug.Log(Screen.width + " - " + Screen.height);
+                //}
                 items[i].anchoredPosition = (CalculateItemPosition(i) / items[i].transform.lossyScale);
             }
         }
@@ -339,7 +398,7 @@ namespace HexTecGames.Basics
         {
             Vector2 pos = GetAlignmentPosition(index);
 
-            return Camera.main.ScreenToWorldPoint(pos + new Vector2(Screen.width / 2f, Screen.height / 2f));
+            return Camera.main.ScreenToWorldPoint(pos + new Vector2(Camera.main.pixelWidth / 2f, Camera.main.pixelHeight / 2f));
         }
     }
 }

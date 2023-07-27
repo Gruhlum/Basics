@@ -8,7 +8,7 @@ namespace HexTecGames.Basics
 	[System.Serializable]
     public class IntValue
 	{
-        public ValueType Type;
+        public ValType Type;
         public virtual int Value
         {
             get

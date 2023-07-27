@@ -11,7 +11,7 @@ namespace HexTecGames.Basics
     [ExecuteAlways]
     public class IntValueDisplay : MonoBehaviour
     {
-        public Displayable TargetObject
+        public MonoBehaviour TargetObject
         {
             get
             {
@@ -32,9 +32,9 @@ namespace HexTecGames.Basics
                 }
             }
         }
-        [SerializeField] private Displayable targetObject = default;
+        [SerializeField] private MonoBehaviour targetObject = default;
 
-        public ValueType Type
+        public ValType Type
         {
             get
             {
@@ -55,10 +55,10 @@ namespace HexTecGames.Basics
                 }
             }
         }
-        [SerializeField] private ValueType type = default;
+        [SerializeField] private ValType type = default;
 
         [Header("References")]
-        [SerializeField] private TextMeshProUGUI textGUI = default;
+        [SerializeField] protected TextMeshProUGUI textGUI = default;
         [SerializeField] private Image image = default;
 
         public event Action<IntValueDisplay> OnClicked;
@@ -73,7 +73,7 @@ namespace HexTecGames.Basics
 
         private void Awake()
         {
-            //textGUI.text = player.Item.IntValues.Find(x => x.Type == Type).ToString();
+            Setup();
         }
 
         private void Update()
@@ -84,11 +84,15 @@ namespace HexTecGames.Basics
             }
         }
 
-        private void Setup()
+        protected virtual void Setup()
         {
             if (TargetObject != null && Type != null && textGUI != null)
             {
-                IntValue intValue = TargetObject.IntValues.Find(Type);
+                IntValue intValue = null;
+                if (TargetObject is IDisplayable displayable)
+                {
+                    intValue = displayable.FindIntValue(Type);
+                }            
 
                 if (intValue != null)
                 {
@@ -98,12 +102,13 @@ namespace HexTecGames.Basics
                     }
                     
                     textGUI.text = intValue.Value.ToString();
+
                     if (image != null)
                     {
                         image.sprite = intValue.Type.Sprite;
                     }                   
                 }
-                else Debug.LogWarning("Could not find IntValue (" + Type.name + ") on " + TargetObject.name);
+                else Debug.LogWarning("Could not find IntValue (" + Type.name + ") on " + TargetObject);
             }
         }
         public void Clicked()
@@ -113,9 +118,9 @@ namespace HexTecGames.Basics
 
         private void ClearEventHandler()
         {
-            if (TargetObject != null && Type != null)
+            if (TargetObject != null && Type != null && TargetObject is IDisplayable displayable)
             {
-                IntValue intValue = TargetObject.IntValues.Find(Type);
+                IntValue intValue = displayable.FindIntValue(Type);
 
                 if (intValue != null)
                 {

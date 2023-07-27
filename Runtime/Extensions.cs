@@ -6,6 +6,10 @@ using HexTecGames.Basics;
 
 public static class Extensions
 {
+    public static Vector2 GetMousePosition(this Camera cam)
+    {
+        return (Vector2)Camera.main.ScreenToWorldPoint(Input.mousePosition + new Vector3(0, 0, Camera.main.transform.position.z));
+    }
     public static void ChangeAlpha(this SpriteRenderer sr, float alpha)
     {
         Color col = sr.color;
@@ -89,8 +93,34 @@ public static class Extensions
         return v;
     }
 
-    public static IntValue Find(this List<IntValue> list, ValueType type)
+    public static IntValue Find(this List<IntValue> list, ValType type)
     {
         return list.Find(x => x.Type == type);
+    }
+    public static MaxIntValue Find(this List<MaxIntValue> list, ValType type)
+    {
+        return list.Find(x => x.Type == type);
+    }
+
+    public static void UpdateShapeToSprite(this PolygonCollider2D collider)
+    {
+        collider.UpdateShapeToSprite(collider.GetComponent<SpriteRenderer>().sprite);
+    }
+
+    public static void UpdateShapeToSprite(this PolygonCollider2D collider, Sprite sprite)
+    {
+        if (collider != null && sprite != null)
+        {
+            collider.pathCount = sprite.GetPhysicsShapeCount();
+
+            List<Vector2> path = new List<Vector2>();
+
+            for (int i = 0; i < collider.pathCount; i++)
+            {
+                path.Clear();
+                sprite.GetPhysicsShape(i, path);
+                collider.SetPath(i, path.ToArray());
+            }
+        }
     }
 }

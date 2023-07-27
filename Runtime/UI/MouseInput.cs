@@ -7,17 +7,25 @@ namespace HexTecGames.Basics
     public static class MouseInput
 	{
         public enum ButtonType { None, Down, Clicked, Up }
-        public static GameObject DetectClick(int btn, ButtonType type)
+        private static bool CheckButton(int btn, ButtonType type)
         {
             if (type == ButtonType.Down && !Input.GetMouseButtonDown(btn))
             {
-                return null;
+                return false;
             }
             if (type == ButtonType.Clicked && !Input.GetMouseButton(btn))
             {
-                return null;
+                return false;
             }
             if (type == ButtonType.Up && !Input.GetMouseButtonUp(btn))
+            {
+                return false;
+            }
+            return true;
+        }
+        public static GameObject DetectClick(int btn, ButtonType type = ButtonType.Down)
+        {
+            if (!CheckButton(btn, type))
             {
                 return null;
             }
@@ -29,17 +37,9 @@ namespace HexTecGames.Basics
             }
             return null;
         }
-        public static T DetectClick<T>(int btn, ButtonType type) where T : MonoBehaviour
+        public static T DetectClick<T>(int btn, ButtonType type = ButtonType.Down) where T : MonoBehaviour
         {
-            if (type == ButtonType.Down && !Input.GetMouseButtonDown(btn))
-            {
-                return null;
-            }
-            if (type == ButtonType.Clicked && !Input.GetMouseButton(btn))
-            {
-                return null;
-            }
-            if (type == ButtonType.Up && !Input.GetMouseButtonUp(btn))
+            if (!CheckButton(btn, type))
             {
                 return null;
             }
@@ -50,6 +50,20 @@ namespace HexTecGames.Basics
                 return mono;
             }
             return null;
+        }
+        public static bool HitCollider(int btn, ButtonType type = ButtonType.Down)
+        {
+            if (!CheckButton(btn, type))
+            {
+                return false;
+            }
+            Vector2 worldPos = Camera.main.ScreenToWorldPoint((Vector2)Input.mousePosition);
+            RaycastHit2D hit = Physics2D.Raycast(worldPos, Vector2.zero);
+            return hit.collider != null;
+        }
+        public static Vector2 MouseToWorldPos()
+        {
+            return Camera.main.ScreenToWorldPoint((Vector2)Input.mousePosition);
         }
         public static GameObject DetectHover()
         {

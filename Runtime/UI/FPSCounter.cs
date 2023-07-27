@@ -9,20 +9,9 @@ namespace HexTecGames.Basics
     {
         [SerializeField] private TextMeshProUGUI textGUI = default;
 
-        public static bool Show = true;
-
         private float framesSec;
 
         private float secTimer;
-
-        private void Awake()
-        {
-            if (Show == false)
-            {
-                gameObject.SetActive(false);
-            }
-        }
-
 
         private void Update()
         {
@@ -35,9 +24,9 @@ namespace HexTecGames.Basics
             if (secTimer >= 1)
             {
                 secTimer = 0;
-                framesSec = 0;
                 textGUI.text = framesSec.ToString();
-            }
+                framesSec = 0;
+            }            
         }
     }
 }
