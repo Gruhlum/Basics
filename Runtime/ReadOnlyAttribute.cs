@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace HexTecGames.Basics.Editor
+namespace HexTecGames.Basics
 {
     public class ReadOnlyAttribute : PropertyAttribute
     {

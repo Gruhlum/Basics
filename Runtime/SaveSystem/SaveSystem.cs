@@ -5,10 +5,12 @@ using System.IO;
 using System.Xml.Serialization;
 using UnityEngine;
 
-namespace Basics
+namespace HexTecGames.Basics
 {
 	public static class SaveSystem
 	{
+        private static readonly string defaultFolderName = "Data";
+
         public static string BaseDirectory
         {
             get
@@ -33,8 +35,19 @@ namespace Basics
                 Directory.CreateDirectory(Path.Combine(BaseDirectory, directory));
             }
         }
-
-        public static void SaveJSON(object obj, string fileName, string directory = "data", bool prettyPrint = false)
+        public static List<string> FindAllFiles()
+        {
+            return FindAllFiles(defaultFolderName);
+        }
+        public static List<string> FindAllFiles(string directory)
+        {
+            return FileManager.GetFileNames(directory);
+        }      
+        public static void SaveJSON(object obj, string fileName, bool prettyPrint = false)
+        {
+            SaveJSON(obj, fileName, defaultFolderName, prettyPrint);
+        }
+        public static void SaveJSON(object obj, string fileName, string directory, bool prettyPrint = false)
         {
             CheckDirectories(directory);
             using (StreamWriter sw = new StreamWriter(File.Open(Path.Combine(BaseDirectory, directory, fileName), FileMode.Create)))
@@ -42,7 +55,11 @@ namespace Basics
                 sw.WriteLine(JsonUtility.ToJson(obj, prettyPrint));
             }
         }
-        public static T LoadJSON<T>(string fileName, string directory = "data") where T : class
+        public static T LoadJSON<T>(string fileName) where T : class
+        {
+            return LoadJSON<T>(fileName, defaultFolderName);
+        }
+        public static T LoadJSON<T>(string fileName, string directory) where T : class
         {
             string path = Path.Combine(BaseDirectory, directory, fileName);
 
@@ -54,10 +71,27 @@ namespace Basics
             using (StreamReader sr = new StreamReader(path))
             {
                 return JsonUtility.FromJson<T>(sr.ReadToEnd());
-            }
-            
+            }            
         }
-        public static void SaveXML(object obj, string fileName, string directory = "data")
+        public static List<T> LoadJSONAll<T>() where T : class
+        {
+            return LoadJSONAll<T>(BaseDirectory);
+        }
+        public static List<T> LoadJSONAll<T>(string directory) where T : class
+        {
+            var results = FindAllFiles(directory);
+            List<T> levels = new List<T>();
+            foreach (var result in results)
+            {
+                levels.Add(LoadJSON<T>(result, directory));
+            }
+            return levels;
+        }
+        public static void SaveXML(object obj, string fileName)
+        {
+            SaveXML(obj, fileName, defaultFolderName);
+        }
+        public static void SaveXML(object obj, string fileName, string directory)
         {
             CheckDirectories(directory);
             var serializer = new XmlSerializer(obj.GetType());
@@ -66,7 +100,11 @@ namespace Basics
                 serializer.Serialize(stream, obj);
             }
         }
-        public static T LoadXML<T>(string fileName, string directory = "data") where T : class
+        public static T LoadXML<T>(string fileName) where T : class
+        {
+            return LoadXML<T>(fileName, defaultFolderName);
+        }
+        public static T LoadXML<T>(string fileName, string directory) where T : class
         {
             string path = Path.Combine(BaseDirectory, directory, fileName);
 
@@ -80,6 +118,20 @@ namespace Basics
             {
                 return serializer.Deserialize(stream) as T;
             }
+        }
+        public static List<T> LoadXMLAll<T>() where T : class
+        {
+            return LoadXMLAll<T>(BaseDirectory);
+        }
+        public static List<T> LoadXMLAll<T>(string directory) where T : class
+        {
+            var results = FindAllFiles(directory);
+            List<T> levels = new List<T>();
+            foreach (var result in results)
+            {                
+                levels.Add(LoadXML<T>(result, directory));
+            }
+            return levels;
         }
     }
 }

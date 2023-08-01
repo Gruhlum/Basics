@@ -123,4 +123,19 @@ public static class Extensions
             }
         }
     }
+
+    public static int WrapIndex(this int index, int change, int maximum)
+    {
+        //TODO make this work for large increases
+        index += change;
+        if (index < 0)
+        {
+            index = maximum;
+        }
+        else if (index > maximum)
+        {
+            index = 0;
+        }
+        return index;
+    }
 }

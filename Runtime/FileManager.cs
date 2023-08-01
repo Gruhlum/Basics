@@ -45,7 +45,18 @@ namespace HexTecGames.Basics
 
             return Directory.GetFiles(dirPath);
         }
-
+        public static List<string> GetFileNames(string folderName)
+        {
+           var results = GetFilePaths(folderName);
+            List<string> fileNames = new List<string>();
+            foreach (var result in results)
+            {
+                int startIndex = result.LastIndexOf(@"\") + 1;
+                int length = result.Length - startIndex;
+                fileNames.Add(result.Substring(startIndex, length));
+            }
+            return fileNames;
+        }
         public static List<List<string>> ReadMultipleFiles(string folderName)
         {
             string[] filePaths = GetFilePaths(folderName);

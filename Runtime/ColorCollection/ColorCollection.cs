@@ -17,5 +17,12 @@ namespace HexTecGames
             int red = 220 - (80 - (220 - current));
             return new Color(green / 255f, red / 255f, 60f / 225f);
         }
+        public static Color InverseColor(Color col)
+        {
+            col.r = 1f - col.r;
+            col.g = 1f - col.g;
+            col.b = 1f - col.b;
+            return col;
+        }
     }
 }

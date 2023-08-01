@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System;
 
-namespace HexTecGames.Basics.Editor
+namespace HexTecGames.Basics
 {
 
     /// <summary>

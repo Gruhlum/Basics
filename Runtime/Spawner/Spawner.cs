@@ -57,7 +57,10 @@ namespace HexTecGames.Basics
             List<T> results = behaviours.FindAll(x => x.gameObject.activeSelf);
             return results;
         }
-
+        public void FindBehavioursInChildren()
+        {
+            AddInstances(Parent.GetComponentsInChildren<T>().ToList());
+        }
         public void AddInstances(List<T> list, bool setParent = false)
         {
             behaviours.AddRange(list);
@@ -75,7 +78,10 @@ namespace HexTecGames.Basics
             }
             foreach (var behaviour in behaviours)
             {
-                behaviour.gameObject.SetActive(false);
+                if (behaviour != null)
+                {
+                    behaviour.gameObject.SetActive(false);
+                }              
             }
         }
 
