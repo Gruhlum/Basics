@@ -57,6 +57,8 @@ namespace HexTecGames.Basics.Editor
                     return comparedField.boolValue.Equals(drawIf.comparedValue);
                 case "Enum":
                     return comparedField.enumValueIndex.Equals((int)drawIf.comparedValue);
+                case "float":
+                    return comparedField.floatValue.Equals((float)drawIf.comparedValue);
                 default:
                     Debug.LogError("Error: " + comparedField.type + " is not supported of " + path);
                     return true;
