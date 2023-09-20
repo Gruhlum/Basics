@@ -1,12 +1,10 @@
 {
   "name": "com.hextecgames.basics",
-  "version": "1.0.3",
+  "version": "1.1.0",
   "displayName": "Basics",
-  "description": "My Package",
-  "unity": "2020.1",
+  "description": "Basic Stuff",
   "dependencies": {
-    "com.unity.textmeshpro": "3.0.0",
-    "com.mackysoft.serializereference-extensions": "1.0.0"
+    "com.unity.textmeshpro": "3.0.0"
   },
   "author": {
     "name": "HexTecGames",

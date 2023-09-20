@@ -24,11 +24,11 @@ namespace HexTecGames.Basics.UI
 
         [SerializeField] private string formatString = default;
 
-        public void UpdateText(int value)
+        public void SetText(int value)
         {
             TextGUI.text = value.ToString(formatString);
         }
-        public void UpdateText(string text)
+        public void SetText(string text)
         {
             TextGUI.text = text.ToString();
         }

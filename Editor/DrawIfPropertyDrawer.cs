@@ -49,7 +49,6 @@ namespace HexTecGames.Basics.Editor
                 Debug.LogError("Cannot find property with name: " + path);
                 return true;
             }
-
             // get the value & compare based on types
             switch (comparedField.type)
             { // Possible extend cases to support your own type
@@ -60,7 +59,11 @@ namespace HexTecGames.Basics.Editor
                 case "float":
                     return comparedField.floatValue.Equals((float)drawIf.comparedValue);
                 default:
-                    Debug.LogError("Error: " + comparedField.type + " is not supported of " + path);
+                    if (comparedField.isArray)
+                    {
+                        return comparedField.arraySize >= (int)drawIf.comparedValue;
+                    }
+                    //Debug.LogError("Error: " + comparedField.type + " is not supported of " + path);
                     return true;
             }
         }
