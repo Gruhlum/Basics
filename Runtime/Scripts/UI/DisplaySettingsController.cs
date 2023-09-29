@@ -7,7 +7,7 @@ using UnityEngine;
 
 namespace HexTecGames.Basics.UI
 {
-	public class VideoSettingsController : MonoBehaviour
+	public class DisplaySettingsController : MonoBehaviour
 	{
         [SerializeField] private TMP_Dropdown resDropDown = default;
         [SerializeField] private TMP_Dropdown modeDropDown = default;

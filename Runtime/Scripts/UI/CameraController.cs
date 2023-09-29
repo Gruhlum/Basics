@@ -23,7 +23,6 @@ namespace HexTecGames.Basics
         {
             if (Input.GetKeyDown(KeyCode.W))
             {
-                Debug.Log("hi");
                 transform.position += new Vector3(0f, MoveStep, 0f);
             }
             if (Input.GetKeyDown(KeyCode.A))

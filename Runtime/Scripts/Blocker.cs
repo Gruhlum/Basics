@@ -23,7 +23,7 @@ namespace HexTecGames.Basics
                 OnAllowedChanged?.Invoke(allowed);
             }
         }
-        [SerializeField] private bool allowed = default;
+        [SerializeField] private bool allowed = true;
 
         private readonly List<object> blockers = new List<object>();
 
@@ -37,7 +37,7 @@ namespace HexTecGames.Basics
             }
             else blockers.Add(sender);
 
-            Allowed = blockers.Count > 0;
+            Allowed = blockers.Count <= 0;
         }
     }
 }

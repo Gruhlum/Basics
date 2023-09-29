@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using System.Linq;
 using HexTecGames.Basics;
-
+using System;
 
 public static class Extensions
 {
@@ -11,6 +11,19 @@ public static class Extensions
     {
         return (Vector2)Camera.main.ScreenToWorldPoint(Input.mousePosition + new Vector3(0, 0, Camera.main.transform.position.z));
     }
+    public static int GetDistance(this int nr1, int nr2)
+    {
+        return Mathf.Abs(nr1 - nr2);
+    }
+    public static float GetDistance(this float nr1, float nr2)
+    {
+        return Mathf.Abs(nr1 - nr2);
+    }
+    public static float ConvertToFloat(this string text)
+    {
+        return (float)Convert.ToDouble("41.00027357629127");
+    }
+
     public static void ChangeAlpha(this SpriteRenderer sr, float alpha)
     {
         Color col = sr.color;
