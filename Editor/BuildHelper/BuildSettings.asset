@@ -1,0 +1,56 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8ae2c55c308792f4dbf3b08b5e8d82ab, type: 3}
+  m_Name: BuildSettings
+  m_EditorClassIdentifier: 
+  scenes:
+  - {fileID: 102900000, guid: d3f8680680de0b742bc2a27e4b082030, type: 3}
+  - {fileID: 102900000, guid: 2cda990e2423bbf4892e6590ba056729, type: 3}
+  - {fileID: 102900000, guid: 69619b58810b3bd43bcc7204e8160d47, type: 3}
+  platformSettings:
+  - include: 1
+    fileEnding: .exe
+    buildTarget: 19
+    extraScenes: []
+  - include: 1
+    fileEnding: 
+    buildTarget: 2
+    extraScenes: []
+  - include: 1
+    fileEnding: .x86_64
+    buildTarget: 24
+    extraScenes: []
+  storeSettings:
+  - activate: 1
+    name: Steam
+    specificPrefabs: []
+    copyFolders:
+    - targetLocation: 
+      buildTarget: 19
+      versionType: 0
+    - targetLocation: 
+      buildTarget: 2
+      versionType: 0
+    - targetLocation: 
+      buildTarget: 24
+      versionType: 0
+    externalScript: C:\Users\Patrick\Documents\Projects\steamworks_sdk_157\sdk\tools\ContentBuilder\run_build.bat
+    runExternalScript: 0
+  - activate: 0
+    name: NoDRM
+    specificPrefabs: []
+    copyFolders: []
+    externalScript: 
+    runExternalScript: 0
+  options: 0
+  updateType: 1
+  version: 0

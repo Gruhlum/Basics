@@ -11,26 +11,19 @@ namespace HexTecGames.Basics
 		[SerializeField] private Button btn = default;
         [SerializeField] private Image img = default;
      
-
         public bool Active
         {
             get
             {
                 return active;
             }
-            set
+            private set
             {
                 if (active == value)
                 {
                     return;
                 }
-                active = value;
-
-                if (active)
-                {
-                    img.color = activeColor;
-                }
-                else img.color = normalColor;
+                active = value;             
             }
         }
         [SerializeField] private bool active = default;
@@ -55,6 +48,15 @@ namespace HexTecGames.Basics
         private void OnButtonClicked()
         {
             OnClicked?.Invoke(this);
+        }
+        public void SetActive(bool active)
+        {
+            Active = active;
+            if (active)
+            {
+                img.color = activeColor;
+            }
+            else img.color = normalColor;
         }
     }
 }

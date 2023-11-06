@@ -1,8 +1,8 @@
 {
-    "name": "MackySoft.SerializeReferenceExtensions.Editor",
+    "name": "HexTecGames.Basics.Editor.BuildHelper",
     "rootNamespace": "",
     "references": [
-        "GUID:49b49c76ee64f6b41bf28ef951cb0e50"
+        "GUID:4cc4c207c147801449ee01314a8f99b8"
     ],
     "includePlatforms": [
         "Editor"
@@ -12,9 +12,7 @@
     "overrideReferences": false,
     "precompiledReferences": [],
     "autoReferenced": true,
-    "defineConstraints": [
-        "UNITY_2019_3_OR_NEWER"
-    ],
+    "defineConstraints": [],
     "versionDefines": [],
     "noEngineReferences": false
 }

@@ -15,12 +15,33 @@ namespace HexTecGames
         public void Setup()
         {
             displaySpawner.DeactivateAll();
-            foreach (var obj in items)
+            foreach (var item in items)
             {
-                displaySpawner.Spawn().Setup(obj, this);
+                displaySpawner.Spawn().Setup(item, this);
             }
         }
 
         public abstract void OnDisplayClicked(Display<T> display);
+
+        public List<T> GetItems()
+        {
+            var results = new List<T>();
+            results.AddRange(items);
+            return results;
+        }
+        public void SetItems(List<T> items)
+        {
+            items = new List<T>();
+            items.AddRange(items);
+        }
+        public void AddItem(T item, int index = 0, bool display = true)
+        {
+            items.Insert(index, item);
+            displaySpawner.Spawn().Setup(item, this);
+        }
+        public void RemoveItem(T item)
+        {
+            items.Remove(item);
+        }
     }
 }

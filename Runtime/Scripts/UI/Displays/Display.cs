@@ -23,8 +23,12 @@ namespace HexTecGames
 
         public virtual void Setup(T item, DisplayController<T> dc)
         {
-            this.Item = item;
+            SetItem(item);
             this.dc = dc;
+        }
+        public void SetItem(T Item)
+        {
+            this.Item = Item;
         }
         public void OnDisplayClicked()
         {

@@ -47,7 +47,7 @@ namespace HexTecGames.Basics
         }
         public static List<string> GetFileNames(string folderName)
         {
-           var results = GetFilePaths(folderName);
+            var results = GetFilePaths(folderName);
             if (results == null)
             {
                 return null;
@@ -74,7 +74,20 @@ namespace HexTecGames.Basics
 
             return results;
         }
-
+        public static string GetUniqueFileName(string path, string name)
+        {
+            string fullPath = Path.Combine(path, name);
+            if (!Directory.Exists(fullPath))
+            {
+                return name;
+            }
+            int count = 2;
+            while (Directory.Exists(Path.Combine($"{fullPath} {count}")))
+            {
+                count++;
+            }
+            return $"{fullPath} {count}";
+        }
         public static List<string> ReadFile(string filePath)
         {
             if (!File.Exists(filePath))
@@ -94,6 +107,24 @@ namespace HexTecGames.Basics
                 }
             }
             return text;
+        }
+
+        public static void WriteBytes(byte[] data, string path, string name, string fileEnding)
+        {
+            File.WriteAllBytes(Path.Combine(path, name + fileEnding), data);
+        }
+        public static Sprite LoadSprite(string path, string name, string fileEnding = ".png")
+        {
+            string fullPath = Path.Combine(path, name + fileEnding);
+            if (!File.Exists(fullPath))
+            {
+                Debug.Log("File does not exists: " + fullPath);
+                return null;
+            }
+            byte[] bytes = File.ReadAllBytes(fullPath);
+            Texture2D tex2D = new Texture2D(1, 1);
+            tex2D.LoadImage(bytes);
+            return Sprite.Create(tex2D, new Rect(new Vector2(0, 0), new Vector2(tex2D.width, tex2D.height)), Vector2.zero);
         }
 
         public static List<string> ReadFile(string fileName, string subFolderName)

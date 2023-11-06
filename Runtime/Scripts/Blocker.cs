@@ -5,8 +5,8 @@ using UnityEngine;
 
 namespace HexTecGames.Basics
 {
-	public class Blocker
-	{
+    public class Blocker
+    {
         public bool Allowed
         {
             get
@@ -29,7 +29,7 @@ namespace HexTecGames.Basics
 
         public event Action<bool> OnAllowedChanged;
 
-        public void SetBlockState(object sender, bool allow)
+        public void SetAllowState(object sender, bool allow)
         {
             if (allow)
             {
@@ -37,7 +37,16 @@ namespace HexTecGames.Basics
             }
             else blockers.Add(sender);
 
+            UpdateBlockState();
+        }
+        private void UpdateBlockState()
+        {
             Allowed = blockers.Count <= 0;
+        }
+        public void ClearAll()
+        {
+            blockers.Clear();
+            UpdateBlockState();
         }
     }
 }

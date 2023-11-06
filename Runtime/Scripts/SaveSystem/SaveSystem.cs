@@ -95,7 +95,7 @@ namespace HexTecGames.Basics
 
             if (!File.Exists(path))
             {
-                Debug.LogWarning(path + " does not exist");
+                //Debug.LogWarning(path + " does not exist");
                 return default;
             }
             using (StreamReader sr = new StreamReader(path))

@@ -31,7 +31,7 @@ namespace HexTecGames.Basics
         {
             if (startButton != null)
             {
-                startButton.Active = true;
+                startButton.SetActive(true);
             }
         }
 
@@ -39,7 +39,7 @@ namespace HexTecGames.Basics
         {
             foreach (var btn in buttons)
             {
-                btn.Active = btn == radioBtn;
+                btn.SetActive(btn == radioBtn);
             }
             OnRadioButtonClicked?.Invoke(radioBtn);
         }

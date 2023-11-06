@@ -151,6 +151,11 @@ public static class Extensions
         }
     }
 
+    public static Sprite TextureToSprite(this Texture2D texture)
+    {
+        return Sprite.Create(texture, new Rect(new Vector2(0, 0), new Vector2(texture.width, texture.height)), Vector2.zero);
+    }
+
     public static int WrapIndex(this int index, int change, int maximum)
     {
         //TODO make this work for large increases
@@ -165,4 +170,5 @@ public static class Extensions
         }
         return index;
     }
+
 }
