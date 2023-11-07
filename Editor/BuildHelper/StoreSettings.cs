@@ -8,10 +8,14 @@ namespace HexTecGames.Basics.Editor.BuildHelper
 	[System.Serializable]
 	public class StoreSettings
 	{
-		public bool activate;
+		public bool include = true;
 		public string name;
-        [Tooltip("GameObjects that will only be included when this is Setting is active")]
-        public List<GameObject> specificPrefabs;
+
+        [Tooltip("Scenes that will only be added to this specific Build")]
+        public List<SceneAsset> extraScenes;
+
+        [Tooltip("Objects that will only be included when this is Setting is active")]
+        public List<Object> exclusiveObjects;
 
         [Tooltip("Used to copy the build folders to another location")]
         public List<CopyFolder> copyFolders;

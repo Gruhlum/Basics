@@ -79,11 +79,20 @@ namespace HexTecGames.Basics
         }
         public static void SaveJSON(object obj, string fileName, string directory, bool prettyPrint = false)
         {
-            CheckDirectories(directory);
-            using (StreamWriter sw = new StreamWriter(File.Open(Path.Combine(BaseDirectory, directory, fileName), FileMode.Create)))
+            try
             {
-                sw.WriteLine(JsonUtility.ToJson(obj, prettyPrint));
+                CheckDirectories(directory);
+                using (StreamWriter sw = new StreamWriter(File.Open(Path.Combine(BaseDirectory, directory, fileName), FileMode.Create)))
+                {
+                    sw.WriteLine(JsonUtility.ToJson(obj, prettyPrint));
+                }
             }
+            catch (Exception)
+            {
+
+                Debug.Log("Could not save file");
+            }
+            
         }
         public static T LoadJSON<T>(string fileName) where T : class
         {
@@ -91,17 +100,25 @@ namespace HexTecGames.Basics
         }
         public static T LoadJSON<T>(string fileName, string directory) where T : class
         {
-            string path = Path.Combine(BaseDirectory, directory, fileName);
+            try
+            {
+                string path = Path.Combine(BaseDirectory, directory, fileName);
 
-            if (!File.Exists(path))
-            {
-                //Debug.LogWarning(path + " does not exist");
-                return default;
+                if (!File.Exists(path))
+                {
+                    //Debug.LogWarning(path + " does not exist");
+                    return default;
+                }
+                using (StreamReader sr = new StreamReader(path))
+                {
+                    return JsonUtility.FromJson<T>(sr.ReadToEnd());
+                }
             }
-            using (StreamReader sr = new StreamReader(path))
+            catch (Exception)
             {
-                return JsonUtility.FromJson<T>(sr.ReadToEnd());
-            }
+                Debug.Log("Could not load file");
+                return null;
+            }          
         }
         public static List<T> LoadJSONAll<T>() where T : class
         {

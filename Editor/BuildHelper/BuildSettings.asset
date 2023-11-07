@@ -9,48 +9,30 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8ae2c55c308792f4dbf3b08b5e8d82ab, type: 3}
+  m_Script: {fileID: 11500000, guid: 6baf1666b16da89419af864a0b345db5, type: 3}
   m_Name: BuildSettings
   m_EditorClassIdentifier: 
   scenes:
-  - {fileID: 102900000, guid: d3f8680680de0b742bc2a27e4b082030, type: 3}
-  - {fileID: 102900000, guid: 2cda990e2423bbf4892e6590ba056729, type: 3}
-  - {fileID: 102900000, guid: 69619b58810b3bd43bcc7204e8160d47, type: 3}
+  - {fileID: 102900000, guid: c3381b32cdf4f0849b982e99b61545f8, type: 3}
   platformSettings:
   - include: 1
-    fileEnding: .exe
-    buildTarget: 19
-    extraScenes: []
-  - include: 1
     fileEnding: 
-    buildTarget: 2
-    extraScenes: []
-  - include: 1
-    fileEnding: .x86_64
-    buildTarget: 24
-    extraScenes: []
+    buildTarget: 20
   storeSettings:
-  - activate: 1
-    name: Steam
-    specificPrefabs: []
-    copyFolders:
-    - targetLocation: 
-      buildTarget: 19
-      versionType: 0
-    - targetLocation: 
-      buildTarget: 2
-      versionType: 0
-    - targetLocation: 
-      buildTarget: 24
-      versionType: 0
-    externalScript: C:\Users\Patrick\Documents\Projects\steamworks_sdk_157\sdk\tools\ContentBuilder\run_build.bat
+  - include: 0
+    name: itch.io
+    extraScenes: []
+    exclusiveObjects: []
+    copyFolders: []
+    externalScript: 
     runExternalScript: 0
-  - activate: 0
-    name: NoDRM
-    specificPrefabs: []
+  - include: 0
+    name: armorgames
+    extraScenes: []
+    exclusiveObjects: []
     copyFolders: []
     externalScript: 
     runExternalScript: 0
   options: 0
-  updateType: 1
+  updateType: 0
   version: 0

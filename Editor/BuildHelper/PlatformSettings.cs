@@ -14,8 +14,7 @@ namespace HexTecGames.Basics.Editor.BuildHelper
         public string fileEnding;
         public BuildTarget buildTarget;
 
-        [Tooltip("Scenes that will only be added to this specific Build")]
-        public List<SceneAsset> extraScenes;
+        
 
         private BuildTarget lastBuildTarget;
 
