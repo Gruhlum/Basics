@@ -8,7 +8,9 @@ namespace HexTecGames.Basics
 {
 	public class RadioButton : MonoBehaviour
 	{
-		[SerializeField] private Button btn = default;
+		public enum AnimationType { ColorSwap, SpriteSwap}
+
+        [SerializeField] private Button btn = default;
         [SerializeField] private Image img = default;
      
         public bool Active
@@ -28,9 +30,13 @@ namespace HexTecGames.Basics
         }
         [SerializeField] private bool active = default;
 
+        [SerializeField] private AnimationType animationType = default;
 
-        [SerializeField] private Color normalColor = Color.white;
-        [SerializeField] private Color activeColor = Color.white;
+        [SerializeField][DrawIf("animationType", AnimationType.ColorSwap)] private Color normalColor = Color.white;
+        [SerializeField][DrawIf("animationType", AnimationType.ColorSwap)] private Color activeColor = Color.white;
+
+        [SerializeField][DrawIf("animationType", AnimationType.SpriteSwap)] private Sprite normalSprite = default;
+        [SerializeField][DrawIf("animationType", AnimationType.SpriteSwap)] private Sprite activeSprite = default;
 
         public event Action<RadioButton> OnClicked;
 
@@ -52,11 +58,27 @@ namespace HexTecGames.Basics
         public void SetActive(bool active)
         {
             Active = active;
+            if (animationType == AnimationType.ColorSwap)
+            {
+                SetColor(active);
+            }
+            else SetSprite(active);
+        }
+        private void SetColor(bool active)
+        {
             if (active)
             {
                 img.color = activeColor;
             }
             else img.color = normalColor;
+        }
+        private void SetSprite(bool active)
+        {
+            if (active)
+            {
+                img.sprite = activeSprite;
+            }
+            else img.sprite = normalSprite;
         }
     }
 }

@@ -6,7 +6,6 @@ using UnityEngine;
 
 namespace HexTecGames.Basics
 {
-
     public static class VersionData
     {
         public static string CurrentVersion
@@ -42,6 +41,7 @@ namespace HexTecGames.Basics
                     break;
             }
         }
+#if UNITY_EDITOR
         public static void SetVersion()
         {
             PlayerSettings.bundleVersion = CurrentVersion;
@@ -58,5 +58,6 @@ namespace HexTecGames.Basics
             MediumVersion = Convert.ToInt16(splitVersion[1]);
             MinorVersion = Convert.ToInt16(splitVersion[2]);
         }
+#endif
     }
 }

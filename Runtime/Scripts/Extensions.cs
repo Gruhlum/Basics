@@ -4,6 +4,7 @@ using UnityEngine;
 using System.Linq;
 using HexTecGames.Basics;
 using System;
+using UnityEngine.UI;
 
 public static class Extensions
 {
@@ -23,14 +24,49 @@ public static class Extensions
     {
         return (float)Convert.ToDouble("41.00027357629127");
     }
-
-    public static void ChangeAlpha(this SpriteRenderer sr, float alpha)
+    public static void AddAlpha(this Image img, float alpha)
+    {
+        Color col = img.color;
+        col.a += alpha;
+        img.color = col;
+    }
+    public static void AddAlpha(this Image img, int alpha)
+    {
+        Color col = img.color;
+        col.a += alpha / 255f;
+        img.color = col;
+    }
+    public static void SetAlpha(this Image img, float alpha)
+    {
+        Color col = img.color;
+        col.a = alpha;
+        img.color = col;
+    }
+    public static void SetAlpha(this Image img, int alpha)
+    {
+        Color col = img.color;
+        col.a = alpha / 255f;
+        img.color = col;
+    }
+    public static void AddAlpha(this SpriteRenderer sr, float alpha)
+    {
+        Color col = sr.color;
+        col.a += alpha;
+        sr.color = col;
+    }
+    public static void AddAlpha(this SpriteRenderer sr, int alpha)
+    {
+        Color col = sr.color;
+        col.a += alpha / 255f;
+        sr.color = col;
+    }
+    public static void SetAlpha(this SpriteRenderer sr, float alpha)
     {
         Color col = sr.color;
         col.a = alpha;
         sr.color = col;
     }
-    public static void ChangeAlpha(this SpriteRenderer sr, int alpha)
+    public static void SetAlpha(this SpriteRenderer sr, int alpha)
     {
         Color col = sr.color;
         col.a = alpha / 255f;

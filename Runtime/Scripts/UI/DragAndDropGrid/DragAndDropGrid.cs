@@ -3,16 +3,14 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
-using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
 namespace HexTecGames.Basics.UI
 {
     public enum Constrain { Column, Row };
-    public enum Alignment { TopLeft, TopRight, BottomLeft, BottomRight };
     public enum ControlMode { Calculations, Buttons }
-    [ExecuteAlways]
-    public class DragAndDropGrid : MonoBehaviour
+
+    public class DragAndDropGrid : LayoutGroup
     {
         public Constrain Constrain;
 
@@ -25,14 +23,8 @@ namespace HexTecGames.Basics.UI
         public bool AllowSending = true;
         public bool AllowRecieving = true;
 
-        [Header("Size")]
-        public Alignment Alignment;
-
         public int SpacingX;
         public int SpacingY;
-
-        public int BorderX;
-        public int BorderY;
 
         [Header("Items")]
         public ControlMode ControlMode;
@@ -61,6 +53,7 @@ namespace HexTecGames.Basics.UI
         }
         private float itemWidth;
         private float itemHeight;
+        [HideInInspector][SerializeField] private RectTransform rectT;
         private List<RectTransform> items = new List<RectTransform>();
         public RectTransform SelectedItem
         {
@@ -95,44 +88,32 @@ namespace HexTecGames.Basics.UI
                 return AllowRecieving && (items.Count < MaxItems || MaxItems <= 0);
             }
         }
-        [SerializeField] private RectTransform rectT;
-        private DrivenRectTransformTracker tracker;
+        // private DrivenRectTransformTracker tracker;
 
         public event Action<RectTransform, DragAndDropGrid> ReceivedItem;
         public event Action<RectTransform, DragAndDropGrid> SentItem;
         public event Action<RectTransform> SelectedItemChanged;
-        private void Reset()
+        private new void Reset()
         {
             rectT = GetComponent<RectTransform>();
-            tracker.Add(this, rectT, DrivenTransformProperties.SizeDelta);
+            //tracker.Add(this, rectT, DrivenTransformProperties.SizeDelta);
         }
 
-        private void OnValidate()
+        private new void Awake()
         {
+            base.Awake();
             if (Application.isPlaying)
             {
-                //TODO: check why this fucks it up
-                //Refresh();
-                UpdateItemSize();
-                ResizeTransform();
-                UpdateGridItems();
+                //tracker.Add(this, rectT, DrivenTransformProperties.SizeDelta);
             }
-        }
-        private void Awake()
-        {
-            if (Application.isPlaying)
-            {
-                tracker.Add(this, rectT, DrivenTransformProperties.SizeDelta);
-            }
-            Refresh();
         }
 
         private void Update()
         {
             if (Application.isPlaying == false)
             {
-                ValidateChildren();
-                Refresh();
+                //ValidateChildren();
+                //Refresh();
                 //Debug.Log(GetRowCount() + " - Col: " + GetColumnCount());
                 return;
             }
@@ -159,18 +140,16 @@ namespace HexTecGames.Basics.UI
                 if (Input.GetMouseButtonUp(0))
                 {
                     SelectedItem = null;
-                    UpdateGridItems();
                 }
             }
         }
         public void RemoveItem(RectTransform rectT)
-        {           
+        {
             if (SelectedItem == rectT)
             {
                 SelectedItem = null;
             }
             items.Remove(rectT);
-            Refresh();
         }
         public List<RectTransform> GetItems()
         {
@@ -186,7 +165,6 @@ namespace HexTecGames.Basics.UI
                 rectT.SetParent(transform);
                 rectT.SetAsLastSibling();
             }
-            Refresh();
         }
         public void AddItem(RectTransform rectT)
         {
@@ -203,16 +181,10 @@ namespace HexTecGames.Basics.UI
             items.Add(rectT);
             rectT.SetParent(transform);
             rectT.SetAsLastSibling();
-            Refresh();
         }
         public void InsertItem(RectTransform rectT, bool check = false)
         {
             items.Insert(GetIndexOfMouse(), rectT);
-            if (!check)
-            {
-                ResizeTransform();               
-            }
-            UpdateGridItems();
         }
         public bool ContainsItem(RectTransform rectT)
         {
@@ -221,51 +193,47 @@ namespace HexTecGames.Basics.UI
         public void ReceiveItem(RectTransform item, DragAndDropGrid other)
         {
             item.SetParent(transform);
-            ResizeTransform();
-            UpdateGridItems();
             ReceivedItem?.Invoke(item, other);
         }
         public void SendItem(RectTransform item, DragAndDropGrid other)
         {
             RemoveItem(item);
-            ResizeTransform();
-            UpdateGridItems();
             SentItem?.Invoke(item, other);
         }
         public void ItemClicked(RectTransform item)
         {
             SelectedItem = item;
         }
-        private int GetColumnCount(int min = 0)
+        private int GetColumnCount()
         {
-            int extra = AddEmptySpace ? 1 : 0;
+            int itemCount = GetTotalItems();
             switch (Constrain)
             {
                 case Constrain.Column:
                     if (GetRowCount() == 1)
                     {
-                        return Mathf.Min(items.Count + extra, MaxLength);
+                        return Mathf.Min(itemCount, MaxLength);
                     }
-                    else return Mathf.Max((int)((items.Count + extra) / (float)GetRowCount() + 0.99f), MaxLength);
+                    else return Mathf.Max((int)((itemCount) / (float)GetRowCount() + 0.99f), MaxLength);
                 case Constrain.Row:
-                    return (MaxLength - 1 + Mathf.Max(min, items.Count) + extra) / MaxLength;
+                    return (MaxLength - 1 + itemCount) / MaxLength;
                 default:
                     return 0;
             }
         }
-        private int GetRowCount(int min = 0)
+        private int GetRowCount()
         {
-            int extra = AddEmptySpace ? 1 : 0;
+            int itemCount = GetTotalItems();
             switch (Constrain)
             {
                 case Constrain.Column:
-                    return (MaxLength - 1 + Mathf.Max(min, items.Count) + extra) / MaxLength;
+                    return (MaxLength - 1 + itemCount) / MaxLength;
                 case Constrain.Row:
                     if (GetColumnCount() == 1)
                     {
-                        return Mathf.Min(items.Count + extra, MaxLength);
+                        return Mathf.Min(itemCount, MaxLength);
                     }
-                    else return Mathf.Max((int)((items.Count + extra) / (float)GetColumnCount() + 0.99f), MaxLength);
+                    else return Mathf.Max((int)((itemCount) / (float)GetColumnCount() + 0.99f), MaxLength);
                 default:
                     return 0;
             }
@@ -279,13 +247,7 @@ namespace HexTecGames.Basics.UI
                 SelectedItem.transform.position = newPosition;
             }
         }
-        private void Refresh()
-        {
-            UpdateItemSize();
-            ResizeTransform();
-            UpdateGridItems();
-        }
-        private void UpdateItemSize()
+        private void RecalculateItemSize()
         {
             if (OverwriteWidth > 0)
             {
@@ -311,11 +273,14 @@ namespace HexTecGames.Basics.UI
             {
                 return;
             }
-            if (items.Count == 0)
+            if (GetTotalItems() == 0)
             {
                 rectT.sizeDelta = Vector2.zero;
             }
-            else rectT.sizeDelta = new Vector2(GetColumnCount(MinItems) * TotalSpacingX + BorderX, GetRowCount(MinItems) * TotalSpacingY + BorderY);
+            else rectT.sizeDelta
+                    = new Vector2(GetColumnCount() * TotalSpacingX, GetRowCount() * TotalSpacingY)
+                    - new Vector2(SpacingX, SpacingY)
+                    + new Vector2(padding.left + padding.right, padding.top + padding.bottom);
         }
 
         public bool IsInsideGrid()
@@ -357,54 +322,64 @@ namespace HexTecGames.Basics.UI
             return index;
         }
 
-        private void ValidateChildren()
+        public int GetTotalItems()
         {
-            items.Clear();
-            for (int i = 0; i < transform.childCount; i++)
-            {
-                RectTransform item = transform.GetChild(i).GetComponent<RectTransform>();
-                items.Add(item);
-            }
-        }
-        public void UpdateGridItems()
-        {
-            for (int i = 0; i < items.Count; i++)
-            {
-                //if (i == 6)
-                //{
-                //    Debug.Log(CalculateItemPosition(i) + " - " + (Camera.main.ScreenToWorldPoint(new Vector2(Camera.main.pixelWidth / 2f, Camera.main.pixelHeight / 2f))));
-                //    Debug.Log(Screen.width + " - " + Screen.height);
-                //}
-                items[i].anchoredPosition = (CalculateItemPosition(i) / items[i].transform.lossyScale);
-            }
+            return rectChildren.Count;
         }
 
-        private Vector2 GetAlignmentPosition(int index)
+        public override void CalculateLayoutInputVertical()
         {
-            switch (Alignment)
+            RecalculateItemSize();
+            int posX = 0;
+            int posY = 0;
+            for (int i = 0; i < GetTotalItems(); i++)
             {
-                case Alignment.TopLeft:
-                    return new Vector2(TotalSpacingX * (index % GetColumnCount()), -TotalSpacingY * (index / GetColumnCount()))
-                        + new Vector2(-rectT.sizeDelta.x + TotalSpacingX + BorderX, rectT.sizeDelta.y - TotalSpacingY - BorderY) / 2f;
-                case Alignment.TopRight:
-                    return new Vector2(-TotalSpacingX * (index % GetColumnCount()), -TotalSpacingY * (index / GetColumnCount()))
-                        + new Vector2(rectT.sizeDelta.x - TotalSpacingX - BorderX, rectT.sizeDelta.y - TotalSpacingY - BorderY) / 2f;
-                case Alignment.BottomLeft:
-                    return new Vector2(TotalSpacingX * (index % GetColumnCount()), TotalSpacingY * (index / GetColumnCount()))
-                        + new Vector2(-rectT.sizeDelta.x + TotalSpacingX + BorderX, -rectT.sizeDelta.y + TotalSpacingY + BorderY) / 2f;
-                case Alignment.BottomRight:
-                    return new Vector2(-TotalSpacingX * (index % GetColumnCount()), TotalSpacingY * (index / GetColumnCount()))
-                        + new Vector2(rectT.sizeDelta.x - TotalSpacingX - BorderX, -rectT.sizeDelta.y + TotalSpacingY + BorderY) / 2f;
-                default:
-                    return Vector2.zero;
+                RectTransform child = rectChildren[i];
+                SetChildAlongAxis(child, 0, TotalSpacingX * posX + padding.left);
+                SetChildAlongAxis(child, 1, TotalSpacingY * posY + padding.top);
+                if (Constrain == Constrain.Column)
+                {
+                    if (posX > MaxLength - 2)
+                    {
+                        posX = 0;
+                        posY++;
+                    }
+                    else posX++;
+                }
+                else if (Constrain == Constrain.Row)
+                {
+                    if (posY > MaxLength - 2)
+                    {
+                        posY = 0;
+                        posX++;
+                    }
+                    else posY++;
+                }
             }
         }
-
-        private Vector2 CalculateItemPosition(int index)
+        public override void SetLayoutHorizontal()
         {
-            Vector2 pos = GetAlignmentPosition(index);
-
-            return Camera.main.ScreenToWorldPoint(pos + new Vector2(Camera.main.pixelWidth / 2f, Camera.main.pixelHeight / 2f));
+            ResizeTransform();
         }
+
+        public override void SetLayoutVertical()
+        {
+            ResizeTransform();
+        }
+
+        //public override void SetLayoutHorizontal()
+        //{
+        //    Vector2 sizeDelta = rectT.sizeDelta;
+        //    sizeDelta.x = LayoutUtility.GetPreferredWidth(rectT);
+        //    rectT.sizeDelta = sizeDelta;
+        //    Debug.Log("hi");
+        //}
+
+        //public override void SetLayoutVertical()
+        //{
+        //    Vector2 sizeDelta = rectT.sizeDelta;
+        //    sizeDelta.y = LayoutUtility.GetPreferredHeight(rectT);
+        //    rectT.sizeDelta = sizeDelta;
+        //}
     }
 }

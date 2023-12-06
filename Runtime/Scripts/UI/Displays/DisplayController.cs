@@ -1,6 +1,8 @@
 using HexTecGames.Basics;
+using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 namespace HexTecGames
@@ -9,10 +11,17 @@ namespace HexTecGames
     {
         [SerializeField] protected Spawner<Display<T>> displaySpawner = default;
 
-        [SerializeField] private List<T> items = default;
+        [SerializeField] protected List<T> items = default;
+
+        public event Action<Display<T>> OnDisplayClicked;
 
         [ContextMenu("Generate Displays")]
-        public void Setup()
+        public virtual void Setup()
+        {
+            DisplayItems();
+        }
+
+        private void DisplayItems()
         {
             displaySpawner.DeactivateAll();
             foreach (var item in items)
@@ -21,7 +30,10 @@ namespace HexTecGames
             }
         }
 
-        public abstract void OnDisplayClicked(Display<T> display);
+        public virtual void DisplayClicked(Display<T> display) 
+        {
+            OnDisplayClicked?.Invoke(display);
+        }
 
         public List<T> GetItems()
         {
@@ -29,10 +41,18 @@ namespace HexTecGames
             results.AddRange(items);
             return results;
         }
-        public void SetItems(List<T> items)
+        public List<Display<T>> GetDisplays()
         {
-            items = new List<T>();
-            items.AddRange(items);
+            return displaySpawner.GetActiveBehaviours().ToList();
+        }
+        public void SetItems(List<T> items, bool display = true)
+        {
+            this.items = new List<T>();
+            this.items.AddRange(items);
+            if (display)
+            {
+                DisplayItems();
+            }
         }
         public void AddItem(T item, int index = 0, bool display = true)
         {

@@ -19,7 +19,7 @@ namespace HexTecGames
         }
         [SerializeField][HideInInspector] private T item = default;
 
-        [SerializeField][HideInInspector] private DisplayController<T> dc;
+        [SerializeField][HideInInspector] protected DisplayController<T> dc;
 
         public virtual void Setup(T item, DisplayController<T> dc)
         {
@@ -32,7 +32,7 @@ namespace HexTecGames
         }
         public void OnDisplayClicked()
         {
-            dc.OnDisplayClicked(this);
+            dc.DisplayClicked(this);
         }
     }
 }

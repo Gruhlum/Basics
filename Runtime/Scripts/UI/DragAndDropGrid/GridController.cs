@@ -89,8 +89,6 @@ namespace HexTecGames.Basics.UI
                 else if (grid == HoverGrid)
                 {
                     HoverGrid.RemoveItem(activeItem);
-                    HoverGrid.ResizeTransform();
-                    HoverGrid.UpdateGridItems();
                     HoverGrid = null;
                 }
             }           
