@@ -33,7 +33,13 @@ namespace HexTecGames.Basics
         {
             if (allow)
             {
-                blockers.Remove(sender);
+                for (int i = blockers.Count - 1; i >= 0; i--)
+                {
+                    if (blockers[i] == sender)
+                    {
+                        blockers.RemoveAt(i);
+                    }
+                }
             }
             else blockers.Add(sender);
 

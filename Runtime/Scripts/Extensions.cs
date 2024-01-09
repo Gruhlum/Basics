@@ -5,6 +5,7 @@ using System.Linq;
 using HexTecGames.Basics;
 using System;
 using UnityEngine.UI;
+using System.Text;
 
 public static class Extensions
 {
@@ -155,6 +156,14 @@ public static class Extensions
         v.y = sin * tx + cos * ty;
         return v;
     }
+    public static Vector3 Round(this Vector3 v)
+    {
+        return new Vector3(Mathf.RoundToInt(v.x), Mathf.RoundToInt(v.y), Mathf.RoundToInt(v.z));
+    }
+    public static Vector2 Round(this Vector2 v)
+    {
+        return new Vector2(Mathf.RoundToInt(v.x), Mathf.RoundToInt(v.y));
+    }
 
     public static IntValue Find(this List<IntValue> list, ValType type)
     {
@@ -205,6 +214,21 @@ public static class Extensions
             index = 0;
         }
         return index;
+    }
+
+    public static string CapitalizeFirstLetter(this string input)
+    {
+        if (string.IsNullOrEmpty(input))
+        {
+            return null;
+        }
+        StringBuilder builder = new StringBuilder();
+        builder.Append(input.Substring(0, 1).ToUpper());
+        if (input.Length > 1)
+        {
+            builder.Append(input.Substring(1, input.Length - 1));
+        }
+        return builder.ToString();
     }
 
 }

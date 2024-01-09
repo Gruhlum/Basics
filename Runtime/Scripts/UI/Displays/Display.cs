@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace HexTecGames
+namespace HexTecGames.Basics.UI
 {
     public abstract class Display<T> : MonoBehaviour
     {
@@ -30,7 +30,7 @@ namespace HexTecGames
         {
             this.Item = Item;
         }
-        public void OnDisplayClicked()
+        public virtual void OnDisplayClicked()
         {
             dc.DisplayClicked(this);
         }

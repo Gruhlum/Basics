@@ -12,6 +12,10 @@ namespace HexTecGames.Basics
 
         public override T Spawn()
         {
+            return Spawn(true);
+        }
+        public T Spawn(bool activate)
+        {
             if (Prefab == null)
             {
                 Debug.LogWarning("Prefab is not assigned!");
@@ -24,7 +28,10 @@ namespace HexTecGames.Basics
             if (behaviours.Any(x => x.gameObject.activeSelf == false))
             {
                 T behaviour = behaviours.Find(x => x.gameObject.activeSelf == false);
-                behaviour.gameObject.SetActive(true);
+                if (activate)
+                {
+                    behaviour.gameObject.SetActive(true);
+                }               
                 return behaviour;
             }
             else

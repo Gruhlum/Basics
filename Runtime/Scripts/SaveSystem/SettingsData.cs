@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
-namespace HexTecGames
+namespace HexTecGames.Basics
 {
     [System.Serializable]
     public class SettingsData

@@ -1,17 +1,16 @@
-using HexTecGames.Basics;
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
-namespace HexTecGames
+namespace HexTecGames.Basics.UI
 {
     public abstract class DisplayController<T> : MonoBehaviour
     {
         [SerializeField] protected Spawner<Display<T>> displaySpawner = default;
 
-        [SerializeField] protected List<T> items = default;
+        [SerializeField] protected List<T> items = new List<T>();
 
         public event Action<Display<T>> OnDisplayClicked;
 
@@ -54,10 +53,21 @@ namespace HexTecGames
                 DisplayItems();
             }
         }
+        public void ClearItems(bool display = true)
+        {
+            items.Clear();
+            if (display)
+            {
+                displaySpawner.DeactivateAll();
+            }          
+        }
         public void AddItem(T item, int index = 0, bool display = true)
         {
             items.Insert(index, item);
-            displaySpawner.Spawn().Setup(item, this);
+            if (display)
+            {
+                displaySpawner.Spawn().Setup(item, this);
+            }           
         }
         public void RemoveItem(T item)
         {

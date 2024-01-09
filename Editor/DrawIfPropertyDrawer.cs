@@ -58,6 +58,8 @@ namespace HexTecGames.Basics.Editor
                     return comparedField.enumValueIndex.Equals((int)drawIf.comparedValue);
                 case "float":
                     return comparedField.floatValue.Equals((float)drawIf.comparedValue);
+                case "int":
+                    return comparedField.intValue.Equals((int)(drawIf.comparedValue));
                 default:
                     if (comparedField.isArray)
                     {
