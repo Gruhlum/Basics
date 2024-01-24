@@ -14,12 +14,12 @@ namespace HexTecGames.Basics
             sr = GetComponent<SpriteRenderer>();
         }
 
-        public void Activate(Vector2 pos, Sprite sprite, Color col)
+        public void Activate(Vector3 pos, Sprite sprite, Color col)
         {
             Activate(pos, sprite);
             sr.color = col;
         }
-        public void Activate(Vector2 pos, Sprite sprite)
+        public void Activate(Vector3 pos, Sprite sprite)
         {
             SetPosition(pos);
             SetSprite(sprite);
@@ -35,7 +35,7 @@ namespace HexTecGames.Basics
             gameObject.SetActive(false);
         }
 
-        public void SetPosition(Vector2 pos)
+        public void SetPosition(Vector3 pos)
         {
             transform.position = pos;
         }

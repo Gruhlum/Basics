@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace HexTecGames.Basics.UI
 {
-    public abstract class Display<T> : MonoBehaviour
+    public abstract class Display<T> : MonoBehaviour where T : class
     {
         public T Item
         {

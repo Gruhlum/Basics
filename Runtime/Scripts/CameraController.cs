@@ -21,21 +21,21 @@ namespace HexTecGames.Basics
         }
         private void Update()
         {
-            if (Input.GetKeyDown(KeyCode.W))
+            if (Input.GetKey(KeyCode.W))
             {
-                transform.position += new Vector3(0f, MoveStep, 0f);
+                transform.position += new Vector3(0f, MoveStep * Time.deltaTime, 0f);
             }
-            if (Input.GetKeyDown(KeyCode.A))
+            if (Input.GetKey(KeyCode.A))
             {
-                transform.position += new Vector3(-MoveStep, 0f, 0f);
+                transform.position += new Vector3(-MoveStep * Time.deltaTime, 0f, 0f);
             }
-            if (Input.GetKeyDown(KeyCode.S))
+            if (Input.GetKey(KeyCode.S))
             {
-                transform.position += new Vector3(0f, -MoveStep, 0f);
+                transform.position += new Vector3(0f, -MoveStep * Time.deltaTime, 0f);
             }
-            if (Input.GetKeyDown(KeyCode.D))
+            if (Input.GetKey(KeyCode.D))
             {
-                transform.position += new Vector3(MoveStep, 0f, 0f);
+                transform.position += new Vector3(MoveStep * Time.deltaTime, 0f, 0f);
             }
 
             float scrollDelta = Input.mouseScrollDelta.y;

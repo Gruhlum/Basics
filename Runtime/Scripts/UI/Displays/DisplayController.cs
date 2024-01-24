@@ -6,30 +6,51 @@ using UnityEngine;
 
 namespace HexTecGames.Basics.UI
 {
-    public abstract class DisplayController<T> : MonoBehaviour
+    //public enum ControllerType { Spawner, Fixed }
+    public abstract class DisplayController<T> : MonoBehaviour where T : class
     {
+        //[SerializeField] private ControllerType type = default;
+
         [SerializeField] protected Spawner<Display<T>> displaySpawner = default;
+
+        [SerializeField] protected List<Display<T>> displays = default;
 
         [SerializeField] protected List<T> items = new List<T>();
 
         public event Action<Display<T>> OnDisplayClicked;
 
-        [ContextMenu("Generate Displays")]
-        public virtual void Setup()
+        protected Display<T> SpawnDisplay()
         {
-            DisplayItems();
+            return displaySpawner.Spawn();
         }
-
-        private void DisplayItems()
+        protected virtual void SetupDisplay(T item, Display<T> display)
         {
-            displaySpawner.DeactivateAll();
-            foreach (var item in items)
+            display.Setup(item, this);
+        }
+        protected virtual void DisplayItems()
+        {
+            if (displays != null && displays.Count > 0)
             {
-                displaySpawner.Spawn().Setup(item, this);
+                for (int i = 0; i < displays.Count; i++)
+                {
+                    if (items.Count <= i)
+                    {
+                        SetupDisplay(null, displays[i]);
+                    }
+                    else SetupDisplay(items[i], displays[i]);
+                }
             }
+            else
+            {
+                displaySpawner.DeactivateAll();
+                foreach (var item in items)
+                {
+                    SetupDisplay(item, SpawnDisplay());
+                }
+            }           
         }
 
-        public virtual void DisplayClicked(Display<T> display) 
+        public virtual void DisplayClicked(Display<T> display)
         {
             OnDisplayClicked?.Invoke(display);
         }
@@ -42,9 +63,13 @@ namespace HexTecGames.Basics.UI
         }
         public List<Display<T>> GetDisplays()
         {
-            return displaySpawner.GetActiveBehaviours().ToList();
+            if (displays != null && displays.Count > 0)
+            {
+                return displays;
+            }
+            else return displaySpawner.GetActiveBehaviours().ToList();
         }
-        public void SetItems(List<T> items, bool display = true)
+        public virtual void SetItems(List<T> items, bool display = true)
         {
             this.items = new List<T>();
             this.items.AddRange(items);
@@ -59,19 +84,23 @@ namespace HexTecGames.Basics.UI
             if (display)
             {
                 displaySpawner.DeactivateAll();
-            }          
+            }
         }
-        public void AddItem(T item, int index = 0, bool display = true)
+        public virtual void AddItem(T item, int index = 0, bool display = true)
         {
             items.Insert(index, item);
             if (display)
             {
-                displaySpawner.Spawn().Setup(item, this);
-            }           
+                DisplayItems();
+            }
         }
-        public void RemoveItem(T item)
+        public virtual void RemoveItem(T item, bool display = true)
         {
             items.Remove(item);
+            if (display)
+            {
+                DisplayItems();
+            }
         }
     }
 }

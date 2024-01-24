@@ -9,9 +9,13 @@ using System.Text;
 
 public static class Extensions
 {
-    public static Vector2 GetMousePosition(this Camera cam)
+    public static Vector3 GetMousePosition(this Camera cam)
     {
-        return (Vector2)Camera.main.ScreenToWorldPoint(Input.mousePosition + new Vector3(0, 0, Camera.main.transform.position.z));
+        return cam.ScreenToWorldPoint(Input.mousePosition + new Vector3(0, 0, Camera.main.transform.position.z));
+    }
+    public static Vector3 GetMousePosition(this Camera cam, Vector3 offset)
+    {
+        return cam.ScreenToWorldPoint(Input.mousePosition + offset + new Vector3(0, 0, Camera.main.transform.position.z));
     }
     public static int GetDistance(this int nr1, int nr2)
     {
@@ -23,7 +27,7 @@ public static class Extensions
     }
     public static float ConvertToFloat(this string text)
     {
-        return (float)Convert.ToDouble("41.00027357629127");
+        return (float)Convert.ToDouble(text);
     }
     public static void AddAlpha(this Image img, float alpha)
     {

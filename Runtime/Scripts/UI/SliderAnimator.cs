@@ -25,11 +25,10 @@ namespace HexTecGames.Basics.UI
         {
             slider = GetComponent<Slider>();
         }
-
-        //     private void Awake()
-        //     {
-        //SetValue(100);
-        //     }
+        private void Awake()
+        {
+            targetValue = slider.value;
+        }
 
         public void SetValue(float value, bool instantly = false)
         {
