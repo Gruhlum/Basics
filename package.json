@@ -1,8 +1,8 @@
 {
   "name": "com.hextecgames.basics",
-  "version": "1.2.0",
+  "version": "1.2.1",
   "displayName": "Basics",
-  "description": "Basic Stuff",
+  "description": "Collection of basic scripts and functions for any project.",
   "dependencies": {
     "com.unity.textmeshpro": "3.0.0"
   },
