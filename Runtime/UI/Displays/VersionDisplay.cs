@@ -12,7 +12,7 @@ namespace HexTecGames.Basics
 
         public void Awake()
         {
-            versionGUI.text = VersionData.CurrentVersion;
+            versionGUI.text = Application.version;
         }
     }
 }
