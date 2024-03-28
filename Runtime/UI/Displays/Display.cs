@@ -37,5 +37,8 @@ namespace HexTecGames.Basics.UI
         {
             displayC.DisplayClicked(this);
         }
+        public virtual void SetActive(bool active)
+        { 
+        }
     }
 }

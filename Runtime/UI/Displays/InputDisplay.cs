@@ -20,6 +20,7 @@ namespace HexTecGames.Basics.UI.Displays
         protected int minimumLength = 2;
 
         public event Action<InputData> OnInputConfirmed;
+        public UnityEvent<InputData> InputConfirmed;
 
         public void Show()
         {
@@ -68,7 +69,9 @@ namespace HexTecGames.Basics.UI.Displays
         }
         public void Confirm_Clicked()
         {
-            OnInputConfirmed?.Invoke(GenerateInputData());
+            InputData data = GenerateInputData();
+            OnInputConfirmed?.Invoke(data);
+            InputConfirmed?.Invoke(data);
             inputGO.SetActive(false);
             inputField.text = null;
         }
