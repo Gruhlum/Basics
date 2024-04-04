@@ -13,30 +13,8 @@ namespace HexTecGames.Basics.UI
 
         [SerializeField, SerializeReference] protected List<T> items = new List<T>();
 
-        [Header("Advanced")]
-        [Min(0)][SerializeField] private int minimumDisplays = default;
-        [Min(0)][SerializeField] private int maximumDisplays = default;
-
-        [SerializeField] private GameObject dummyGO = default;
-        [SerializeField] private bool hideDummyOnLimitReached = default;
-
         public event Action<Display<T>> OnDisplayClicked;
 
-        protected virtual void OnValidate()
-        {
-            if (maximumDisplays < minimumDisplays)
-            {
-                maximumDisplays = minimumDisplays;
-            }
-        }
-
-        protected virtual void Awake()
-        {
-            if (minimumDisplays > 0)
-            {
-                DisplayItems();
-            }
-        }
 
         protected Display<T> SpawnDisplay()
         {
@@ -65,31 +43,6 @@ namespace HexTecGames.Basics.UI
                 foreach (var item in items)
                 {
                     SetupDisplay(item, SpawnDisplay());
-                }
-                if (dummyGO != null)
-                {
-                    dummyGO.transform.SetSiblingIndex(displaySpawner.TotalActiveBehaviours());
-                }
-                if (displaySpawner.TotalActiveBehaviours() >= maximumDisplays)
-                {
-                    if (hideDummyOnLimitReached)
-                    {
-                        dummyGO.SetActive(false);
-                    }
-                    return;
-                }
-                else dummyGO.SetActive(true);
-                int calculateMinItems = minimumDisplays;
-                if (dummyGO != null)
-                {
-                    calculateMinItems -= 1;
-                }
-                if (displaySpawner.TotalActiveBehaviours() < calculateMinItems)
-                {
-                    for (int i = displaySpawner.TotalActiveBehaviours(); i < calculateMinItems; i++)
-                    {
-                        SetupDisplay(null, SpawnDisplay());
-                    }
                 }
             }
         }
