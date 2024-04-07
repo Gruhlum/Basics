@@ -58,15 +58,15 @@ namespace HexTecGames.Basics.Profiles
             selectedProfile = null;
         }    
 
-        private void InputDisplay_OnInputConfirmed(InputData data)
+        private void InputDisplay_OnInputConfirmed(string input)
         {
             if (selectedProfile == null)
             {
-                AddProfile(data.text);
+                AddProfile(input);
             }
             else
             {
-                SaveSystem.RenameProfile(selectedProfile, data.text);
+                SaveSystem.RenameProfile(selectedProfile, input);
                 selectedProfile = null;
                 DisplayProfiles();
             }           

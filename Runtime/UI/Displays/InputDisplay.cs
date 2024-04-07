@@ -16,11 +16,36 @@ namespace HexTecGames.Basics.UI.Displays
         [SerializeField] protected Button confirmBtn = default;
         [SerializeField] protected TMP_InputField inputField = default;
         [SerializeField] protected TMP_Text headerGUI = default;
+        public bool AllowEnterKey
+        {
+            get
+            {
+                return allowEnterKey;
+            }
+            private set
+            {
+                allowEnterKey = value;
+            }
+        }
+        [SerializeField] private bool allowEnterKey = true;
+
 
         protected int minimumLength = 2;
 
-        public event Action<InputData> OnInputConfirmed;
-        public UnityEvent<InputData> InputConfirmed;
+        public event Action<string> OnInputConfirmed;
+        public UnityEvent<string> InputConfirmed;
+
+
+        void Update()
+        {
+            if (AllowEnterKey && (Input.GetKeyDown(KeyCode.KeypadEnter) || Input.GetKeyDown(KeyCode.Return)))
+            {
+                if (confirmBtn.interactable)
+                {
+                    Confirm_Clicked();
+                }
+            }
+        }
 
         public void Show()
         {
@@ -28,16 +53,16 @@ namespace HexTecGames.Basics.UI.Displays
             inputField.Select();
             confirmBtn.interactable = false;
         }
-        public void Show(string header)
+        public void Show(string text)
         {
             Show();
-            headerGUI.text = header;
-        }
-        public void Show(string header, string text)
-        {
-            Show(header);
             inputField.text = text;
             UpdateConfirmButton();
+        }
+        public void Show(string text, string header)
+        {
+            Show(text);
+            headerGUI.text = header;
         }
         public void InputField_TextChanged(string text)
         {
@@ -63,15 +88,10 @@ namespace HexTecGames.Basics.UI.Displays
             else confirmBtn.interactable = false;
         }
 
-        protected virtual InputData GenerateInputData()
-        {
-            return new InputData(inputField.text);
-        }
         public void Confirm_Clicked()
         {
-            InputData data = GenerateInputData();
-            OnInputConfirmed?.Invoke(data);
-            InputConfirmed?.Invoke(data);
+            OnInputConfirmed?.Invoke(inputField.text);
+            InputConfirmed?.Invoke(inputField.text);
             inputGO.SetActive(false);
             inputField.text = null;
         }

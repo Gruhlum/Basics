@@ -16,14 +16,17 @@ namespace HexTecGames.Basics
 
         public void Activate(Vector3 pos, Sprite sprite, Color col)
         {
-            Activate(pos, sprite);
+            SetPosition(pos);
+            SetSprite(sprite);
             sr.color = col;
+            Activate();
         }
         public void Activate(Vector3 pos, Sprite sprite)
         {
-            SetPosition(pos);
-            SetSprite(sprite);
-            sr.color = Color.white;
+            Activate(pos, sprite, Color.white);
+        }
+        public void Activate()
+        {
             gameObject.SetActive(true);
         }
         public void SetSprite(Sprite sprite)

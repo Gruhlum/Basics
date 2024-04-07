@@ -21,6 +21,20 @@ namespace HexTecGames.Basics.UI
 
         [SerializeField][HideInInspector] protected DisplayController<T> displayC;
 
+        public bool IsHighlighted
+        {
+            get
+            {
+                return isHighlighted;
+            }
+            private set
+            {
+                isHighlighted = value;
+            }
+        }
+        private bool isHighlighted;
+
+
         public void Setup(T item, DisplayController<T> dc)
         {
             SetItem(item);
@@ -37,8 +51,9 @@ namespace HexTecGames.Basics.UI
         {
             displayC.DisplayClicked(this);
         }
-        public virtual void SetActive(bool active)
-        { 
+        public virtual void SetHighlight(bool active)
+        {
+            IsHighlighted = active;
         }
     }
 }
