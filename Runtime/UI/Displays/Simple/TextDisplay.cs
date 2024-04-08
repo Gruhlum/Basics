@@ -7,7 +7,7 @@ using UnityEngine;
 namespace HexTecGames.Basics.UI
 {
     [System.Serializable]
-    public class TextDisplay
+    public class TextDisplay : MonoBehaviour
     {
         public TextMeshProUGUI TextGUI
         {
@@ -22,20 +22,21 @@ namespace HexTecGames.Basics.UI
         }
         [SerializeField] private TextMeshProUGUI textGUI;
 
-        [SerializeField] private string formatString = default;
-
         public void SetText(int value)
         {
-            TextGUI.text = value.ToString(formatString);
+            SetText(value.ToString());
         }
-        public void SetText(string text)
+        public void SetText(string text, bool activateGO = true)
         {
             TextGUI.text = text.ToString();
+            if (activateGO)
+            {
+                gameObject.SetActive(true);
+            }
         }
-
-        public void SetFormatString(string format)
+        public void Deactivate()
         {
-            formatString = format;
+            gameObject.SetActive(false);
         }
     }
 }

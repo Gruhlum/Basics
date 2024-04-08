@@ -1,6 +1,6 @@
 {
   "name": "com.hextecgames.basics",
-  "version": "1.2.2",
+  "version": "1.2.3",
   "displayName": "Basics",
   "description": "Collection of basic scripts and functions for any project.",
   "dependencies": {
