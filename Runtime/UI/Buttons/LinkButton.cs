@@ -5,24 +5,11 @@ using UnityEngine.UI;
 
 namespace HexTecGames.Basics.UI.Buttons
 {
-    public class LinkButton : MonoBehaviour
+    public class LinkButton : BaseButton
     {
         [SerializeField][TextArea] private string url = default;
-        [SerializeField] private Button btn = default;
-        [SerializeField] private bool addClickListenerOnAwake = default;
 
-        private void Reset()
-        {
-            btn = GetComponent<Button>();          
-        }
-        private void Awake()
-        {
-            if (btn != null && addClickListenerOnAwake)
-            {
-                btn.onClick.AddListener(OnClicked);
-            }
-        }
-        public void OnClicked()
+        protected override void ClickEffect()
         {
             Application.OpenURL(url);
         }
