@@ -25,11 +25,11 @@ namespace HexTecGames.Basics
         }
         [SerializeField] private bool allowed = true;
 
-        private readonly List<Component> blockers = new List<Component>();
+        private readonly List<UnityEngine.Object> blockers = new List<UnityEngine.Object>();
 
         public event Action<bool> OnAllowedChanged;
 
-        public void SetPermissionState(Component sender, bool allow)
+        public void SetPermissionState(UnityEngine.Object sender, bool allow)
         {
             if (allow)
             {
