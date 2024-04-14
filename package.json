@@ -1,6 +1,6 @@
 {
   "name": "com.hextecgames.basics",
-  "version": "1.2.6",
+  "version": "1.2.7",
   "displayName": "Basics",
   "description": "Collection of basic scripts and functions for any project.",
   "dependencies": {
@@ -17,5 +17,6 @@
       "path": "Samples/Folders"
     }
   ],
-  "hideInEditor": false
+  "hideInEditor": false,
+  "unity": "2022.3"
 }

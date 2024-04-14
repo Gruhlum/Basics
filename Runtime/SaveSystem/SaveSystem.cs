@@ -14,7 +14,7 @@ namespace HexTecGames.Basics
         private static readonly string settingsFileName = "Settings.txt";
         private static readonly string defaultProfileName = "Profile 1";
         private static readonly string backupFolderName = "backup";
-        private static readonly string profileKey = "profile";
+        //private static readonly string profileKey = "profile";
 
         private static List<Profile> profiles = new List<Profile>();
         private static bool loadedProfiles;
@@ -42,13 +42,16 @@ namespace HexTecGames.Basics
             {
                 if (baseDirectory == null)
                 {
-                    baseDirectory = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), Application.productName);
+                    if (Application.platform == RuntimePlatform.WebGLPlayer)
+                    {
+                        baseDirectory = Path.Combine("idbfs", Application.productName + "_" + Application.companyName);
+                    }
+                    else baseDirectory = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), Application.productName);
                 }
                 return baseDirectory;
             }
         }
         private static string baseDirectory;
-
         public static string GetFullBaseDirectory
         {
             get
@@ -57,10 +60,9 @@ namespace HexTecGames.Basics
                 {
                     return Path.Combine(BaseDirectory, CurrentProfile.Name);
                 }
-                else return BaseDirectory;
+                else return Path.Combine(BaseDirectory, defaultProfileName);
             }
         }
-
         public static void SetProfile(Profile profile)
         {
             if (!loadedProfiles)
@@ -70,7 +72,7 @@ namespace HexTecGames.Basics
             if (profile == null)
             {
                 CurrentProfile = null;
-                SaveSettings(profileKey, null, false);
+                //SaveSettings(profileKey, null);
                 return;
             }
             var result = profiles.Find(x => x == profile);
@@ -79,7 +81,7 @@ namespace HexTecGames.Basics
                 Debug.Log("Could not find profile with name " + profile.Name);
                 return;
             }
-            SaveSettings(profileKey, result.Name, false);
+            //SaveSettings(profileKey, result.Name);
             CurrentProfile = result;
         }
         public static void AddProfile(string name, bool select = true)
@@ -112,10 +114,10 @@ namespace HexTecGames.Basics
             var oldName = profile.Name;
             profile.Rename(name);
             Directory.Move(Path.Combine(BaseDirectory, oldName), Path.Combine(BaseDirectory, name));
-            if (CurrentProfile == profile)
-            {
-                SaveSettings(profileKey, profile.Name, false);
-            }
+            //if (CurrentProfile == profile)
+            //{
+            //    SaveSettings(profileKey, profile.Name);
+            //}
         }
         public static void RemoveProfile(Profile profile)
         {
@@ -130,18 +132,26 @@ namespace HexTecGames.Basics
                 return;
             }
             profiles.Remove(result);
-            
+
             Directory.Delete(Path.Combine(BaseDirectory, result.Name), true);
 
             if (CurrentProfile == result)
             {
                 SetProfile(null);
             }
-        }     
+        }
         private static void LoadProfiles()
         {
-            var results =  FileManager.GetDirectoryNames(BaseDirectory);
+            loadedProfiles = true;
+            Debug.Log("Loading Profiles");
+            var results = FileManager.GetDirectoryNames(BaseDirectory);
             profiles.Clear();
+            if (results == null)
+            {
+                Debug.Log("No Profile found, adding default profile");
+                AddProfile(defaultProfileName, true);
+                return;
+            }
             foreach (var result in results)
             {
                 if (result == defaultFolderName)
@@ -150,9 +160,8 @@ namespace HexTecGames.Basics
                 }
                 profiles.Add(new Profile(result));
             }
-            loadedProfiles = true;
 
-            SetProfile(profiles.Find(x => x.Name == LoadSettings(profileKey)));
+            //SetProfile(profiles.Find(x => x.Name == LoadSettings(profileKey)));
         }
         public static List<Profile> GetProfiles()
         {
@@ -165,7 +174,7 @@ namespace HexTecGames.Basics
             return results;
         }
 
-        public static void SaveSettings(string key, string value, bool isProfile = true)
+        public static void SaveSettings(string key, string value)
         {
             SettingsData data = LoadSettingsData();
             if (data == null)
@@ -173,15 +182,7 @@ namespace HexTecGames.Basics
                 data = new SettingsData();
             }
             data.SetOption(key, value);
-            SaveSettingsData(data, isProfile);
-        }
-        private static void SaveSettingsData(SettingsData data, bool isProfile)
-        {
-            if (isProfile)
-            {
-                SaveJSON(data, settingsFileName, Path.Combine(GetFullBaseDirectory, defaultFolderName));
-            }
-            else SaveJSON(data, settingsFileName, Path.Combine(BaseDirectory, defaultFolderName));
+            SaveJSON(data, settingsFileName);
         }
         public static string LoadSettings(string key)
         {
@@ -194,8 +195,7 @@ namespace HexTecGames.Basics
         }
         private static SettingsData LoadSettingsData()
         {
-            SettingsData data = LoadJSON<SettingsData>(settingsFileName, Path.Combine(GetFullBaseDirectory, defaultFolderName));
-            return data;
+            return LoadJSON<SettingsData>(settingsFileName);
         }
         private static void CheckDirectories(string directory)
         {
@@ -226,31 +226,30 @@ namespace HexTecGames.Basics
         }
         public static void SaveJSON(object obj, string fileName, string directory, bool prettyPrint = false)
         {
+            string path = Path.Combine(GetFullBaseDirectory, directory, fileName);
             try
             {
                 CheckDirectories(directory);
-                using (StreamWriter sw = new StreamWriter(File.Open(Path.Combine(GetFullBaseDirectory, directory, fileName), FileMode.Create)))
+                Debug.Log($"Saving {obj} as JSON file to: {path}");
+                using (StreamWriter sw = new StreamWriter(File.Open(path, FileMode.Create)))
                 {
                     sw.WriteLine(JsonUtility.ToJson(obj, prettyPrint));
                 }
             }
             catch (Exception)
             {
-
-                Debug.Log("Could not save file");
+                Debug.Log($"Could not save file, path: {path}");
             }
-
         }
         public static T LoadJSON<T>(string fileName) where T : class
         {
-            return LoadJSON<T>(fileName,Path.Combine(GetFullBaseDirectory, defaultFolderName));
+            return LoadJSON<T>(fileName, defaultFolderName);
         }
         public static T LoadJSON<T>(string fileName, string directory) where T : class
         {
+            string path = Path.Combine(GetFullBaseDirectory, directory, fileName);
             try
             {
-                string path = Path.Combine(GetFullBaseDirectory, directory, fileName);
-
                 if (!File.Exists(path))
                 {
                     //Debug.LogWarning(path + " does not exist");
@@ -263,13 +262,9 @@ namespace HexTecGames.Basics
             }
             catch (Exception)
             {
-                Debug.Log("Could not load file");
+                Debug.Log($"Could not load file, path: {path}");
                 return null;
             }
-        }
-        public static List<T> LoadJSONAll<T>() where T : class
-        {
-            return LoadJSONAll<T>(GetFullBaseDirectory);
         }
         public static List<T> LoadJSONAll<T>(string directory) where T : class
         {
@@ -296,7 +291,7 @@ namespace HexTecGames.Basics
         }
         public static T LoadXML<T>(string fileName) where T : class
         {
-            return LoadXML<T>(fileName, Path.Combine(GetFullBaseDirectory, defaultFolderName));
+            return LoadXML<T>(fileName, defaultFolderName);
         }
         public static T LoadXML<T>(string fileName, string directory) where T : class
         {
@@ -312,10 +307,6 @@ namespace HexTecGames.Basics
             {
                 return serializer.Deserialize(stream) as T;
             }
-        }
-        public static List<T> LoadXMLAll<T>() where T : class
-        {
-            return LoadXMLAll<T>(GetFullBaseDirectory);
         }
         public static List<T> LoadXMLAll<T>(string directory) where T : class
         {
