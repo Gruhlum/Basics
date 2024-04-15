@@ -9,10 +9,8 @@ namespace HexTecGames.Basics.UI.Buttons
     public class StateButton : MonoBehaviour
     {
         [SerializeField] private Image image = default;
-        [SerializeField] private Button btn = default;
         [SerializeField] private TMP_Text textGUI = default;
 
-        [SerializeField] private bool addClickListener = true;
         [SerializeField] private List<State> states = default;
 
         private int stateIndex = 0;
@@ -20,14 +18,10 @@ namespace HexTecGames.Basics.UI.Buttons
         private void Reset()
         {
             image = GetComponent<Image>();
-            btn = GetComponent<Button>();
             textGUI = GetComponentInChildren<TMP_Text>();
         }
 
-        private void Awake()
-        {
-            btn.onClick.AddListener(ButtonClicked);
-        }
+
         private void OnValidate()
         {
             if (states != null && states.Count >= 1)
@@ -35,12 +29,10 @@ namespace HexTecGames.Basics.UI.Buttons
                 LoadState(states[0]);
             }
         }
-        private void ButtonClicked()
+        public void ButtonClicked()
         {
             states[stateIndex].clickEvent?.Invoke();
             NextState();
-            btn.interactable = false;
-            btn.interactable = true;
         }
         public void SetState(int index)
         {
