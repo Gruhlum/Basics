@@ -8,7 +8,7 @@ namespace HexTecGames.Basics
 	{
 		[SerializeField] private Camera cam = default;
 
-        public int ScrollSpeed = 10;
+        //public int ScrollSpeed = 10;
         public int ZoomSpeed = 10;
         public int MinZoom = 5;
         public int MaxZoom = 40;
@@ -21,6 +21,11 @@ namespace HexTecGames.Basics
         }
         private void Update()
         {
+            if (!Application.isFocused)
+            {
+                return;
+            }
+
             if (Input.GetKey(KeyCode.W))
             {
                 transform.position += new Vector3(0f, MoveStep * Time.deltaTime, 0f);
