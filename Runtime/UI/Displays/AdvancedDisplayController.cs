@@ -50,9 +50,9 @@ namespace HexTecGames.Basics.UI
                 }
                 if (dummyGO != null)
                 {
-                    dummyGO.transform.SetSiblingIndex(displaySpawner.TotalActiveBehaviours());
+                    dummyGO.transform.SetSiblingIndex(displaySpawner.TotalActiveInstances());
                 }
-                if (displaySpawner.TotalActiveBehaviours() >= maximumDisplays)
+                if (displaySpawner.TotalActiveInstances() >= maximumDisplays)
                 {
                     if (hideDummyOnLimitReached)
                     {
@@ -66,9 +66,9 @@ namespace HexTecGames.Basics.UI
                 {
                     calculateMinItems -= 1;
                 }
-                if (displaySpawner.TotalActiveBehaviours() < calculateMinItems)
+                if (displaySpawner.TotalActiveInstances() < calculateMinItems)
                 {
-                    for (int i = displaySpawner.TotalActiveBehaviours(); i < calculateMinItems; i++)
+                    for (int i = displaySpawner.TotalActiveInstances(); i < calculateMinItems; i++)
                     {
                         SetupDisplay(null, SpawnDisplay());
                     }

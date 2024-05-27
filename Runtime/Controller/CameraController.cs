@@ -4,11 +4,13 @@ using UnityEngine;
 
 namespace HexTecGames.Basics
 {
-	public class CameraController : MonoBehaviour
+	/// <summary>
+    /// Allows moving and zooming of a Camera
+    /// </summary>
+    public class CameraController : MonoBehaviour
 	{
 		[SerializeField] private Camera cam = default;
 
-        //public int ScrollSpeed = 10;
         public int ZoomSpeed = 10;
         public int MinZoom = 5;
         public int MaxZoom = 40;
@@ -17,7 +19,7 @@ namespace HexTecGames.Basics
 
         private void Reset()
         {
-            cam = Camera.main;
+            cam = GetComponent<Camera>();
         }
         private void Update()
         {
@@ -25,27 +27,35 @@ namespace HexTecGames.Basics
             {
                 return;
             }
+            HandlePositionMovement();
+            HandleZoom();
+        }
 
-            if (Input.GetKey(KeyCode.W))
-            {
-                transform.position += new Vector3(0f, MoveStep * Time.deltaTime, 0f);
-            }
-            if (Input.GetKey(KeyCode.A))
-            {
-                transform.position += new Vector3(-MoveStep * Time.deltaTime, 0f, 0f);
-            }
-            if (Input.GetKey(KeyCode.S))
-            {
-                transform.position += new Vector3(0f, -MoveStep * Time.deltaTime, 0f);
-            }
-            if (Input.GetKey(KeyCode.D))
-            {
-                transform.position += new Vector3(MoveStep * Time.deltaTime, 0f, 0f);
-            }
-
+        private void HandleZoom()
+        {
             float scrollDelta = Input.mouseScrollDelta.y;
             cam.orthographicSize -= scrollDelta * ZoomSpeed;
             cam.orthographicSize = Mathf.Clamp(cam.orthographicSize, MinZoom, MaxZoom);
+        }
+
+        private void HandlePositionMovement()
+        {
+            if (Input.GetKey(KeyCode.W) || Input.GetKey(KeyCode.UpArrow))
+            {
+                transform.position += new Vector3(0f, MoveStep * Time.deltaTime, 0f);
+            }
+            if (Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.LeftArrow))
+            {
+                transform.position += new Vector3(-MoveStep * Time.deltaTime, 0f, 0f);
+            }
+            if (Input.GetKey(KeyCode.S) || Input.GetKey(KeyCode.DownArrow))
+            {
+                transform.position += new Vector3(0f, -MoveStep * Time.deltaTime, 0f);
+            }
+            if (Input.GetKey(KeyCode.D) || Input.GetKey(KeyCode.RightArrow))
+            {
+                transform.position += new Vector3(MoveStep * Time.deltaTime, 0f, 0f);
+            }
         }
     }
 }

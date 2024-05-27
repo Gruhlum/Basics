@@ -6,9 +6,16 @@ using UnityEngine;
 
 namespace HexTecGames.Basics
 {
+    /// <summary>
+    /// Spawner that generates a separate pool for any new prefab that it is spawning.
+    /// Inactivate Instances will be reused before new ones are instantiated.
+    /// </summary>
     [System.Serializable]
     public class MultiSpawner
     {
+        /// <summary>
+        /// Optional parent for the instantiated object.
+        /// </summary>
         public Transform Parent
         {
             get
@@ -20,24 +27,42 @@ namespace HexTecGames.Basics
                 parent = value;
             }
         }
-        [SerializeField] private Transform parent = default;
+        [SerializeField, Tooltip("Prefab that will be instantiated")] private Transform parent = default;
 
 
         private readonly List<TypeList> typeLists = new List<TypeList>();
 
-
-        private TypeList GetTypeList(MonoBehaviour prefab)
+        /// <summary>
+        /// Either returns a deactivated instance or instantiates a new one.
+        /// </summary>
+        /// <param name="prefab">Prefab to instantiate.</param>
+        /// <returns></returns>
+        public T Spawn<T>(T prefab) where T : Component
         {
-            return typeLists.Find(x => x.prefab == prefab);
-        }
+            if (prefab == null)
+            {
+                return null;
+            }
 
-        public List<T> GetActiveItems<T>() where T : MonoBehaviour
+            T instance = FindDeactivatedInstance<T>(prefab);
+
+            if (instance == null)
+            {
+                instance = CreateCopy(prefab);
+            }
+
+            instance.gameObject.SetActive(true);
+
+            return instance;
+        }
+        /// <returns>All instances.</returns>
+        public List<T> GetActiveInstances<T>() where T : MonoBehaviour
         {
             List<T> results = new List<T>();
             List<TypeList> lists = typeLists.FindAll(x => x.prefab is T);
             foreach (var list in lists)
             {
-                foreach (var item in list.behaviours)
+                foreach (var item in list.instances)
                 {
                     if (item.gameObject.activeInHierarchy)
                     {
@@ -48,17 +73,21 @@ namespace HexTecGames.Basics
             return results;
         }
 
-        public List<MonoBehaviour> GetAllActiveItems()
+        /// <returns>All instances that are active.</returns>
+        public List<Component> GetAllActiveInstances()
         {
-            List<MonoBehaviour> results = new List<MonoBehaviour>();
+            List<Component> results = new List<Component>();
             foreach (var list in typeLists)
             {
-                results.AddRange(list.behaviours);
+                results.AddRange(list.instances);
             }
             return results;
         }
 
-        public void DeactiveAll()
+        /// <summary>
+        /// Deactivates all instances.
+        /// </summary>
+        public void DeactivateAll()
         {
             if (!Application.isPlaying)
             {
@@ -67,35 +96,42 @@ namespace HexTecGames.Basics
             }
             for (int i = typeLists.Count - 1; i >= 0; i--)
             {
-                for (int j = typeLists[i].behaviours.Count - 1; j >= 0; j--)
+                for (int j = typeLists[i].instances.Count - 1; j >= 0; j--)
                 {
-                    typeLists[i].behaviours[j].gameObject.SetActive(false);
-                }
-            }
-        }
-        public void DestroyAll()
-        {
-            for (int i = typeLists.Count - 1; i >= 0; i--)
-            {
-                for (int j = typeLists[i].behaviours.Count - 1; j >= 0; j--)
-                {
-                    UnityEngine.Object.Destroy(typeLists[i].behaviours[j].gameObject);
+                    typeLists[i].instances[j].gameObject.SetActive(false);
                 }
             }
         }
 
-        private T FindDeactivatedObject<T>(MonoBehaviour prefab) where T : MonoBehaviour
+        /// <summary>
+        /// Destroys every instance.
+        /// </summary>
+        public void DestroyAll()
+        {
+            for (int i = typeLists.Count - 1; i >= 0; i--)
+            {
+                for (int j = typeLists[i].instances.Count - 1; j >= 0; j--)
+                {
+                    UnityEngine.Object.Destroy(typeLists[i].instances[j].gameObject);
+                }
+            }
+        }
+        private TypeList GetTypeList(Component prefab)
+        {
+            return typeLists.Find(x => x.prefab == prefab);
+        }
+        private T FindDeactivatedInstance<T>(Component prefab) where T : Component
         {
             TypeList typeList = GetTypeList(prefab);
             if (typeList == null)
             {
                 return null;
             }
-            T behaviour = typeList.behaviours.Find(x => !x.gameObject.activeInHierarchy) as T;
-            return behaviour;
+            T instance = typeList.instances.Find(x => !x.gameObject.activeInHierarchy) as T;
+            return instance;
         }
 
-        private T CreateCopy<T>(T prefab) where T : MonoBehaviour
+        private T CreateCopy<T>(T prefab) where T : Component
         {
             if (prefab == null)
             {
@@ -111,34 +147,21 @@ namespace HexTecGames.Basics
                 typeList = new TypeList(prefab);
                 typeLists.Add(typeList);
             }
-            typeList.behaviours.Add(clone);
+            typeList.instances.Add(clone);
             return clone;
         }
 
-        public T Spawn<T>(T prefab) where T : MonoBehaviour
-        {
-            if (prefab == null)
-            {
-                return null;
-            }
-            T mono = FindDeactivatedObject<T>(prefab);
-            if (mono == null)
-            {
-                mono = CreateCopy(prefab);
-            }
-            mono.gameObject.SetActive(true);
-            return mono;
-        }
+       
 
         public class TypeList
         {
-            public MonoBehaviour prefab;
-            public List<MonoBehaviour> behaviours;
+            public Component prefab;
+            public List<Component> instances;
 
-            public TypeList(MonoBehaviour prefab)
+            public TypeList(Component prefab)
             {
                 this.prefab = prefab;
-                behaviours = new List<MonoBehaviour>();
+                instances = new List<Component>();
             }
         }
     }

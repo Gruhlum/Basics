@@ -5,9 +5,16 @@ using UnityEngine.SceneManagement;
 
 namespace HexTecGames.Basics
 {
+    /// <summary>
+    /// Simplifies the instantiating of objects.
+    /// </summary>
+    /// <typeparam name="T">Any type that inherits from Component</typeparam>
     [System.Serializable]
     public class BasicSpawner<T> where T : Component
     {
+        /// <summary>
+        /// Prefab that will be instantiated.
+        /// </summary>
         public T Prefab
         {
             get
@@ -19,8 +26,11 @@ namespace HexTecGames.Basics
                 prefab = value;
             }
         }
-        [SerializeField] private T prefab = default;
+        [SerializeField, Tooltip("Prefab that will be instantiated")] private T prefab = default;
 
+        /// <summary>
+        /// Optional parent for the instantiated object.
+        /// </summary>
         public Transform Parent
         {
             get
@@ -32,8 +42,11 @@ namespace HexTecGames.Basics
                 parent = value;
             }
         }
-        [SerializeField] private Transform parent = default;
+        [SerializeField, Tooltip("Optional parent for the instantiated object")] private Transform parent = default;
 
+        /// <summary>
+        /// Instantiates and returns a new object.
+        /// </summary>
         public virtual T Spawn()
         {
             if (prefab == null)
@@ -45,7 +58,10 @@ namespace HexTecGames.Basics
             T behaviour = Object.Instantiate(prefab, parent);
             return behaviour;
         }
-        public virtual void TryDestroyAll()
+        /// <summary>
+        /// Destroys all instances of the same type that are children of the parent.
+        /// </summary>
+        public virtual void DestroyAll()
         {
             if (parent == null)
             {
