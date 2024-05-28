@@ -1,8 +1,8 @@
 {
   "name": "com.hextecgames.basics",
-  "version": "2.0.0",
+  "version": "2.0.1",
   "displayName": "Basics",
-  "description": "Collection of basic scripts and functions for any project.",
+  "description": "Collection of useful scripts and functions.\n- SaveSystem: Load and save data as JSON or XML files.\n- Spawners: Utilize object pooling to instantiate prefabs.\n- Displays: Display texts and values and use a DisplayController to control them.\n- And more!",
   "dependencies": {
     "com.unity.textmeshpro": "3.0.0"
   },
@@ -10,13 +10,6 @@
     "name": "HexTecGames",
     "email": "HexTecGames0@gmail.com"
   },
-  "samples": [
-    {
-      "displayName": "Basic Folders",
-      "description": "Empty Folder Structure",
-      "path": "Samples/Folders"
-    }
-  ],
   "hideInEditor": false,
   "unity": "2022.3"
 }

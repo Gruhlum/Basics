@@ -10,26 +10,54 @@ using System.IO;
 
 public static class Extensions
 {
+    /// <summary>
+    /// Converts the current mouse position to a world position.
+    /// </summary>
+    /// <param name="cam">The camera that will do the conversion.</param>
+    /// <returns></returns>
     public static Vector3 GetMousePosition(this Camera cam)
     {
         return cam.ScreenToWorldPoint(Input.mousePosition + new Vector3(0, 0, -Camera.main.transform.position.z));
     }
+    /// <summary>
+    /// Converts the current mouse position to a world position.
+    /// </summary>
+    /// <param name="cam">The camera that will do the conversion.</param>
+    /// <param name="offset">An additional offset that will be added the the current mouse position.</param>
+    /// <returns></returns>
     public static Vector3 GetMousePosition(this Camera cam, Vector3 offset)
     {
         return cam.ScreenToWorldPoint(Input.mousePosition + offset + new Vector3(0, 0, -Camera.main.transform.position.z));
     }
-    public static int GetDistance(this int nr1, int nr2)
+    /// <summary>
+    /// <code>return Mathf.Abs(numb1 - numb2);</code>
+    /// </summary>
+    /// <param name="numb1"></param>
+    /// <param name="numb2"></param>
+    /// <returns>The distance between the 2 values.</returns>
+    public static int GetDistance(this int numb1, int numb2)
     {
-        return Mathf.Abs(nr1 - nr2);
+        return Mathf.Abs(numb1 - numb2);
     }
-    public static float GetDistance(this float nr1, float nr2)
+    /// <summary>
+    /// <code>return Mathf.Abs(numb1 - numb2);</code>
+    /// </summary>
+    /// <param name="numb1"></param>
+    /// <param name="numb2"></param>
+    /// <returns>The distance between the 2 values.</returns>
+    public static float GetDistance(this float numb1, float numb2)
     {
-        return Mathf.Abs(nr1 - nr2);
+        return Mathf.Abs(numb1 - numb2);
     }
+    /// <summary>
+    /// Converts a string to a float.
+    /// </summary>
     public static float ConvertToFloat(this string text)
     {
         return (float)Convert.ToDouble(text);
     }
+
+    #region Image and SpriteRenderer
     public static void AddAlpha(this Image img, float alpha)
     {
         Color col = img.color;
@@ -78,20 +106,14 @@ public static class Extensions
         col.a = alpha / 255f;
         sr.color = col;
     }
-    public static string RemoveSpaces(this string input)
-    {
-        var results = input.Split(" ");
-        foreach (var result in results)
-        {
-            result.Trim();
-        }
-        string output = "";
-        foreach (var result in results)
-        {
-            output += result;
-        }
-        return output;
-    }
+    #endregion
+
+    #region Lists
+    /// <summary>
+    /// Uses UnityEngine.Random to return a random element from a list.
+    /// </summary>
+    /// <param name="list">The list to take the element from.</param>
+    /// <returns>A random element.</returns>
     public static T Random<T>(this IList<T> list)
     {
         if (list == null || list.Count == 0)
@@ -101,17 +123,28 @@ public static class Extensions
         return list[UnityEngine.Random.Range(0, list.Count)];
     }
 
+    /// <summary>
+    /// Increments the supplied index and returns 
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
+    /// <param name="list"></param>
+    /// <param name="index"></param>
+    /// <returns></returns>
     public static int NextIndex<T>(this IList<T> list, int index)
     {
-        if (list.Count <= index + 1)
+        if (list.Count > index + 1)
         {
-            index = 0;
+            index++;
         }
-        else index++;
+        else index = 0;
 
         return index;
     }
 
+    /// <summary>
+    /// Returns the next object in a list.
+    /// </summary>
+    /// <param name="obj">The current object.</param>
     public static T Next<T>(this IList<T> list, T obj)
     {
         if (list.Count == 0)
@@ -123,8 +156,17 @@ public static class Extensions
         return list[index];
     }
 
+    /// <summary>
+    /// Returns the element by the specified index from a list and increments it.
+    /// Loops back to 0 once it reaches the end of the list.
+    /// </summary>
+    /// <param name="index">Index of the element that should be retrieved.</param>
     public static T Next<T>(this IList<T> list, ref int index)
     {
+        if (index < 0)
+        {
+            index = 0;
+        }
         if (list.Count == 0)
         {
             return default;
@@ -132,6 +174,7 @@ public static class Extensions
         index = list.NextIndex(index);
         return list[index];
     }
+    #endregion
 
     public static Vector2 Rotate(this Vector2 v, float degrees)
     {
@@ -145,11 +188,12 @@ public static class Extensions
         return v;
     }
 
-    public static float GetRangeValue(this Vector2 v)
-    {
-        float value = UnityEngine.Random.Range(v.x, v.y);
-        return value;
-    }
+    /// <summary>
+    /// Rotates a vector by a specified amount of degrees.
+    /// </summary>
+    /// <param name="v">The vector that will be rotated.</param>
+    /// <param name="degrees">The amount the vector will be rotated.</param>
+    /// <returns>The rotated vector.</returns>
     public static Vector3 Rotate(this Vector3 v, float degrees)
     {
         float sin = Mathf.Sin(degrees * Mathf.Deg2Rad);
@@ -161,20 +205,19 @@ public static class Extensions
         v.y = sin * tx + cos * ty;
         return v;
     }
-    public static Vector3 Round(this Vector3 v)
+    public static Vector3Int Round(this Vector3 v)
     {
-        return new Vector3(Mathf.RoundToInt(v.x), Mathf.RoundToInt(v.y), Mathf.RoundToInt(v.z));
+        return new Vector3Int(Mathf.RoundToInt(v.x), Mathf.RoundToInt(v.y), Mathf.RoundToInt(v.z));
     }
-    public static Vector2 Round(this Vector2 v)
+    public static Vector2Int Round(this Vector2 v)
     {
-        return new Vector2(Mathf.RoundToInt(v.x), Mathf.RoundToInt(v.y));
+        return new Vector2Int(Mathf.RoundToInt(v.x), Mathf.RoundToInt(v.y));
     }
 
     public static void UpdateShapeToSprite(this PolygonCollider2D collider)
     {
         collider.UpdateShapeToSprite(collider.GetComponent<SpriteRenderer>().sprite);
     }
-
     public static void UpdateShapeToSprite(this PolygonCollider2D collider, Sprite sprite)
     {
         if (collider != null && sprite != null)
@@ -239,6 +282,12 @@ public static class Extensions
         }
         return name;
     }
+    /// <summary>
+    /// Compares a string to a list of other strings and returns a unique string.
+    /// </summary>
+    /// <param name="name">The string to test</param>
+    /// <param name="names">The other strings to test against</param>
+    /// <returns>The supplied string if it is unique, otherwise a number will be added at the end to make it unique.</returns>
     public static string GetUniqueName(this string name, IEnumerable<string> names)
     {
         if (!names.Any(x => x == name))

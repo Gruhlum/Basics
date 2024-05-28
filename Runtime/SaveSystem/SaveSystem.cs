@@ -36,6 +36,16 @@ namespace HexTecGames.Basics
         }
         private static Profile currentProfile;
 
+        /// <summary>
+        /// The base folder path. Usually inside a folder named after the product in the user's Document folder.
+        /// <code>
+        /// if (Application.platform == RuntimePlatform.WebGLPlayer)
+        /// {
+        ///     return Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), Application.productName)
+        /// }
+        /// else return Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), Application.productName);
+        /// </code>
+        /// </summary>
         public static string BaseDirectory
         {
             get
@@ -52,6 +62,10 @@ namespace HexTecGames.Basics
             }
         }
         private static string baseDirectory;
+
+        /// <summary>
+        /// The BaseDirectory + the current profile folder.
+        /// </summary>
         public static string GetFullBaseDirectory
         {
             get
@@ -174,6 +188,12 @@ namespace HexTecGames.Basics
             return results;
         }
 
+        /// <summary>
+        /// Saves a value under a specified key inside a JSON file. 
+        /// </summary>
+        /// <see cref="BaseDirectory"/>
+        /// <param name="key"></param>
+        /// <param name="value"></param>
         public static void SaveSettings(string key, string value)
         {
             SettingsData data = LoadSettingsData();
@@ -184,6 +204,11 @@ namespace HexTecGames.Basics
             data.SetOption(key, value);
             SaveJSON(data, settingsFileName);
         }
+        /// <summary>
+        /// Retrieves a value assigned to the key.
+        /// </summary>
+        /// <param name="key">The key that this value is saved under.</param>
+        /// <returns>A string value, or null if none could be found.</returns>
         public static string LoadSettings(string key)
         {
             SettingsData data = LoadSettingsData();
@@ -220,10 +245,25 @@ namespace HexTecGames.Basics
         {
             return FileManager.GetFileNames(directory);
         }
+        /// <summary>
+        /// Saves an object as a JSON file inside the BaseDirectory folder.
+        /// </summary>
+        /// <see cref="BaseDirectory"/>
+        /// <param name="obj">The object that will be saved.</param>
+        /// <param name="fileName">The name the file will have.</param>
+        /// <param name="prettyPrint">Should the JSON file have "prettyPrint" or not.</param>
         public static void SaveJSON(object obj, string fileName, bool prettyPrint = false)
         {
             SaveJSON(obj, fileName, defaultFolderName, prettyPrint);
         }
+        /// <summary>
+        /// Saves an object as a JSON file inside the BaseDirectory folder.
+        /// </summary>
+        /// <see cref="BaseDirectory"/>
+        /// <param name="obj">The object that will be saved.</param>
+        /// <param name="fileName">The name the file will have.</param>
+        /// <param name="directory">The name of the subfolder.</param>
+        /// <param name="prettyPrint">Should the JSON file have "prettyPrint" or not.</param>
         public static void SaveJSON(object obj, string fileName, string directory, bool prettyPrint = false)
         {
             string path = Path.Combine(GetFullBaseDirectory, directory, fileName);
@@ -241,10 +281,23 @@ namespace HexTecGames.Basics
                 Debug.Log($"Could not save file, path: {path}");
             }
         }
+        /// <summary>
+        /// Tries to load a JSON file with a specified name and returns it as a specified type.
+        /// </summary>
+        /// <typeparam name="T">The type that the object will be returned as.</typeparam>
+        /// <param name="fileName">The name of the file that should be loaded.</param>
+        /// <returns>The loaded object, or null if it could not be found.</returns>
         public static T LoadJSON<T>(string fileName) where T : class
         {
             return LoadJSON<T>(fileName, defaultFolderName);
         }
+        /// <summary>
+        /// Tries to load a JSON file with a specified name and returns it as a specified type.
+        /// </summary>
+        /// <typeparam name="T">The type that the object will be returned as.</typeparam>
+        /// <param name="fileName">The name of the file that should be loaded.</param>
+        /// <param name="directory">The name of the Folder containing the JSON file.</param>
+        /// <returns>The loaded object, or null if it could not be found.</returns>
         public static T LoadJSON<T>(string fileName, string directory) where T : class
         {
             string path = Path.Combine(GetFullBaseDirectory, directory, fileName);
@@ -266,6 +319,12 @@ namespace HexTecGames.Basics
                 return null;
             }
         }
+        /// <summary>
+        /// Tries to load any JSON files that are inside the specified folder.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="directory">The name of the folder containing the JSON Files</param>
+        /// <returns>The loaded objects, or an empty list of none could be found.</returns>
         public static List<T> LoadJSONAll<T>(string directory) where T : class
         {
             var results = FindAllFiles(directory);
@@ -276,10 +335,23 @@ namespace HexTecGames.Basics
             }
             return levels;
         }
+        /// <summary>
+        /// Saves an object as an XML file inside the BaseDirectory folder.
+        /// </summary>
+        /// <see cref="BaseDirectory"/>
+        /// <param name="obj">The object that will be saved.</param>
+        /// <param name="fileName">The name the file will have.</param>
         public static void SaveXML(object obj, string fileName)
         {
             SaveXML(obj, fileName, defaultFolderName);
         }
+        /// <summary>
+        /// Saves an object as an XML file inside the BaseDirectory folder.
+        /// </summary>
+        /// <see cref="BaseDirectory"/>
+        /// <param name="obj">The object that will be saved.</param>
+        /// <param name="fileName">The name the file will have.</param>
+        /// <param name="directory">The name of the subfolder.</param>
         public static void SaveXML(object obj, string fileName, string directory)
         {
             CheckDirectories(directory);
@@ -289,10 +361,23 @@ namespace HexTecGames.Basics
                 serializer.Serialize(stream, obj);
             }
         }
+        /// <summary>
+        /// Tries to load an XML file with a specified name and returns it as a specified type.
+        /// </summary>
+        /// <typeparam name="T">The type that the object will be returned as.</typeparam>
+        /// <param name="fileName">The name of the file that should be loaded.</param>
+        /// <returns>The loaded object, or null if it could not be found.</returns>
         public static T LoadXML<T>(string fileName) where T : class
         {
             return LoadXML<T>(fileName, defaultFolderName);
         }
+        /// <summary>
+        /// Tries to load an XML file with a specified name and returns it as a specified type.
+        /// </summary>
+        /// <typeparam name="T">The type that the object will be returned as.</typeparam>
+        /// <param name="fileName">The name of the file that should be loaded.</param>
+        /// <param name="directory">The name of the Folder containing the JSON file.</param>
+        /// <returns>The loaded object, or null if it could not be found.</returns>
         public static T LoadXML<T>(string fileName, string directory) where T : class
         {
             string path = Path.Combine(GetFullBaseDirectory, directory, fileName);
@@ -308,6 +393,12 @@ namespace HexTecGames.Basics
                 return serializer.Deserialize(stream) as T;
             }
         }
+        /// <summary>
+        /// Tries to load any XML files that are inside the specified folder.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="directory">The name of the folder containing the JSON Files</param>
+        /// <returns>The loaded objects, or an empty list of none could be found.</returns>
         public static List<T> LoadXMLAll<T>(string directory) where T : class
         {
             var results = FindAllFiles(directory);
