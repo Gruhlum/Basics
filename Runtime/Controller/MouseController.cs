@@ -15,6 +15,20 @@ namespace HexTecGames.Basics
         [SerializeField] private Camera mainCam = default;
         [SerializeField] private LayerMask uiLayer = 5;
 
+        public GameObject PointerUIElement
+        {
+            get
+            {
+                return pointerUIElement;
+            }
+            private set
+            {
+                pointerUIElement = value;
+            }
+        }
+        private GameObject pointerUIElement;
+
+
         public GameObject HoverGO
         {
             get
@@ -143,12 +157,15 @@ namespace HexTecGames.Basics
         {
             for (int index = 0; index < eventSystemRaycastResults.Count; index++)
             {
-                RaycastResult curRaysastResult = eventSystemRaycastResults[index];
-                if (curRaysastResult.gameObject.layer == uiLayer)
+                RaycastResult raycastResult = eventSystemRaycastResults[index];
+                if (raycastResult.sortingLayer == uiLayer)
                 {
+                    pointerUIElement = raycastResult.gameObject;
                     return true;
                 }
+                //else Debug.Log(uiLayer + " - " + raycastResult.sortingLayer);
             }
+            pointerUIElement = null;
             return false;
         }
 

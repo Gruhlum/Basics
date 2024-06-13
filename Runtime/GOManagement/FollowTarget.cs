@@ -10,6 +10,17 @@ namespace HexTecGames.Basics
     /// </summary>
     public class FollowTarget : MonoBehaviour
 	{
+        public Transform Target
+        {
+            get
+            {
+                return target;
+            }
+            set
+            {
+                target = value;
+            }
+        }
         [SerializeField, FormerlySerializedAs("Target")] private Transform target = default;
         [SerializeField, FormerlySerializedAs("Offset")] private Vector3 offset = default;
 
@@ -20,5 +31,7 @@ namespace HexTecGames.Basics
                 transform.position = target.transform.position + offset;
             }           
         }
+
+
     }
 }
