@@ -32,7 +32,6 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
@@ -51,18 +50,28 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c17ffee6b24dc174983c8550e23f9caf, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  m_Padding:
+    m_Left: 0
+    m_Right: 0
+    m_Top: 0
+    m_Bottom: 0
+  m_ChildAlignment: 0
   Constrain: 0
   MaxLength: 5
   gridController: {fileID: 0}
   AllowSending: 1
   AllowRecieving: 1
-  Alignment: 0
   SpacingX: 10
   SpacingY: 10
-  BorderX: 10
-  BorderY: 10
+  ControlMode: 0
+  OverwriteWidth: 0
+  OverwriteHeight: 0
   MinItems: 20
   MaxItems: 0
+  AddEmptySpace: 0
+  emptySpaceSpawner:
+    prefab: {fileID: 0}
+    parent: {fileID: 0}
   rectT: {fileID: 2184999431706742405}
 --- !u!222 &2184999431706742403
 CanvasRenderer:

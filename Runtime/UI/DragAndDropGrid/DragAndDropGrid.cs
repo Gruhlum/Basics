@@ -12,6 +12,8 @@ namespace HexTecGames.Basics.UI
 
     public class DragAndDropGrid : LayoutGroup
     {
+        //[SerializeField] private Transform itemsT = default;
+
         public Constrain Constrain;
 
         [Min(1)]
@@ -36,6 +38,7 @@ namespace HexTecGames.Basics.UI
         public int MaxItems;
 
         public bool AddEmptySpace;
+        [SerializeField] private Spawner<Image> emptySpaceSpawner = default;
 
         private float TotalSpacingX
         {
@@ -93,6 +96,8 @@ namespace HexTecGames.Basics.UI
         public event Action<RectTransform, DragAndDropGrid> ReceivedItem;
         public event Action<RectTransform, DragAndDropGrid> SentItem;
         public event Action<RectTransform> SelectedItemChanged;
+
+
         private new void Reset()
         {
             rectT = GetComponent<RectTransform>();
@@ -104,13 +109,24 @@ namespace HexTecGames.Basics.UI
             base.Awake();
             if (Application.isPlaying)
             {
-                //tracker.Add(this, rectT, DrivenTransformProperties.SizeDelta);
-            }
+                var children = GetChildren();
+                if (children != null && children.Count > 0)
+                {
+                    foreach (var child in children)
+                    {
+                        AddItem(child);
+                    }
+                }
+            }           
         }
-
+        protected override void OnValidate()
+        {
+            base.OnValidate();
+            SpawnEmptySlots();
+        }
         private void Update()
         {
-            if (Application.isPlaying == false)
+            if (!Application.isPlaying)
             {
                 //ValidateChildren();
                 //Refresh();
@@ -142,6 +158,21 @@ namespace HexTecGames.Basics.UI
                     SelectedItem = null;
                 }
             }
+        }
+
+        private List<RectTransform> GetChildren()
+        {
+            var results = new List<RectTransform>();
+            for (int i = 0; i < transform.childCount; i++)
+            {
+                var result = transform.GetChild(i);
+                if (emptySpaceSpawner.Contains(result.gameObject))
+                {
+                    continue;
+                }
+                results.Add(result.GetComponent<RectTransform>());
+            }          
+            return results;
         }
         public void RemoveItem(RectTransform rectT)
         {
@@ -249,22 +280,30 @@ namespace HexTecGames.Basics.UI
         }
         private void RecalculateItemSize()
         {
+            if (!Application.isPlaying)
+            {
+                RecalculateItemSize(GetChildren());
+            }
+            else RecalculateItemSize(items);
+        }
+        private void RecalculateItemSize(List<RectTransform> targets)
+        {
             if (OverwriteWidth > 0)
             {
                 itemWidth = OverwriteWidth;
             }
-            else if (items.Count > 0)
+            else if (targets.Count > 0)
             {
-                itemWidth = items.Max(x => x.sizeDelta.x);
+                itemWidth = targets.Max(x => x.sizeDelta.x);
             }
 
             if (OverwriteHeight > 0)
             {
                 itemHeight = OverwriteHeight;
             }
-            else if (items.Count > 0)
+            else if (targets.Count > 0)
             {
-                itemHeight = items.Max(x => x.sizeDelta.y);
+                itemHeight = targets.Max(x => x.sizeDelta.y);
             }
         }
         public void ResizeTransform()
@@ -282,7 +321,22 @@ namespace HexTecGames.Basics.UI
                     - new Vector2(SpacingX, SpacingY)
                     + new Vector2(padding.left + padding.right, padding.top + padding.bottom);
         }
+        private void SpawnEmptySlots()
+        {          
+            emptySpaceSpawner.DestroyAll();
 
+            if (!AddEmptySpace)
+            {
+                return;
+            }
+
+            int slotsToSpawn = Mathf.Min(MaxItems, MinItems - GetTotalItems());
+
+            for (int i = 0; i < slotsToSpawn; i++)
+            {
+                emptySpaceSpawner.Spawn();
+            }
+        }
         public bool IsInsideGrid()
         {
             if (RectTransformUtility.RectangleContainsScreenPoint(rectT, Input.mousePosition, Camera.main))
@@ -324,11 +378,16 @@ namespace HexTecGames.Basics.UI
 
         public int GetTotalItems()
         {
-            return rectChildren.Count;
+            if (Application.isPlaying)
+            {
+                return rectChildren.Count;
+            }
+            else return GetChildren().Count;
         }
 
         public override void CalculateLayoutInputVertical()
         {
+            //Debug.Log("CalculateLayoutInputVertical");
             RecalculateItemSize();
             int posX = 0;
             int posY = 0;
@@ -359,11 +418,13 @@ namespace HexTecGames.Basics.UI
         }
         public override void SetLayoutHorizontal()
         {
+            //Debug.Log("SetLayoutHorizontal");
             ResizeTransform();
         }
 
         public override void SetLayoutVertical()
         {
+            //Debug.Log("SetLayoutVertical");
             ResizeTransform();
         }
 

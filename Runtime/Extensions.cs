@@ -170,6 +170,7 @@ public static class Extensions
 
     /// <summary>
     /// Returns the next object in a list.
+    /// Loops back to 0 once it reaches the end of the list.
     /// </summary>
     /// <param name="obj">The current object.</param>
     public static T Next<T>(this IList<T> list, T obj)

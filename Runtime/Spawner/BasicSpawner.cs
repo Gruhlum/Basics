@@ -73,11 +73,11 @@ namespace HexTecGames.Basics
                 T t = parent.GetChild(i).GetComponent<T>();
                 if (t != null)
                 {
-                    if (Application.isPlaying)
+                    if (!Application.isPlaying)
                     {
-                        Object.Destroy(t.gameObject);
+                        Object.DestroyImmediate(t.gameObject);                      
                     }
-                    else Object.DestroyImmediate(t.gameObject);
+                    else Object.Destroy(t.gameObject);
                 }
             }
         }

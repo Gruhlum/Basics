@@ -78,6 +78,18 @@ namespace HexTecGames.Basics
             List<T> results = Instances.FindAll(x => x.gameObject.activeSelf);
             return results;
         }
+
+        public virtual bool Contains(GameObject go)
+        {
+            foreach (var instance in Instances)
+            {
+                if (instance.gameObject == go)
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
         /// <summary>
         /// Removes a specific instance from the internal list.
         /// </summary>
