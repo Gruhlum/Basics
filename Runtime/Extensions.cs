@@ -123,12 +123,28 @@ public static class Extensions
         return list[UnityEngine.Random.Range(0, list.Count)];
     }
     /// <summary>
+    /// Returns a random selection of items from a list.
+    /// </summary>
+    /// <param name="list">The list from which the items are taken.</param>
+    /// <param name="items">The total number of items that should be retrieved.</param>
+    /// <returns>A list of random elements</returns>
+    public static List<T> Random<T>(this IList<T> list, int items)
+    {
+        List<T> results = new List<T>();
+
+        for (int i = 0; i < items; i++)
+        {
+            results.Add(list.Random());
+        }
+        return results;
+    }
+    /// <summary>
     /// Returns a random selection of unique items from a list.
     /// </summary>
     /// <param name="list">The list from which the items are taken.</param>
     /// <param name="items">The total number of unique items that should be retrieved.</param>
     /// <returns>A list of random, unique elements</returns>
-    public static List<T> Random<T>(this IList<T> list, int items)
+    public static List<T> RandomUnique<T>(this IList<T> list, int items)
     {
         List<T> results = new List<T>();
 
