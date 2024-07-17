@@ -148,16 +148,16 @@ public static class Extensions
     {
         List<T> results = new List<T>();
 
-        items = Mathf.Min(list.Count, items);
+        List<int> indexes = new List<int>(list.Count);
 
-        List<int> indexes = new List<int>(items);
-
-        for (int i = 0; i < items; i++)
+        for (int i = 0; i < list.Count; i++)
         {
             indexes.Add(i);
         }
 
-        for (int i = 0; i < items; i++)
+        int totalItems = Mathf.Min(items, list.Count);
+
+        for (int i = 0; i < totalItems; i++)
         {
             int index = indexes.Random();
             results.Add(list[index]);
