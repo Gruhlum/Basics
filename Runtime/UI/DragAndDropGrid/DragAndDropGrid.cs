@@ -98,13 +98,13 @@ namespace HexTecGames.Basics.UI
         public event Action<RectTransform> SelectedItemChanged;
 
 
-        private new void Reset()
+        protected new void Reset()
         {
+            base.Reset();
             rectT = GetComponent<RectTransform>();
             //tracker.Add(this, rectT, DrivenTransformProperties.SizeDelta);
         }
-
-        private new void Awake()
+        protected new void Awake()
         {
             base.Awake();
             if (Application.isPlaying)
@@ -119,7 +119,7 @@ namespace HexTecGames.Basics.UI
                 }
             }           
         }
-        protected override void OnValidate()
+        protected new void OnValidate()
         {
             base.OnValidate();
             SpawnEmptySlots();

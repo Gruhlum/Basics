@@ -55,7 +55,7 @@ public static class Extensions
     public static float ConvertToFloat(this string text)
     {
         return (float)Convert.ToDouble(text);
-    }
+    }    
 
     #region Image and SpriteRenderer
     public static void AddAlpha(this Image img, float alpha)
