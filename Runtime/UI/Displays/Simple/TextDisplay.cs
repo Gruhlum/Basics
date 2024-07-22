@@ -28,7 +28,7 @@ namespace HexTecGames.Basics.UI
         }
         public void SetText(string text, bool activateGO = true)
         {
-            TextGUI.text = text.ToString();
+            TextGUI.text = text;
             if (activateGO)
             {
                 gameObject.SetActive(true);
