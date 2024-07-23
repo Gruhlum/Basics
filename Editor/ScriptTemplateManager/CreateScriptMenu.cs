@@ -93,6 +93,8 @@ namespace HexTecGames.Basics.Editor
 
             text = text.Replace("#SCRIPTNAME#", nameOfScript);
             text = text.Replace("#SCRIPTNAMEWITHOUTEDITOR#", nameOfScript.Replace("Editor", string.Empty));
+            text = text.Replace("#COMPANYNAME#", Application.companyName);
+            text = text.Replace("#PROJECTNAME#", Application.productName);
 
             File.WriteAllText(pathName, text);
         }
