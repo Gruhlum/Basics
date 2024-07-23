@@ -17,7 +17,7 @@ namespace HexTecGames.Basics.UI
                 item = value;
             }
         }
-        [SerializeField][HideInInspector] private T item = default;
+        [SerializeField] private T item = default;
 
         [SerializeField][HideInInspector] protected DisplayController<T> displayC;
 
@@ -34,6 +34,14 @@ namespace HexTecGames.Basics.UI
         }
         private bool isHighlighted;
 
+
+        protected void OnValidate()
+        {
+            if (item != null)
+            {
+                DrawItem(item);
+            }
+        }
 
         public void Setup(T item, DisplayController<T> dc)
         {
