@@ -1,4 +1,5 @@
 using HexTecGames.Basics;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
@@ -9,7 +10,7 @@ namespace HexTecGames.Basics.UI
     [System.Serializable]
     public class TextDisplay : MonoBehaviour
     {
-        public TextMeshProUGUI TextGUI
+        public TMP_Text TextGUI
         {
             get
             {
@@ -20,19 +21,23 @@ namespace HexTecGames.Basics.UI
                 textGUI = value;
             }
         }
-        [SerializeField] private TextMeshProUGUI textGUI;
+        [SerializeField] private TMP_Text textGUI;
+
+        public event Action<string> OnTextChanged;
+
+        private void Reset()
+        {
+            textGUI = GetComponentInChildren<TMP_Text>();
+        }
 
         public void SetText(int value)
         {
             SetText(value.ToString());
         }
-        public void SetText(string text, bool activateGO = true)
+        public void SetText(string text)
         {
             TextGUI.text = text;
-            if (activateGO)
-            {
-                gameObject.SetActive(true);
-            }
+            OnTextChanged?.Invoke(text);
         }
         public void Deactivate()
         {
