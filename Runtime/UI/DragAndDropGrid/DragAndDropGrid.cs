@@ -106,7 +106,6 @@ namespace HexTecGames.Basics.UI
         }
         protected new void Awake()
         {
-            base.Awake();
             if (Application.isPlaying)
             {
                 var children = GetChildren();
@@ -121,7 +120,6 @@ namespace HexTecGames.Basics.UI
         }
         protected new void OnValidate()
         {
-            base.OnValidate();
             SpawnEmptySlots();
         }
         private void Update()
