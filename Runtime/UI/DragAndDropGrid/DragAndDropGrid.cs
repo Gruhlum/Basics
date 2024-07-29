@@ -100,7 +100,6 @@ namespace HexTecGames.Basics.UI
 
         protected new void Reset()
         {
-            base.Reset();
             rectT = GetComponent<RectTransform>();
             //tracker.Add(this, rectT, DrivenTransformProperties.SizeDelta);
         }
