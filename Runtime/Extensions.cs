@@ -344,6 +344,10 @@ public static class Extensions
         }
         return name;
     }
+    public static string RemoveSpaces(this string input)
+    {
+        return input.Replace(" ", string.Empty);
+    }
     /// <summary>
     /// Compares a string to a list of other strings and returns a unique string.
     /// </summary>
