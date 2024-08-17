@@ -11,6 +11,7 @@ namespace HexTecGames.Basics.Credits
         private void OnEnable()
         {
             ShuffleCredits();
+            DisplayItems();
         }
         private void ShuffleCredits()
         {

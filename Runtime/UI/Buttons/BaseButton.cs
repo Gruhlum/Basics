@@ -5,22 +5,17 @@ using UnityEngine.UI;
 
 namespace HexTecGames
 {
-	public abstract class BaseButton : MonoBehaviour
+    [RequireComponent(typeof(Button))]
+    public abstract class BaseButton : MonoBehaviour
 	{
         [SerializeField] private Button btn = default;
-        [SerializeField] private bool addClickListenerOnAwake = true;
 
         protected virtual void Reset()
         {
             btn = GetComponent<Button>();
+            UnityEditor.Events.UnityEventTools.AddPersistentListener(btn.onClick, OnClicked);
         }
-        protected virtual void Awake()
-        {
-            if (btn != null && addClickListenerOnAwake)
-            {
-                btn.onClick.AddListener(OnClicked);
-            }
-        }
+
         public void OnClicked()
         {
             ClickEffect();

@@ -302,19 +302,16 @@ public static class Extensions
         return Sprite.Create(texture, new Rect(new Vector2(0, 0), new Vector2(texture.width, texture.height)), Vector2.zero);
     }
 
-    public static int WrapIndex(this int index, int change, int maximum)
+    public static int WrapIndex(this int index, int change, int length)
     {
-        //TODO make this work for large increases
-        index += change;
-        if (index < 0)
+        int number = index + change;
+        number = number % length;
+
+        if (number < 0)
         {
-            index = maximum;
+            number += length;
         }
-        else if (index > maximum)
-        {
-            index = 0;
-        }
-        return index;
+        return number;
     }
 
     public static string CapitalizeFirstLetter(this string input)

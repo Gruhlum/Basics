@@ -65,7 +65,6 @@ namespace HexTecGames.Basics
         {
             if (parent == null)
             {
-                Debug.LogWarning("Can't find objects without setting a parent");
                 return;
             }
             for (int i = parent.childCount - 1; i >= 0; i--)

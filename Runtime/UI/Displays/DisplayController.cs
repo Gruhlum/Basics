@@ -16,6 +16,11 @@ namespace HexTecGames.Basics.UI
         public event Action<Display<T>> OnDisplayClicked;
 
 
+        protected virtual void Reset()
+        {
+            displays = GetComponentsInChildren<Display<T>>().ToList();
+        }
+
         protected Display<T> SpawnDisplay()
         {
             Display<T> display = displaySpawner.Spawn();

@@ -25,6 +25,7 @@ namespace HexTecGames.Basics.Credits
             nameGUI.text = item.name;
             roleGUI.text = item.role;
             linkButton.URL = item.itchURL;
+            name = $"CreditsDisplay ({item.name})";
         }
     }
 }
