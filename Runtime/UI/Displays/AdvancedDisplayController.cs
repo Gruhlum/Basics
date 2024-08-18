@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -10,8 +11,10 @@ namespace HexTecGames.Basics.UI
         [Min(0)][SerializeField] private int minimumDisplays = default;
         [Min(0)][SerializeField] private int maximumDisplays = default;
 
-        [SerializeField] private GameObject dummyGO = default;
+        [SerializeField] protected GameObject dummyGO = default;
         [SerializeField] private bool hideDummyOnLimitReached = default;
+
+        public event Action OnDummyClicked;
 
         protected virtual void OnValidate()
         {
@@ -74,6 +77,11 @@ namespace HexTecGames.Basics.UI
                     }
                 }
             }
+        }
+
+        public virtual void DummyClicked()
+        {
+            OnDummyClicked?.Invoke();
         }
     }
 }
