@@ -13,7 +13,9 @@ namespace HexTecGames
         protected virtual void Reset()
         {
             btn = GetComponent<Button>();
+#if UNITY_EDITOR
             UnityEditor.Events.UnityEventTools.AddPersistentListener(btn.onClick, OnClicked);
+#endif
         }
 
         public void OnClicked()
