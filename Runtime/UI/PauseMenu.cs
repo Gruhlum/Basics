@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace HexTecGames.Basics
 {
-	public class PauseMenu : MonoBehaviour
+	public class PauseMenu : MenuController
 	{
         [SerializeField] private GameObject menuGO = default;
         private void Update()
