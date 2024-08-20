@@ -24,7 +24,7 @@ namespace HexTecGames.Basics.UI
         protected Display<T> SpawnDisplay()
         {
             Display<T> display = displaySpawner.Spawn();
-            displays.Add(display);
+            //displays.Add(display);
             return display;
         }
         protected virtual void SetupDisplay(T item, Display<T> display)
