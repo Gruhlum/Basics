@@ -16,6 +16,8 @@ namespace HexTecGames.Basics
         private static readonly string backupFolderName = "backup";
         //private static readonly string profileKey = "profile";
 
+        private static SettingsData settingsData;
+
         private static List<Profile> profiles = new List<Profile>();
         private static bool loadedProfiles;
 
@@ -196,13 +198,12 @@ namespace HexTecGames.Basics
         /// <param name="value"></param>
         public static void SaveSettings(string key, string value)
         {
-            SettingsData data = LoadSettingsData();
-            if (data == null)
+            if (settingsData == null)
             {
-                data = new SettingsData();
+                settingsData = LoadSettingsData();
             }
-            data.SetOption(key, value);
-            SaveJSON(data, settingsFileName);
+            settingsData.SetOption(key, value);
+            SaveJSON(settingsData, settingsFileName);
         }
         /// <summary>
         /// Retrieves a value assigned to the key.
@@ -211,16 +212,21 @@ namespace HexTecGames.Basics
         /// <returns>A string value, or null if none could be found.</returns>
         public static string LoadSettings(string key)
         {
-            SettingsData data = LoadSettingsData();
-            if (data == null)
+            if (settingsData == null)
             {
-                return null;
+                settingsData = LoadSettingsData();
             }
-            return data.GetOption(key);
+
+            return settingsData.GetOption(key);
         }
         private static SettingsData LoadSettingsData()
         {
-            return LoadJSON<SettingsData>(settingsFileName);
+            SettingsData data = LoadJSON<SettingsData>(settingsFileName);
+            if (data == null)
+            {
+                return new SettingsData();
+            }
+            else return data;
         }
         private static void CheckDirectories(string directory)
         {
