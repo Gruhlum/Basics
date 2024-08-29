@@ -205,6 +205,33 @@ namespace HexTecGames.Basics
             settingsData.SetOption(key, value);
             SaveJSON(settingsData, settingsFileName);
         }
+        public static void SaveSettings(string key, bool value)
+        {
+            if (settingsData == null)
+            {
+                settingsData = LoadSettingsData();
+            }
+            settingsData.SetOption(key, value.ToString());
+            SaveJSON(settingsData, settingsFileName);
+        }
+        public static void SaveSettings(string key, int value)
+        {
+            if (settingsData == null)
+            {
+                settingsData = LoadSettingsData();
+            }
+            settingsData.SetOption(key, value.ToString());
+            SaveJSON(settingsData, settingsFileName);
+        }
+        public static void SaveSettings(string key, float value)
+        {
+            if (settingsData == null)
+            {
+                settingsData = LoadSettingsData();
+            }
+            settingsData.SetOption(key, value.ToString());
+            SaveJSON(settingsData, settingsFileName);
+        }
         /// <summary>
         /// Retrieves a value assigned to the key.
         /// </summary>
@@ -219,6 +246,7 @@ namespace HexTecGames.Basics
 
             return settingsData.GetOption(key);
         }
+
         private static SettingsData LoadSettingsData()
         {
             SettingsData data = LoadJSON<SettingsData>(settingsFileName);
