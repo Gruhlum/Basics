@@ -68,7 +68,7 @@ namespace HexTecGames.Basics
         /// <summary>
         /// The BaseDirectory + the current profile folder.
         /// </summary>
-        public static string GetFullBaseDirectory
+        public static string ProfilePath
         {
             get
             {
@@ -234,13 +234,13 @@ namespace HexTecGames.Basics
             {
                 Directory.CreateDirectory(BaseDirectory);
             }
-            if (CurrentProfile != null && !Directory.Exists(CurrentProfile.Name))
+            if (CurrentProfile != null && !Directory.Exists(ProfilePath))
             {
-                Directory.CreateDirectory(CurrentProfile.Name);
+                Directory.CreateDirectory(ProfilePath);
             }
-            if (!Directory.Exists(Path.Combine(GetFullBaseDirectory, directory)))
+            if (!Directory.Exists(Path.Combine(ProfilePath, directory)))
             {
-                Directory.CreateDirectory(Path.Combine(GetFullBaseDirectory, directory));
+                Directory.CreateDirectory(Path.Combine(ProfilePath, directory));
             }
         }
         public static List<string> FindAllFiles()
@@ -272,7 +272,7 @@ namespace HexTecGames.Basics
         /// <param name="prettyPrint">Should the JSON file have "prettyPrint" or not.</param>
         public static void SaveJSON(object obj, string fileName, string directory, bool prettyPrint = false)
         {
-            string path = Path.Combine(GetFullBaseDirectory, directory, fileName);
+            string path = Path.Combine(ProfilePath, directory, fileName);
             try
             {
                 CheckDirectories(directory);
@@ -306,7 +306,7 @@ namespace HexTecGames.Basics
         /// <returns>The loaded object, or null if it could not be found.</returns>
         public static T LoadJSON<T>(string fileName, string directory) where T : class
         {
-            string path = Path.Combine(GetFullBaseDirectory, directory, fileName);
+            string path = Path.Combine(ProfilePath, directory, fileName);
             try
             {
                 if (!File.Exists(path))
@@ -362,7 +362,7 @@ namespace HexTecGames.Basics
         {
             CheckDirectories(directory);
             var serializer = new XmlSerializer(obj.GetType());
-            using (var stream = new FileStream(Path.Combine(GetFullBaseDirectory, directory, fileName), FileMode.Create))
+            using (var stream = new FileStream(Path.Combine(ProfilePath, directory, fileName), FileMode.Create))
             {
                 serializer.Serialize(stream, obj);
             }
@@ -386,7 +386,7 @@ namespace HexTecGames.Basics
         /// <returns>The loaded object, or null if it could not be found.</returns>
         public static T LoadXML<T>(string fileName, string directory) where T : class
         {
-            string path = Path.Combine(GetFullBaseDirectory, directory, fileName);
+            string path = Path.Combine(ProfilePath, directory, fileName);
 
             if (!File.Exists(path))
             {
