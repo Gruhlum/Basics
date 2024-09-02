@@ -38,7 +38,7 @@ namespace HexTecGames.Basics.UI
                 for (int i = 0; i < displays.Count; i++)
                 {
                     displays[i].gameObject.SetActive(true);
-                    if (items.Count <= i)
+                    if (items.Count != 0 && items.Count <= i)
                     {
                         SetupDisplay(null, displays[i]);
                     }

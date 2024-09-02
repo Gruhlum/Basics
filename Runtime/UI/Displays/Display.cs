@@ -34,20 +34,23 @@ namespace HexTecGames.Basics.UI
         }
         private bool isHighlighted;
 
+        public void Setup(T item, DisplayController<T> dc)
+        {
+            SetItem(item);
+            this.displayC = dc;
+        }
 
-        protected void OnValidate()
+#if UNITY_EDITOR
+        [ContextMenu("Draw Item")]
+        public void DrawItem()
         {
             if (item != null)
             {
                 DrawItem(item);
             }
         }
+#endif
 
-        public void Setup(T item, DisplayController<T> dc)
-        {
-            SetItem(item);
-            this.displayC = dc;
-        }
         protected abstract void DrawItem(T item);
 
         public virtual void SetItem(T item)
