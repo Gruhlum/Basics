@@ -261,6 +261,21 @@ namespace HexTecGames.Basics
                 return false;
             }
         }
+        public static bool LoadSettings(string key, out float value)
+        {
+            string result = LoadSettings(key);
+            try
+            {
+                value = Convert.ToInt32(result);
+                return true;
+            }
+            catch (Exception e)
+            {
+                Debug.Log(e.Message);
+                value = 0;
+                return false;
+            }
+        }
         public static bool LoadSettings(string key, out bool value)
         {
             string result = LoadSettings(key);
