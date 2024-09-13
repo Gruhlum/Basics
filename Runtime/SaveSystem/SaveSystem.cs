@@ -246,7 +246,36 @@ namespace HexTecGames.Basics
 
             return settingsData.GetOption(key);
         }
-
+        public static bool LoadSettings(string key, out int value)
+        {
+            string result = LoadSettings(key);
+            try
+            {
+                value = Convert.ToInt32(result);
+                return true;
+            }
+            catch (Exception e)
+            {
+                Debug.Log(e.Message);
+                value = 0;
+                return false;
+            }
+        }
+        public static bool LoadSettings(string key, out bool value)
+        {
+            string result = LoadSettings(key);
+            try
+            {
+                value = Convert.ToBoolean(result);
+                return true;
+            }
+            catch (Exception e)
+            {
+                Debug.Log(e.Message);
+                value = false;
+                return false;
+            }
+        }
         private static SettingsData LoadSettingsData()
         {
             SettingsData data = LoadJSON<SettingsData>(settingsFileName);
