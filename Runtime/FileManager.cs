@@ -78,20 +78,47 @@ namespace HexTecGames.Basics
 
             return results;
         }
-        public static string GetUniqueFileName(string path, string name)
+        /// <summary>
+        /// Generates a unique file name.
+        /// </summary>
+        /// <param name="path">the original path of the file.</param>
+        /// <returns>returns the original path unless it is not unique, in which case a underscore and number suffix is added.</returns>
+        public static string GenerateUniqueFileName(string path)
         {
-            string fullPath = Path.Combine(path, name);
-            if (!Directory.Exists(fullPath))
+            if (!File.Exists(path))
             {
-                return name;
+                return path;
             }
-            int count = 2;
-            while (Directory.Exists(Path.Combine($"{fullPath} {count}")))
+            string fileName = Path.GetFileNameWithoutExtension(path);
+            if (string.IsNullOrEmpty(fileName))
+            {
+                Debug.Log("Could not find file name: " + path);
+                return path;
+            }
+            int count = 1;
+            string newPath;
+            do
             {
                 count++;
+                newPath = path.Replace(fileName, $"{fileName}_{count}");
             }
-            return $"{fullPath} {count}";
+            while (File.Exists(newPath));
+            return newPath;
         }
+        //public static string GetUniqueFileName(string path, string name)
+        //{
+        //    string fullPath = Path.Combine(path, name);
+        //    if (!Directory.Exists(fullPath))
+        //    {
+        //        return name;
+        //    }
+        //    int count = 2;
+        //    while (Directory.Exists(Path.Combine($"{fullPath} {count}")))
+        //    {
+        //        count++;
+        //    }
+        //    return $"{fullPath} {count}";
+        //}
         public static List<string> ReadFile(string filePath)
         {
             if (!File.Exists(filePath))
