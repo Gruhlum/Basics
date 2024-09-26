@@ -275,7 +275,7 @@ namespace HexTecGames.Basics
 
             try
             {
-                value = (float)Convert.ToInt32(result);
+                value = Convert.ToDouble(result);
                 return true;
             }
             catch (Exception e)
