@@ -246,9 +246,14 @@ namespace HexTecGames.Basics
 
             return settingsData.GetOption(key);
         }
-        public static bool LoadSettings(string key, out int value)
+        public static bool LoadSettings(string key, ref int value)
         {
             string result = LoadSettings(key);
+            if (string.IsNullOrEmpty(result))
+            {
+                return false;
+            }
+
             try
             {
                 value = Convert.ToInt32(result);
@@ -256,14 +261,18 @@ namespace HexTecGames.Basics
             }
             catch (Exception e)
             {
-                Debug.Log(e.Message);
-                value = 0;
+                Debug.Log("Key: " + key + " Error: " + e.Message);
                 return false;
             }
         }
-        public static bool LoadSettings(string key, out float value)
+        public static bool LoadSettings(string key, ref float value)
         {
             string result = LoadSettings(key);
+            if (string.IsNullOrEmpty(result))
+            {
+                return false;
+            }
+
             try
             {
                 value = Convert.ToInt32(result);
@@ -271,14 +280,18 @@ namespace HexTecGames.Basics
             }
             catch (Exception e)
             {
-                Debug.Log(e.Message);
-                value = 0;
+                Debug.Log("Key: " + key + " Error: " + e.Message);
                 return false;
             }
         }
-        public static bool LoadSettings(string key, out bool value)
+        public static bool LoadSettings(string key, ref bool value)
         {
             string result = LoadSettings(key);
+            if (string.IsNullOrEmpty(result))
+            {
+                return false;
+            }
+
             try
             {
                 value = Convert.ToBoolean(result);
@@ -286,7 +299,7 @@ namespace HexTecGames.Basics
             }
             catch (Exception e)
             {
-                Debug.Log(e.Message);
+                Debug.Log("Key: " + key + " Error: "  + e.Message);
                 value = false;
                 return false;
             }
