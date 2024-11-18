@@ -47,6 +47,37 @@ namespace HexTecGames.Basics
             int length = path.Length - startIndex;
             return path.Substring(startIndex, length);
         }
+
+        public static void DeleteFile(string fileName, string path)
+        {
+            string finalPath = Path.Combine(path, fileName);
+            if (!File.Exists(finalPath))
+            {
+                Debug.Log("Trying to delete file, but not found: " + finalPath);
+                return;
+            }
+            Debug.Log("Deleting file: " + finalPath);
+            File.Delete(finalPath);
+        }
+        public static void DeleteFile(string fileName)
+        {
+            DeleteFile(fileName, BaseDirectory);
+        }
+        public static void DeleteFolder(string folderName, string path)
+        {
+            string finalPath = Path.Combine(path, folderName);
+            if (!Directory.Exists(finalPath))
+            {
+                Debug.Log("Trying to delete folder, but not found: " + finalPath);
+                return;
+            }
+            Debug.Log("Deleting folder: " + finalPath);
+            Directory.Delete(finalPath, true);
+        }
+        public static void DeleteFolder(string folderName)
+        {
+            DeleteFolder(folderName, BaseDirectory);
+        }
         public static List<string> GetFileNames(string path)
         {
             if (!File.Exists(path))

@@ -24,6 +24,12 @@ namespace HexTecGames.Basics
         [SerializeField, FormerlySerializedAs("Target")] private Transform target = default;
         [SerializeField, FormerlySerializedAs("Offset")] private Vector3 offset = default;
 
+
+        private void Reset()
+        {
+            offset = transform.position;
+        }
+
         private void Update()
         {
             if (target != null)
@@ -31,7 +37,5 @@ namespace HexTecGames.Basics
                 transform.position = target.transform.position + offset;
             }           
         }
-
-
     }
 }
