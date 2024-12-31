@@ -6,16 +6,13 @@ using UnityEngine;
 
 namespace HexTecGames.Basics.UI
 {
-    public abstract class DisplayController<T> : MonoBehaviour where T : class
+    public abstract class DisplayController<T> : DisplayControllerBase<T>
     {
         [SerializeField] protected Spawner<Display<T>> displaySpawner = default;
         [SerializeField] protected List<Display<T>> displays = default;
-
+        [Space]
         [SerializeField, SerializeReference] protected List<T> items = new List<T>();
-
-        public event Action<Display<T>> OnDisplayClicked;
-
-
+       
         protected virtual void Reset()
         {
             displays = GetComponentsInChildren<Display<T>>().ToList();
@@ -40,7 +37,7 @@ namespace HexTecGames.Basics.UI
                     displays[i].gameObject.SetActive(true);
                     if (items.Count != 0 && items.Count <= i)
                     {
-                        SetupDisplay(null, displays[i]);
+                        displays[i].SetController(this);
                     }
                     else SetupDisplay(items[i], displays[i]);
                 }
@@ -53,12 +50,7 @@ namespace HexTecGames.Basics.UI
                     SetupDisplay(item, SpawnDisplay());
                 }
             }
-        }
-
-        public virtual void DisplayClicked(Display<T> display)
-        {
-            OnDisplayClicked?.Invoke(display);
-        }
+        }       
         public void SelectFirstDisplay()
         {
             if (displays == null || displays.Count == 0)

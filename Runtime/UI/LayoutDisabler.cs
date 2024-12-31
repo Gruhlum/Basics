@@ -7,13 +7,13 @@ namespace HexTecGames.Basics.UI
 {
     public class LayoutDisabler : MonoBehaviour
     {
-        [SerializeField] private HorizontalOrVerticalLayoutGroup layoutGroup = default;
+        [SerializeField] private LayoutGroup layoutGroup = default;
         [SerializeField] private ContentSizeFitter contentSizeFitter = default;
 
 
         private void Reset()
         {
-            layoutGroup = GetComponent<HorizontalOrVerticalLayoutGroup>();
+            layoutGroup = GetComponent<LayoutGroup>();
             contentSizeFitter = GetComponent<ContentSizeFitter>();
         }
 

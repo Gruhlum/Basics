@@ -6,24 +6,43 @@ using UnityEngine.UI;
 
 namespace HexTecGames.Basics.UI
 {
-    public class DisplayableDisplay : Display<DisplayableScriptableObject>
+    public class DisplayableDisplay : Display<DisplayableObject>
     {
         [SerializeField] private TMP_Text nameGUI = default;
-        [SerializeField] private Image img = default;
+        [SerializeField] private Image icon = default;
         [SerializeField] private Image background = default;
 
-        [SerializeField] private Color backgroundColor = Color.black;
-        [SerializeField] private Color selectedColor = Color.black;
+        [SerializeField] private Color backgroundColor = Color.white;
+        [SerializeField] private Color selectedColor = Color.white;
 
-        protected override void DrawItem(DisplayableScriptableObject item)
+
+        private void Reset()
         {
-            nameGUI.text = item.Name;
-            img.sprite = item.Sprite;
+            nameGUI = GetComponent<TMP_Text>();
+            if (nameGUI == null)
+            {
+                nameGUI = GetComponentInChildren<TMP_Text>();
+            }
+        }
+
+        protected override void DrawItem(DisplayableObject item)
+        {
+            if (nameGUI != null)
+            {
+                nameGUI.text = item.Name;
+            }
+            if (icon != null)
+            {
+                icon.sprite = item.Icon;
+            }
         }
         public override void SetHighlight(bool active)
         {
             base.SetHighlight(active);
-            background.color = active ? selectedColor : backgroundColor;
+            if (background != null)
+            {
+                background.color = active ? selectedColor : backgroundColor;
+            }
         }
     }
 }

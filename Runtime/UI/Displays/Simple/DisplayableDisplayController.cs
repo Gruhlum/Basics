@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace HexTecGames.Basics.UI
 {
-	public class DisplayableDisplayController : DisplayController<DisplayableScriptableObject>
+	public class DisplayableDisplayController : DisplayController<DisplayableObject>
 	{
         protected virtual void Awake()
         {

@@ -1,3 +1,4 @@
+using HexTecGames.HotkeySystem;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -9,39 +10,65 @@ namespace HexTecGames.Basics.UI.Buttons
 {
     public class RadioButtonController : MonoBehaviour
     {
-        [SerializeField] private List<RadioButton> buttons = default;
+        public RadioButton SelectedButton
+        {
+            get
+            {
+                return selectedButton;
+            }
+            private set
+            {
+                selectedButton = value;
+            }
+        }
+        private RadioButton selectedButton;
 
+        [SerializeField] protected List<RadioButton> buttons = default;
         [SerializeField] private RadioButton startButton = default;
 
         public event Action<RadioButton> OnRadioButtonClicked;
 
-        private void Reset()
+        protected virtual void Reset()
         {
             buttons = GetComponentsInChildren<RadioButton>().ToList();
+
+            if (buttons != null && buttons.Count > 0)
+            {
+                startButton = buttons[0];
+            }
         }
 
-        private void Awake()
+        protected virtual void Awake()
         {
             foreach (var button in buttons)
             {
                 button.OnClicked += Button_OnClicked;
             }
         }
-        private void Start()
+        protected virtual void Start()
         {
             if (startButton != null)
             {
                 startButton.SetActive(true);
+                SelectedButton = startButton;
             }
         }
-
         private void Button_OnClicked(RadioButton radioBtn)
+        {
+            SelectButton(radioBtn);
+        }
+        protected void SelectButton(RadioButton radioBtn, bool notify = true)
         {
             foreach (var btn in buttons)
             {
                 btn.SetActive(btn == radioBtn);
             }
-            OnRadioButtonClicked?.Invoke(radioBtn);
+            SelectedButton = radioBtn;
+
+            if (notify)
+            {
+                OnRadioButtonClicked?.Invoke(radioBtn);
+            }
         }
     }
 }

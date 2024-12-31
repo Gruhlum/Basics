@@ -7,6 +7,7 @@ using System;
 using UnityEngine.UI;
 using System.Text;
 using System.IO;
+using UnityEngine.EventSystems;
 
 public static class Extensions
 {
@@ -28,6 +29,15 @@ public static class Extensions
     public static Vector3 GetMousePosition(this Camera cam, Vector3 offset)
     {
         return cam.ScreenToWorldPoint(Input.mousePosition + offset + new Vector3(0, 0, -Camera.main.transform.position.z));
+    }
+    public static int LoopValue(this int value, int max)
+    {
+        value %= max;
+        if (value < 0)
+        {
+            value += max;
+        }
+        return value;
     }
     /// <summary>
     /// <code>return Mathf.Abs(numb1 - numb2);</code>
@@ -261,6 +271,45 @@ public static class Extensions
     }
     #endregion
 
+    public static bool DetectUIObject<T>(this GraphicRaycaster raycaster, out T obj) where T : Component
+    {
+        return raycaster.DetectUIObject(EventSystem.current, out obj);
+    }
+    public static bool DetectUIObject<T>(this GraphicRaycaster raycaster, EventSystem eventSys, out T obj) where T : Component
+    {
+        var m_PointerEventData = new PointerEventData(eventSys);
+        m_PointerEventData.position = Input.mousePosition;
+
+        List<RaycastResult> results = new List<RaycastResult>();
+
+        raycaster.Raycast(m_PointerEventData, results);
+
+        foreach (RaycastResult result in results)
+        {
+            if (result.gameObject.TryGetComponent(out T t))
+            {
+                obj = t;
+                return true;
+            }
+        }
+        obj = null;
+        return false;
+    }
+    public static RaycastResult? DetectAnyUIObject(this GraphicRaycaster raycaster, EventSystem eventSys)
+    {
+        var m_PointerEventData = new PointerEventData(eventSys);
+        m_PointerEventData.position = Input.mousePosition;
+
+        List<RaycastResult> results = new List<RaycastResult>();
+
+        raycaster.Raycast(m_PointerEventData, results);
+
+        if (results.Count > 0)
+        {
+            return results[0];
+        }
+        else return null;
+    }
     public static Vector2 Rotate(this Vector2 v, float degrees)
     {
         float sin = Mathf.Sin(degrees * Mathf.Deg2Rad);

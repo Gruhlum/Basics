@@ -6,7 +6,7 @@ namespace HexTecGames.Basics.UI
 {
 	public interface IDisplayable
 	{
-		public Sprite Sprite
+		public Sprite Icon
 		{
 			get;
 		}

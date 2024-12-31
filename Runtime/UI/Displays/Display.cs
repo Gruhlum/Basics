@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace HexTecGames.Basics.UI
 {
-    public abstract class Display<T> : MonoBehaviour where T : class
+    public abstract class Display<T> : MonoBehaviour
     {
         public T Item
         {
@@ -19,7 +19,7 @@ namespace HexTecGames.Basics.UI
         }
         [SerializeField] private T item = default;
 
-        [SerializeField][HideInInspector] protected DisplayController<T> displayC;
+        [SerializeField] protected DisplayControllerBase<T> displayC;
 
         public bool IsHighlighted
         {
@@ -37,6 +37,10 @@ namespace HexTecGames.Basics.UI
         public void Setup(T item, DisplayController<T> dc)
         {
             SetItem(item);
+            SetController(dc);
+        }
+        public void SetController(DisplayController<T> dc)
+        {
             this.displayC = dc;
         }
 

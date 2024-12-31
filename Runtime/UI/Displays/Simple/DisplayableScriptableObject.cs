@@ -4,12 +4,16 @@ using UnityEngine;
 
 namespace HexTecGames.Basics.UI
 {
-    public abstract class DisplayableScriptableObject : ScriptableObject, IDisplayable
+    public abstract class DisplayableObject : ScriptableObject, IDisplayable
     {
-        public abstract Sprite Sprite
+        public virtual Sprite Icon
         {
-            get;
+            get
+            {
+                return icon;
+            }
         }
+        [SerializeField] private Sprite icon = default;
 
         public virtual string Name
         {
@@ -17,6 +21,6 @@ namespace HexTecGames.Basics.UI
             {
                 return name;
             }
-        }
+        }      
     }
 }

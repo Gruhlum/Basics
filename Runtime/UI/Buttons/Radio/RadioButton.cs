@@ -6,13 +6,26 @@ using UnityEngine.UI;
 
 namespace HexTecGames.Basics.UI.Buttons
 {
-	public class RadioButton : MonoBehaviour
-	{
-		public enum AnimationType { ColorSwap, SpriteSwap}
+    public class RadioButton : MonoBehaviour
+    {
+        public enum AnimationType { ColorSwap, SpriteSwap }
 
         [SerializeField] private Button btn = default;
         [SerializeField] private Image img = default;
-     
+
+        public KeyCode Hotkey
+        {
+            get
+            {
+                return hotkey;
+            }
+            private set
+            {
+                hotkey = value;
+            }
+        }
+        [Space][SerializeField] private KeyCode hotkey = default;
+
         public bool Active
         {
             get
@@ -25,7 +38,7 @@ namespace HexTecGames.Basics.UI.Buttons
                 {
                     return;
                 }
-                active = value;             
+                active = value;
             }
         }
         private bool active = default;
@@ -45,6 +58,14 @@ namespace HexTecGames.Basics.UI.Buttons
         {
             btn = GetComponent<Button>();
             img = GetComponent<Image>();
+        }
+
+        private void OnValidate()
+        {
+            if (img != null)
+            {
+                img.color = normalColor;
+            }
         }
 
         private void Awake()
@@ -79,6 +100,10 @@ namespace HexTecGames.Basics.UI.Buttons
                 img.sprite = activeSprite;
             }
             else img.sprite = normalSprite;
+        }
+        public void SimulateClick()
+        {
+            btn.onClick?.Invoke();
         }
     }
 }
