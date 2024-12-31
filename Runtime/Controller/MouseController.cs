@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -6,14 +7,14 @@ using UnityEngine.EventSystems;
 namespace HexTecGames.Basics
 {
     /// <summary>
-    /// Contains information about any objects that are under the mouse button. 
+    /// Contains information about any objects that are under the mouse button.
     /// </summary>
     public class MouseController : MonoBehaviour
     {
         public enum ButtonType { None, Down, Clicked, Up }
 
         [SerializeField] private Camera mainCam = default;
-        [SerializeField] private LayerMask uiLayer = 5;
+        [SerializeField] private int uiLayer = 1;
 
         public GameObject PointerUIElement
         {
@@ -27,7 +28,6 @@ namespace HexTecGames.Basics
             }
         }
         private GameObject pointerUIElement;
-
 
         public GameObject HoverGO
         {
@@ -67,8 +67,8 @@ namespace HexTecGames.Basics
             }
         }
         private int btnNumber = -1;
-       
-        public bool PointerOverUI
+
+        public static bool IsPointerOverUI
         {
             get
             {
@@ -76,10 +76,17 @@ namespace HexTecGames.Basics
             }
             set
             {
+                if (pointerOverUI == value)
+                {
+                    return;
+                }
                 pointerOverUI = value;
+                OnPointerOverUIChanged?.Invoke(pointerOverUI);
             }
         }
-        private bool pointerOverUI = default;
+        private static bool pointerOverUI = default;
+
+        public static event Action<bool> OnPointerOverUIChanged;
 
         private void Reset()
         {
@@ -88,8 +95,8 @@ namespace HexTecGames.Basics
 
         private void Update()
         {
-            hoverGO = DetectGameObject();
-            PointerOverUI = IsPointerOverUI();
+            HoverGO = DetectGameObject();
+            IsPointerOverUI = DetectPointerOverUI();
 
             for (int i = 0; i < 2; i++)
             {
@@ -135,6 +142,20 @@ namespace HexTecGames.Basics
             }
             return ButtonType.None;
         }
+        public bool TryGetHoverObject<T>(out T t) where T : Component
+        {
+            if (HoverGO == null)
+            {
+                t = null;
+                return false;
+            }
+            if (HoverGO.TryGetComponent(out t))
+            {
+                return true;
+            }
+            t = null;
+            return false;
+        }
         private GameObject DetectGameObject()
         {
             Vector2 worldPos = mainCam.GetMousePosition();
@@ -144,11 +165,11 @@ namespace HexTecGames.Basics
                 return hit.collider.gameObject;
             }
             return null;
-        }      
+        }
         /// <summary>
         /// Checks if the mouse is hovering over an UI Element
         /// </summary>
-        private bool IsPointerOverUI()
+        private bool DetectPointerOverUI()
         {
             return IsPointerOverUIElement(GetEventSystemRaycastResults());
         }
@@ -158,14 +179,15 @@ namespace HexTecGames.Basics
             for (int index = 0; index < eventSystemRaycastResults.Count; index++)
             {
                 RaycastResult raycastResult = eventSystemRaycastResults[index];
-                if (raycastResult.sortingLayer == uiLayer)
+
+                if (SortingLayer.GetLayerValueFromID(raycastResult.sortingLayer) == uiLayer)
                 {
-                    pointerUIElement = raycastResult.gameObject;
+                    PointerUIElement = raycastResult.gameObject;
                     return true;
                 }
                 //else Debug.Log(uiLayer + " - " + raycastResult.sortingLayer);
             }
-            pointerUIElement = null;
+            PointerUIElement = null;
             return false;
         }
 
@@ -177,6 +199,6 @@ namespace HexTecGames.Basics
             List<RaycastResult> raycastResults = new List<RaycastResult>();
             EventSystem.current.RaycastAll(eventData, raycastResults);
             return raycastResults;
-        }   
+        }
     }
 }

@@ -27,12 +27,16 @@ namespace HexTecGames.Basics
             {
                 return;
             }
+            if (MouseController.IsPointerOverUI)
+            {
+                return;
+            }
             HandlePositionMovement();
             HandleZoom();
         }
 
         private void HandleZoom()
-        {
+        {         
             float scrollDelta = Input.mouseScrollDelta.y;
             cam.orthographicSize -= scrollDelta * ZoomSpeed;
             cam.orthographicSize = Mathf.Clamp(cam.orthographicSize, MinZoom, MaxZoom);
