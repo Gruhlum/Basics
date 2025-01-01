@@ -4,18 +4,21 @@ using UnityEngine;
 
 namespace HexTecGames.Basics
 {
-	/// <summary>
+    /// <summary>
     /// Allows moving and zooming of a Camera
     /// </summary>
     public class CameraController : MonoBehaviour
-	{
-		[SerializeField] private Camera cam = default;
+    {
+        [SerializeField] private Camera cam = default;
 
-        public int ZoomSpeed = 10;
+        public int ZoomSpeed = 1;
         public int MinZoom = 5;
-        public int MaxZoom = 40;
+        public int MaxZoom = 50;
 
         public float MoveStep = 1f;
+
+        // Used to prevent 'snapping' the zoom when the applcation becomes focussed again
+        private bool ignoreInput;
 
         private void Reset()
         {
@@ -25,10 +28,16 @@ namespace HexTecGames.Basics
         {
             if (!Application.isFocused)
             {
+                ignoreInput = true;
                 return;
             }
             if (MouseController.IsPointerOverUI)
             {
+                return;
+            }
+            if (ignoreInput)
+            {
+                ignoreInput = false;
                 return;
             }
             HandlePositionMovement();
@@ -36,9 +45,8 @@ namespace HexTecGames.Basics
         }
 
         private void HandleZoom()
-        {         
-            float scrollDelta = Input.mouseScrollDelta.y;
-            cam.orthographicSize -= scrollDelta * ZoomSpeed;
+        {
+            cam.orthographicSize -= Input.mouseScrollDelta.normalized.y * ZoomSpeed;
             cam.orthographicSize = Mathf.Clamp(cam.orthographicSize, MinZoom, MaxZoom);
         }
 
