@@ -11,8 +11,6 @@ namespace HexTecGames.Basics
     /// </summary>
     public class MouseController : MonoBehaviour
     {
-        public enum ButtonType { None, Down, Clicked, Up }
-
         [SerializeField] private Camera mainCam = default;
         [SerializeField] private int uiLayer = 1;
 
