@@ -75,7 +75,7 @@ namespace HexTecGames.Basics.UI
             {
                 return displays;
             }
-            else return displaySpawner.GetActiveInstances().ToList();
+            else return displaySpawner.ToList();
         }
         public virtual void SetItems(List<T> items, bool display = true)
         {

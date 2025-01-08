@@ -12,13 +12,13 @@ namespace HexTecGames.Basics
     [System.Serializable]
     public class Spawner<T> : PoolSpawner<T> where T : Component
     {
-        protected override List<T> Instances
+        protected override HashSet<T> Instances
         {
             get
             {
                 return items;
             }
         }
-        protected readonly List<T> items = new List<T>();
+        protected readonly HashSet<T> items = new HashSet<T>();
     }
 }

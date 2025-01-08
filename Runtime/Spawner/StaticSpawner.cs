@@ -12,14 +12,14 @@ namespace HexTecGames.Basics
     [System.Serializable]
     public class StaticSpawner<T> : PoolSpawner<T> where T : Component
     {
-        protected override List<T> Instances
+        protected override HashSet<T> Instances
         {
             get
             {
                 return items;
             }
         }
-        [HideInInspector] protected static readonly List<T> items = new List<T>();
+        [HideInInspector] protected static readonly HashSet<T> items = new HashSet<T>();
 
         private bool isInit = false;
 

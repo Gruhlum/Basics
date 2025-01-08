@@ -19,8 +19,12 @@ namespace HexTecGames.Basics.Profiles
 
         private void HighlightActiveProfile()
         {
-            foreach (var display in displaySpawner.GetActiveInstances())
+            foreach (var display in displaySpawner)
             {
+                if (!display.gameObject.activeSelf)
+                {
+                    continue;
+                }
                 if (display is ProfileDisplay profileDisplay)
                 {
                     if (SaveSystem.CurrentProfile == null || profileDisplay.Item == null)

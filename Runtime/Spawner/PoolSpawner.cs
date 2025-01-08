@@ -9,9 +9,9 @@ namespace HexTecGames.Basics
     /// Base class for spawners that utilize a pool of inactive instances.
     /// </summary>
     [System.Serializable]
-    public abstract class PoolSpawner<T> : BasicSpawner<T> where T : Component
+    public abstract class PoolSpawner<T> : BasicSpawner<T>, IEnumerable<T> where T : Component
     {
-        protected abstract List<T> Instances
+        protected abstract HashSet<T> Instances
         {
             get;
         }
@@ -31,8 +31,7 @@ namespace HexTecGames.Basics
             {
                 RemoveEmptyElements();
             }
-
-            T instance = Instances.Find(x => !x.gameObject.activeSelf);
+            T instance = Instances.First(x => !x.gameObject.activeSelf);
 
             if (instance == null)
             {
@@ -63,35 +62,11 @@ namespace HexTecGames.Basics
         /// <returns>total count of all active instances</returns>
         public int TotalActiveInstances()
         {
-            return Instances.FindAll(x => x.gameObject.activeSelf).Count;
+            return Instances.Count(x => x.gameObject.activeSelf);
         }
 
-        /// <returns>All instances.</returns>
-        public IEnumerable<T> GetInstances()
-        {
-            return Instances;
-        }
-
-        /// <returns>All instances that are active.</returns>
-        public IEnumerable<T> GetActiveInstances()
-        {
-            List<T> results = Instances.FindAll(x => x.gameObject.activeSelf);
-            return results;
-        }
-
-        public virtual bool Contains(GameObject go)
-        {
-            foreach (var instance in Instances)
-            {
-                if (instance.gameObject == go)
-                {
-                    return true;
-                }
-            }
-            return false;
-        }
         /// <summary>
-        /// Removes a specific instance from the internal list.
+        /// Removes a specific instance from the collection.
         /// </summary>
         /// <param name="t">item to be removed</param>
         public void Remove(T t)
@@ -101,21 +76,24 @@ namespace HexTecGames.Basics
         /// <summary>
         /// Looks for any instances on the parent of the same type and adds them to the internal list.
         /// </summary>
-        public void FindInstancesInChildren()
+        protected void FindInstancesInChildren()
         {
-            AddInstances(Parent.GetComponentsInChildren<T>().ToList());
+            AddInstances(Parent.GetComponentsInChildren<T>().ToHashSet());
         }
         /// <summary>
         /// Adds instances from one list to this list. Used when merging two Spawner.
         /// </summary>
-        /// <param name="list"></param>
+        /// <param name="set"></param>
         /// <param name="setParent"></param>
-        public void AddInstances(List<T> list, bool setParent = false)
+        public void AddInstances(HashSet<T> set, bool setParent = false)
         {
-            Instances.AddRange(list);
+            Instances.UnionWith(set);
             if (setParent)
             {
-                list.ForEach(x => x.transform.SetParent(Parent));
+                foreach (var item in set)
+                {
+                    item.transform.SetParent(Parent);
+                }
             }
         }
 
@@ -138,17 +116,11 @@ namespace HexTecGames.Basics
         }
 
         /// <summary>
-        /// Checks for any destroyed instances and removes them from the list.
+        /// Checks for any destroyed instances and removes them from the collection.
         /// </summary>
         public void RemoveEmptyElements()
         {
-            for (int i = Instances.Count - 1; i >= 0; i--)
-            {
-                if (Instances[i] == null)
-                {
-                    Instances.RemoveAt(i);
-                }
-            }
+            Instances.RemoveWhere(x => x == null);
         }
 
         /// <summary>
@@ -156,13 +128,19 @@ namespace HexTecGames.Basics
         /// </summary>
         public void DestroyUnused()
         {
-            for (int i = Instances.Count - 1; i >= 0; i--)
+            List<T> toDestroy = new List<T>();
+
+            foreach (var item in Instances)
             {
-                if (!Instances[i].gameObject.activeSelf)
+                if (!item.gameObject.activeSelf)
                 {
-                    Object.DestroyImmediate(Instances[i].gameObject);
-                    Instances.RemoveAt(i);
+                    toDestroy.Add(item);
                 }
+            }
+            for (int i = toDestroy.Count - 1; i >= 0; i--)
+            {
+                Instances.Remove(toDestroy[i]);
+                Object.DestroyImmediate(toDestroy[i]);
             }
         }
         /// <summary>
@@ -172,6 +150,16 @@ namespace HexTecGames.Basics
         {
             base.DestroyAll();
             Instances.Clear();
+        }
+
+        public IEnumerator<T> GetEnumerator()
+        {
+            return Instances.GetEnumerator();
+        }
+
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+            return Instances.GetEnumerator();
         }
     }
 }

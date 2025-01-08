@@ -163,7 +163,7 @@ namespace HexTecGames.Basics.UI
             for (int i = 0; i < transform.childCount; i++)
             {
                 var result = transform.GetChild(i);
-                if (emptySpaceSpawner.Contains(result.gameObject))
+                if (emptySpaceSpawner.Any(x => x.gameObject == result.gameObject))
                 {
                     continue;
                 }
