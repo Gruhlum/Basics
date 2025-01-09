@@ -31,13 +31,8 @@ namespace HexTecGames.Basics
             {
                 RemoveEmptyElements();
             }
-            T instance = Instances.First(x => !x.gameObject.activeSelf);
 
-            if (instance == null)
-            {
-                instance = Object.Instantiate(Prefab, Parent);
-                Instances.Add(instance);
-            }
+            T instance = GetEmptyInstance();
 
             if (activate)
             {
@@ -49,18 +44,34 @@ namespace HexTecGames.Basics
         /// <summary>
         /// Either returns a deactivated object or instantiates a new one.
         /// </summary>
-        public override T Spawn()
+        public sealed override T Spawn()
         {
             return Spawn(true);
         }
+        protected virtual T GetEmptyInstance()
+        {
+            T instance = Instances.First(x => !x.gameObject.activeSelf);
+            if (instance != null)
+            {
+                return instance;
+            }
+            return CreateNewInstance();
+        }
+
+        protected T CreateNewInstance()
+        {
+            T instance = Object.Instantiate(Prefab, Parent);
+            Instances.Add(instance);
+            return instance;
+        }
 
         /// <returns>total count of all instances</returns>
-        public int TotalInstances()
+        public virtual int TotalInstances()
         {
             return Instances.Count;
         }
         /// <returns>total count of all active instances</returns>
-        public int TotalActiveInstances()
+        public virtual int TotalActiveInstances()
         {
             return Instances.Count(x => x.gameObject.activeSelf);
         }
