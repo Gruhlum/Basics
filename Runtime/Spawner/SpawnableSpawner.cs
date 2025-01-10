@@ -35,10 +35,11 @@ namespace HexTecGames.Basics
             }
             else return CreateNewInstance();
         }
-        private void Spawnable_OnDeactivated(ISpawnable obj)
+        private void Spawnable_OnDeactivated(ISpawnable spawnable)
         {
-            deactivatedInstances.Push(obj as T);
-            Remove(obj as T);
+            deactivatedInstances.Push(spawnable as T);
+            spawnable.OnDeactivated -= Spawnable_OnDeactivated;
+            Remove(spawnable as T);
         }
     }
 }
