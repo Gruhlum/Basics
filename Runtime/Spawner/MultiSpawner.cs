@@ -30,7 +30,7 @@ namespace HexTecGames.Basics
         [SerializeField, Tooltip("Prefab that will be instantiated")] private Transform parent = default;
 
 
-        private readonly List<TypeList> typeLists = new List<TypeList>();
+        private Dictionary<Component, HashSet<Component>> instances = new Dictionary<Component, HashSet<Component>>();
 
         /// <summary>
         /// Either returns a deactivated instance or instantiates a new one.
@@ -44,42 +44,64 @@ namespace HexTecGames.Basics
                 return null;
             }
 
-            T instance = FindDeactivatedInstance<T>(prefab);
-
-            if (instance == null)
-            {
-                instance = CreateCopy(prefab);
-            }
-
+            T instance = GetEmptyInstance(prefab);
             instance.gameObject.SetActive(true);
-
             return instance;
         }
+        private T GetEmptyInstance<T>(T prefab) where T : Component
+        {
+            if (instances.TryGetValue(prefab, out HashSet<Component> set))
+            {
+                if (set.Count == 0)
+                {
+                    return CreateNewCopy(prefab, set);
+                }
+
+                var result = set.First(x => !x.gameObject.activeSelf);
+                if (result != null)
+                {
+                    return result as T;
+                }
+                else return CreateNewCopy(prefab, set);
+            }
+            else return CreateNewCopy(prefab, new HashSet<Component>());
+        }
+        private T CreateNewCopy<T>(T prefab, HashSet<Component> set) where T : Component
+        {
+            T instance = UnityEngine.Object.Instantiate(prefab, Parent);
+            set.Add(instance);
+            return instance;
+        }
+
+
         /// <returns>All instances.</returns>
-        public List<T> GetActiveInstances<T>() where T : MonoBehaviour
+        public List<T> GetAllInstances<T>(T prefab) where T : Component
         {
             List<T> results = new List<T>();
-            List<TypeList> lists = typeLists.FindAll(x => x.prefab is T);
-            foreach (var list in lists)
+
+            if (instances.TryGetValue(prefab, out HashSet<Component> set))
             {
-                foreach (var item in list.instances)
+                foreach (var component in set)
                 {
-                    if (item.gameObject.activeInHierarchy)
-                    {
-                        results.Add(item as T);
-                    }                   
-                }                
+                    results.Add(component as T);
+                }
             }
             return results;
         }
-
         /// <returns>All instances that are active.</returns>
-        public List<Component> GetAllActiveInstances()
+        public List<T> GetActiveInstances<T>(T prefab) where T : Component
         {
-            List<Component> results = new List<Component>();
-            foreach (var list in typeLists)
+            List<T> results = new List<T>();
+
+            if (instances.TryGetValue(prefab, out HashSet<Component> set))
             {
-                results.AddRange(list.instances);
+                foreach (var component in set)
+                {
+                    if (component.gameObject.activeSelf)
+                    {
+                        results.Add(component as T);
+                    }
+                }
             }
             return results;
         }
@@ -94,11 +116,12 @@ namespace HexTecGames.Basics
                 DestroyAll();
                 return;
             }
-            for (int i = typeLists.Count - 1; i >= 0; i--)
+
+            foreach (var set in instances.Values)
             {
-                for (int j = typeLists[i].instances.Count - 1; j >= 0; j--)
+                foreach (var component in set)
                 {
-                    typeLists[i].instances[j].gameObject.SetActive(false);
+                    component.gameObject.SetActive(false);
                 }
             }
         }
@@ -108,60 +131,12 @@ namespace HexTecGames.Basics
         /// </summary>
         public void DestroyAll()
         {
-            for (int i = typeLists.Count - 1; i >= 0; i--)
+            foreach (var set in instances.Values)
             {
-                for (int j = typeLists[i].instances.Count - 1; j >= 0; j--)
+                foreach (var component in set)
                 {
-                    UnityEngine.Object.Destroy(typeLists[i].instances[j].gameObject);
+                    UnityEngine.Object.Destroy(component);
                 }
-            }
-        }
-        private TypeList GetTypeList(Component prefab)
-        {
-            return typeLists.Find(x => x.prefab == prefab);
-        }
-        private T FindDeactivatedInstance<T>(Component prefab) where T : Component
-        {
-            TypeList typeList = GetTypeList(prefab);
-            if (typeList == null)
-            {
-                return null;
-            }
-            T instance = typeList.instances.Find(x => !x.gameObject.activeInHierarchy) as T;
-            return instance;
-        }
-
-        private T CreateCopy<T>(T prefab) where T : Component
-        {
-            if (prefab == null)
-            {
-                return null;
-            }
-            T clone = UnityEngine.Object.Instantiate(prefab);
-            clone.transform.SetParent(Parent);
-
-            TypeList typeList = GetTypeList(prefab);
-
-            if (typeList == null)
-            {
-                typeList = new TypeList(prefab);
-                typeLists.Add(typeList);
-            }
-            typeList.instances.Add(clone);
-            return clone;
-        }
-
-       
-
-        public class TypeList
-        {
-            public Component prefab;
-            public List<Component> instances;
-
-            public TypeList(Component prefab)
-            {
-                this.prefab = prefab;
-                instances = new List<Component>();
             }
         }
     }
