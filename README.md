@@ -18,6 +18,7 @@
 **MultiSpawner**
 - Can spawn objects of different types. Prefab needs to be provided in the **Spawn()** method
 
+--------------------------------------------------
 
 <h3>
     SaveSystem
@@ -32,6 +33,8 @@ Quickly save and load a single value (bool, int, float).
 Save and load a **Serialized Class**
 
 <img src="Documentation/Images/SaveSystem_Data.png">
+
+--------------------------------------------------
 
 <h3>
     And more!
