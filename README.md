@@ -1,8 +1,8 @@
 ﻿## 🚀 Feature Overview
 
-<h1>
+<h3>
     Spawners
-</h1>
+</h3>
 
 > Spawners simplify the Instantiation of Components. They also use <i>object pooling</i> for efficiency.
 
@@ -19,24 +19,23 @@
 - Can spawn objects of different types. Prefab needs to be provided in the **Spawn()** method
 
 
-<h1>
+<h3>
     SaveSystem
-</h1>
+</h3>
 
 > Allows you to save anything as JSON or XML file in the Documents folder of the user
 
-> Quickly save and load a single value (bool, int, float).
+Quickly save and load a single value (bool, int, float).
 
 <img src="Documentation/Images/SaveSystem_Settings.png">
 
-> Save and load a **Serialized Class**
+Save and load a **Serialized Class**
 
 <img src="Documentation/Images/SaveSystem_Data.png">
 
-
-Useful [Extensions](Runtime/Extensions.cs)
-
-<h1>
+<h3>
     And more!
-</h1>
+</h3>
 
+- Useful [Extensions](Runtime/Extensions.cs)
+- <i> more to be documented soon</i>
