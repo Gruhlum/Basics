@@ -173,7 +173,7 @@ namespace HexTecGames
             activeElementsIndex = GetActiveItemIndex();
 
             T result = items[activeLayerIndex][activeElementsIndex];
-            if (ActiveItem.Equals(result))
+            if (ActiveItem != null && ActiveItem.Equals(result))
             {
                 return;
             }
