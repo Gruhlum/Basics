@@ -126,7 +126,6 @@ namespace HexTecGames
                 items[index] = new List<T>();
             }
             items[index].Add(item);
-            Debug.Log(item);
             UpdateActiveItem();
         }
         public void Remove(T item, int index)
