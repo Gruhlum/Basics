@@ -50,10 +50,20 @@ namespace HexTecGames.Basics
         }
         protected virtual T GetEmptyInstance()
         {
-            T instance = Instances.First(x => !x.gameObject.activeSelf);
-            if (instance != null)
+            if (Instances == null)
             {
-                return instance;
+                return CreateNewInstance();
+            }
+            if (Instances.Count <= 0)
+            {
+                return CreateNewInstance();
+            }
+            foreach (var instance in Instances)
+            {
+                if (!instance.gameObject.activeSelf)
+                {
+                    return instance;
+                }
             }
             return CreateNewInstance();
         }

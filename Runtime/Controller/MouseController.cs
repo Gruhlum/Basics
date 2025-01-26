@@ -128,7 +128,7 @@ namespace HexTecGames.Basics
         {
             if (Input.GetMouseButtonDown(btn))
             {
-                return ButtonType.Clicked;
+                return ButtonType.Held;
             }
             if (Input.GetMouseButton(btn))
             {

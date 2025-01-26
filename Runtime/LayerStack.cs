@@ -6,25 +6,25 @@ using UnityEngine;
 namespace HexTecGames
 {
     [System.Serializable]
-    public abstract class BaseStack<T>
+    public class LayerStack<T>
     {
-        public float RotationDuration
-        {
-            get
-            {
-                return rotationDuration;
-            }
-            set
-            {
-                rotationDuration = value;
-            }
-        }
-        private float rotationDuration;
+        //public float RotationDuration
+        //{
+        //    get
+        //    {
+        //        return rotationDuration;
+        //    }
+        //    set
+        //    {
+        //        rotationDuration = value;
+        //    }
+        //}
+        //private float rotationDuration;
 
-        private bool rotateItems;
+        //private bool rotateItems;
 
-        private float rotationTimer;
-        private int rotationIndex;
+        //private float rotationTimer;
+        //private int rotationIndex;
 
         private int activeElementsIndex = -1;
         private int activeLayerIndex = -1;
@@ -43,25 +43,25 @@ namespace HexTecGames
         private T activeItem;
 
 
-        private List<T>[] items;
+        private List<T>[] items = new List<T>[4];
 
         public event Action<T> OnActiveItemChanged;
 
 
-        public BaseStack(int layers)
+        public LayerStack()
         {
-            items = new List<T>[layers];
+
         }
-        public BaseStack(int layers, float rotationTime) : this(layers)
-        {
-            if (rotationTime <= 0)
-            {
-                Debug.Log("rotationTime needs to be greater than 0");
-                return;
-            }
-            RotationDuration = rotationTime;
-            rotateItems = true;
-        }
+        //public LayerStack(int layers, float rotationTime) : this(layers)
+        //{
+        //    if (rotationTime <= 0)
+        //    {
+        //        Debug.Log("rotationTime needs to be greater than 0");
+        //        return;
+        //    }
+        //    RotationDuration = rotationTime;
+        //    rotateItems = true;
+        //}
 
         public void Clear()
         {
@@ -73,38 +73,44 @@ namespace HexTecGames
                 }
             }
         }
-        public void AdvanceTime(float increase)
-        {
-            if (!rotateItems)
-            {
-                return;
-            }
-            if (activeElementsIndex <= -1)
-            {
-                return;
-            }
-            if (activeLayerIndex <= -1)
-            {
-                return;
-            }
-            if (items[activeLayerIndex].Count <= 1)
-            {
-                return;
-            }
+        //public void AdvanceTime(float increase)
+        //{
+        //    if (!rotateItems)
+        //    {
+        //        return;
+        //    }
+        //    if (activeElementsIndex <= -1)
+        //    {
+        //        return;
+        //    }
+        //    if (activeLayerIndex <= -1)
+        //    {
+        //        return;
+        //    }
+        //    if (items[activeLayerIndex].Count <= 1)
+        //    {
+        //        return;
+        //    }
 
-            rotationTimer += increase;
-            if (rotationTimer >= RotationDuration)
-            {
-                rotationTimer = 0;
-                rotationIndex++;
-                if (rotationIndex >= items[activeLayerIndex].Count)
-                {
-                    rotationIndex = 0;
-                }
-                UpdateActiveItem();
-            }
-        }
-        public void AddItem(T item, int index)
+        //    rotationTimer += increase;
+        //    if (rotationTimer >= RotationDuration)
+        //    {
+        //        rotationTimer = 0;
+        //        rotationIndex++;
+        //        if (rotationIndex >= items[activeLayerIndex].Count)
+        //        {
+        //            rotationIndex = 0;
+        //        }
+        //        UpdateActiveItem();
+        //    }
+        //}
+
+        /// <summary>
+        /// Adds an item to the stack.
+        /// </summary>
+        /// <param name="item"></param>
+        /// <param name="index">The items with highest index will be shown first. Needs to be >= 0</param>
+        public void Add(T item, int index)
         {
             if (index < 0)
             {
@@ -113,17 +119,17 @@ namespace HexTecGames
             }
             if (index >= items.Length)
             {
-                Debug.Log("index out of Range!");
-                return;
+                Array.Resize(ref items, index + 1);
             }
             if (items[index] == null)
             {
                 items[index] = new List<T>();
             }
             items[index].Add(item);
+            Debug.Log(item);
             UpdateActiveItem();
         }
-        public void RemoveItem(T item, int index)
+        public void Remove(T item, int index)
         {
             if (index < 0)
             {
@@ -147,32 +153,37 @@ namespace HexTecGames
         {
             for (int i = 0; i < list.Count; i++)
             {
-                if (CompareItems(list[i], item))
+                if (list[i].Equals(item))
                 {
                     return i;
                 }
             }
             return -1;
         }
-        protected abstract bool CompareItems(T item1, T item2);
         private void UpdateActiveItem()
         {
             activeLayerIndex = GetTopLayerIndex();
 
-            if (activeLayerIndex <= -1 || activeElementsIndex <= -1)
+            if (activeLayerIndex <= -1)
             {
                 Debug.Log("Empty stack!");
                 return;
             }
 
+            activeElementsIndex = GetActiveItemIndex();
+
             T result = items[activeLayerIndex][activeElementsIndex];
-            if (CompareItems(ActiveItem, result))
+            if (ActiveItem.Equals(result))
             {
                 return;
             }
 
             ActiveItem = result;
             OnActiveItemChanged?.Invoke(ActiveItem);
+        }
+        private int GetActiveItemIndex()
+        {
+            return 0;
         }
         private int GetTopLayerIndex()
         {

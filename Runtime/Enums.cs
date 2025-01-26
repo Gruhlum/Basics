@@ -4,5 +4,5 @@ using UnityEngine;
 
 namespace HexTecGames.Basics
 {
-    public enum ButtonType { None, Down, Clicked, Up }
+    public enum ButtonType { None, Down, Held, Up }
 }
