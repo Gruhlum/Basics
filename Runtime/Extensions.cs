@@ -67,6 +67,56 @@ public static class Extensions
         return (float)Convert.ToDouble(text);
     }
 
+    #region Layout Components
+    public static void CopyData(this HorizontalOrVerticalLayoutGroup reciever, HorizontalOrVerticalLayoutGroup sender)
+    {
+        reciever.padding = sender.padding;
+        reciever.childAlignment = sender.childAlignment;
+
+        reciever.spacing = sender.spacing;
+        reciever.reverseArrangement = sender.reverseArrangement;
+
+        reciever.childControlHeight = sender.childControlHeight;
+        reciever.childForceExpandHeight = sender.childForceExpandHeight;
+        reciever.childForceExpandHeight = sender.childForceExpandHeight;
+
+        reciever.childControlWidth = sender.childControlWidth;
+        reciever.childForceExpandWidth = sender.childForceExpandWidth;
+        reciever.childForceExpandWidth = sender.childForceExpandWidth;
+    }
+    public static void CopyData(this LayoutElement reciever, LayoutElement sender)
+    {
+        reciever.layoutPriority = sender.layoutPriority;
+        reciever.ignoreLayout = sender.ignoreLayout;
+
+        reciever.minHeight = sender.minHeight;
+        reciever.flexibleHeight = sender.flexibleHeight;
+        reciever.preferredHeight = sender.preferredHeight;
+
+        reciever.minWidth = sender.minWidth;
+        reciever.flexibleWidth = sender.flexibleWidth;
+        reciever.preferredWidth = sender.preferredWidth;
+    }
+    public static void CopyData(this LayoutElement reciever, LayoutElement sender, Orientation orientation)
+    {
+        if (orientation == Orientation.Vertical)
+        {
+            reciever.minHeight = sender.minHeight;
+            reciever.flexibleHeight = sender.flexibleHeight;
+            reciever.preferredHeight = sender.preferredHeight;
+        }
+        else
+        {
+            reciever.minWidth = sender.minWidth;
+            reciever.flexibleWidth = sender.flexibleWidth;
+            reciever.preferredWidth = sender.preferredWidth;
+        }
+
+        reciever.layoutPriority = sender.layoutPriority;
+        reciever.ignoreLayout = sender.ignoreLayout;
+    }
+    #endregion
+
     #region Image and SpriteRenderer
     public static void AddAlpha(this Image img, float alpha)
     {
