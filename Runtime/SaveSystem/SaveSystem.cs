@@ -435,7 +435,8 @@ namespace HexTecGames.Basics
         /// <returns>The loaded objects, or an empty list of none could be found.</returns>
         public static List<T> LoadJSONAll<T>(string directory) where T : class
         {
-            var results = FindAllFiles(directory);
+            string path = Path.Combine(ProfilePath, directory);
+            var results = FindAllFiles(path);
             List<T> levels = new List<T>();
             if (results == null)
             {
@@ -443,7 +444,7 @@ namespace HexTecGames.Basics
             }
             foreach (var result in results)
             {
-                levels.Add(LoadJSON<T>(result, directory));
+                levels.Add(LoadJSON<T>(FileManager.GetEndOfPathName(result), directory));
             }
             return levels;
         }
@@ -513,7 +514,8 @@ namespace HexTecGames.Basics
         /// <returns>The loaded objects, or an empty list of none could be found.</returns>
         public static List<T> LoadXMLAll<T>(string directory) where T : class
         {
-            var results = FindAllFiles(directory);
+            string path = Path.Combine(ProfilePath, directory);
+            var results = FindAllFiles(path);
             List<T> levels = new List<T>();
             if (results == null)
             {
@@ -521,7 +523,7 @@ namespace HexTecGames.Basics
             }
             foreach (var result in results)
             {
-                levels.Add(LoadXML<T>(result, directory));
+                levels.Add(LoadXML<T>(FileManager.GetEndOfPathName(result), directory));
             }
             return levels;
         }
