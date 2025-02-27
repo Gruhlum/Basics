@@ -437,6 +437,10 @@ namespace HexTecGames.Basics
         {
             var results = FindAllFiles(directory);
             List<T> levels = new List<T>();
+            if (results == null)
+            {
+                return levels;
+            }
             foreach (var result in results)
             {
                 levels.Add(LoadJSON<T>(result, directory));
@@ -510,11 +514,11 @@ namespace HexTecGames.Basics
         public static List<T> LoadXMLAll<T>(string directory) where T : class
         {
             var results = FindAllFiles(directory);
+            List<T> levels = new List<T>();
             if (results == null)
             {
-                return null;
+                return levels;
             }
-            List<T> levels = new List<T>();
             foreach (var result in results)
             {
                 levels.Add(LoadXML<T>(result, directory));
