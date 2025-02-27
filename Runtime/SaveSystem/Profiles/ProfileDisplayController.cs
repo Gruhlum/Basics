@@ -9,9 +9,7 @@ namespace HexTecGames.Basics.Profiles
     {
         [SerializeField] private ProfileController profileC = default;
 
-
-
-        protected override void DisplayItems()
+        public override void DisplayItems()
         {
             base.DisplayItems();
             HighlightActiveProfile();

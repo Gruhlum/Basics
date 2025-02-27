@@ -8,7 +8,8 @@ namespace HexTecGames.Basics.UI.Buttons
     public class ClipboardButton : BaseButton
     {
         [SerializeField] private TMP_Text textGUI = default;
-        public string clipboardText;
+        [SerializeField] private bool useTextGUI = default;
+        [DrawIf(nameof(useTextGUI), false)] public string clipboardText;
         public bool showConfirmation = true;
         [DrawIf(nameof(showConfirmation), true)] public string confirmationText = "Copied!";
 
@@ -35,7 +36,11 @@ namespace HexTecGames.Basics.UI.Buttons
 
         protected override void ClickEffect()
         {
-            GUIUtility.systemCopyBuffer = clipboardText;
+            if (useTextGUI)
+            {
+                GUIUtility.systemCopyBuffer = textGUI.text;
+            }
+            else GUIUtility.systemCopyBuffer = clipboardText;
             if (textGUI != null && showConfirmation)
             {
                 StartCoroutine(AnimateConfirmText());
@@ -50,7 +55,7 @@ namespace HexTecGames.Basics.UI.Buttons
             isAnimating = true;
             string oldText = textGUI.text;
             textGUI.text = confirmationText;
-            
+
             yield return new WaitForSeconds(0.3f);
 
             textGUI.text = oldText;

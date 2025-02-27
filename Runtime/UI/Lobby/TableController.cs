@@ -3,14 +3,21 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using static UnityEngine.UI.ContentSizeFitter;
 
 namespace HexTecGames.Basics.UI
 {
-    public class TableController : MonoBehaviour
+    public class TableController : LayoutGroup
     {
         [SerializeField] private HorizontalOrVerticalLayoutGroup parentLayout = default;
-        [SerializeField] private HorizontalOrVerticalLayoutGroup header = default;
-        [SerializeField] private List<LayoutGroup> contentItems = default;
+        [SerializeField] private List<HorizontalOrVerticalLayoutGroup> contentItems = default;
+        [Space]
+        [SerializeField] private bool useHeader = default;
+        [SerializeField, DrawIf(nameof(useHeader), true)] private HorizontalOrVerticalLayoutGroup header = default;
+        [Space]
+        [SerializeField] private FitMode fitMode = default;
+
+        private DrivenRectTransformTracker drivingTracker;
 
         private Transform Parent
         {
@@ -24,7 +31,7 @@ namespace HexTecGames.Basics.UI
             }
         }
 
-        private Orientation IsVertical
+        private Orientation Orientation
         {
             get
             {
@@ -39,32 +46,46 @@ namespace HexTecGames.Basics.UI
             }
         }
 
-
-        private void Reset()
+#if UNITY_EDITOR
+        protected override void Reset()
         {
+            base.Reset();
             parentLayout = GetComponent<HorizontalOrVerticalLayoutGroup>();
             header = FindHeader();
             contentItems = FindContentItems();
             Refresh();
         }
+#endif
 
         [ContextMenu("Refresh")]
         public void Refresh()
         {
+            //SetDrivingState();
             SetLayoutGroupValues();
             SetCellValues();
         }
-
-        private List<LayoutGroup> FindContentItems()
+        private void SetDrivingState()
+        {
+            drivingTracker.Clear();
+            DrivenTransformProperties drivenProperties = Orientation == Orientation.Vertical ? DrivenTransformProperties.SizeDeltaX : DrivenTransformProperties.SizeDeltaY;
+            foreach (var item in contentItems)
+            {
+                for (int i = 0; i < item.transform.childCount; i++)
+                {
+                    drivingTracker.Add(this, item.transform.GetChild(i).GetComponent<RectTransform>(), drivenProperties);
+                }
+            }
+        }
+        private List<HorizontalOrVerticalLayoutGroup> FindContentItems()
         {
             if (Parent == null || Parent.childCount <= 1)
             {
                 return null;
             }
-            List<LayoutGroup> results = new List<LayoutGroup>();
+            List<HorizontalOrVerticalLayoutGroup> results = new List<HorizontalOrVerticalLayoutGroup>();
             for (int i = 1; i < Parent.childCount; i++)
             {
-                if (Parent.GetChild(i).TryGetComponent(out LayoutGroup layoutGroup))
+                if (Parent.GetChild(i).TryGetComponent(out HorizontalOrVerticalLayoutGroup layoutGroup))
                 {
                     results.Add(layoutGroup);
                 }
@@ -74,38 +95,92 @@ namespace HexTecGames.Basics.UI
 
         private void SetLayoutGroupValues()
         {
-            if (header.TryGetComponent(out HorizontalOrVerticalLayoutGroup headerGroup))
+            if (contentItems == null || contentItems.Count == 0)
+            {
+                return;
+            }
+            HorizontalOrVerticalLayoutGroup leader;
+
+            if (useHeader && header != null)
+            {
+                leader = header;
+            }
+            else leader = contentItems[0];
+
+            if (leader.TryGetComponent(out HorizontalOrVerticalLayoutGroup leaderGroup))
             {
                 foreach (var item in contentItems)
                 {
-                    if (item.TryGetComponent(out HorizontalOrVerticalLayoutGroup contentGroup))
+                    if (item != null && item.TryGetComponent(out HorizontalOrVerticalLayoutGroup contentGroup))
                     {
-                        contentGroup.CopyData(headerGroup);
+                        contentGroup.CopyData(leaderGroup);
                     }
                 }
             }
         }
         private void SetCellValues()
         {
-            if (contentItems == null)
+            if (contentItems == null || contentItems.Count == 0)
+            {
+                return;
+            }
+            if (fitMode == FitMode.Unconstrained)
             {
                 return;
             }
 
-            Orientation orientation = IsVertical;
-
-            for (int i = 0; i < header.transform.childCount; i++)
+            List<HorizontalOrVerticalLayoutGroup> allItems = new List<HorizontalOrVerticalLayoutGroup>(contentItems);
+            if (useHeader && header != null)
             {
-                Transform headerCell = header.transform.GetChild(i);
-                if (headerCell.TryGetComponent(out LayoutElement headerLayout))
+                allItems.Add(header);
+            }
+
+            int totalRows = allItems[0].transform.childCount;
+            Orientation orientation = Orientation;
+
+            for (int i = 0; i < totalRows; i++)
+            {
+                float minSize = 0;
+                foreach (var item in allItems)
                 {
-                    foreach (var contentItem in contentItems)
+                    float result = 0;
+                    if (orientation == Orientation.Vertical)
                     {
-                        Transform contentCell = contentItem.transform.GetChild(i);
-                        if (contentCell.TryGetComponent(out LayoutElement contentLayout))
+                        if (fitMode == FitMode.MinSize)
                         {
-                            contentLayout.CopyData(headerLayout, orientation);
+                            result = LayoutUtility.GetMinWidth(item.transform.GetChild(i).GetComponent<RectTransform>());
                         }
+                        else if (fitMode == FitMode.PreferredSize)
+                        {
+                            result = LayoutUtility.GetPreferredWidth(item.transform.GetChild(i).GetComponent<RectTransform>());
+                        }
+                    }
+                    else
+                    {
+                        if (fitMode == FitMode.MinSize)
+                        {
+                            result = LayoutUtility.GetMinHeight(item.transform.GetChild(i).GetComponent<RectTransform>());
+                        }
+                        else if (fitMode == FitMode.PreferredSize)
+                        {
+                            result = LayoutUtility.GetPreferredHeight(item.transform.GetChild(i).GetComponent<RectTransform>());
+                        }
+                    }
+                    if (minSize < result)
+                    {
+                        minSize = result;
+                    }
+                }
+                foreach (var item in allItems)
+                {
+                    RectTransform result = item.transform.GetChild(i).GetComponent<RectTransform>();
+                    if (orientation == Orientation.Vertical)
+                    {
+                        result.sizeDelta = new Vector2(minSize, result.sizeDelta.y);
+                    }
+                    else
+                    {
+                        result.sizeDelta = new Vector2(result.sizeDelta.x, minSize);
                     }
                 }
             }
@@ -122,6 +197,21 @@ namespace HexTecGames.Basics.UI
                 return layoutGroup;
             }
             return null;
+        }
+
+        public override void CalculateLayoutInputVertical()
+        {
+            Refresh();
+        }
+
+        public override void SetLayoutHorizontal()
+        {
+            Refresh();
+        }
+
+        public override void SetLayoutVertical()
+        {
+            Refresh();
         }
     }
 }

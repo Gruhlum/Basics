@@ -31,7 +31,7 @@ namespace HexTecGames.Basics.UI
                 DisplayItems();
             }
         }
-        protected override void DisplayItems()
+        public override void DisplayItems()
         {
             if (displays != null && displays.Count > 0)
             {

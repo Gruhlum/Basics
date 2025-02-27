@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Object = System.Object;
 
 namespace HexTecGames.Basics
 {
@@ -23,13 +24,13 @@ namespace HexTecGames.Basics
                 OnAllowedChanged?.Invoke(allowed);
             }
         }
-        [SerializeField] private bool allowed = true;
+        private bool allowed = true;
 
-        private readonly List<UnityEngine.Object> blockers = new List<UnityEngine.Object>();
+        private readonly List<Object> blockers = new List<Object>();
 
         public event Action<bool> OnAllowedChanged;
 
-        public void SetPermissionState(UnityEngine.Object sender, bool allow)
+        public void SetPermissionState(Object sender, bool allow)
         {
             if (allow)
             {

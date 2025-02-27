@@ -7,8 +7,8 @@ using Random = UnityEngine.Random;
 
 namespace HexTecGames
 {
-	public static class UtilityBasics
-	{
+    public static class BasicUtilities
+    {
         public static string ToRomanNumber(int number)
         {
             StringBuilder result = new StringBuilder();
@@ -26,6 +26,18 @@ namespace HexTecGames
             }
             return result.ToString();
         }
+        public static Color GenerateRandomColor(float intensity)
+        {
+            int rngColor = Random.Range(0, 3);
+            float lowValue = Mathf.Lerp(0.5f, 0, intensity);
+            float someValue = Mathf.Lerp(0.5f, 1, intensity);
+            float highValueMin = Random.Range(someValue / 2f, someValue);
 
+            float r = rngColor == 0 ? lowValue : Random.Range(highValueMin, someValue);
+            float g = rngColor == 1 ? lowValue : Random.Range(highValueMin, someValue);
+            float b = rngColor == 2 ? lowValue : Random.Range(highValueMin, someValue);
+
+            return new Color(r, g, b, 1);
+        }
     }
 }

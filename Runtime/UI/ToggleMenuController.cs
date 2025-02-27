@@ -35,9 +35,7 @@ namespace HexTecGames.Basics.UI
                 return;
             }
 
-            bool isActive = canvas.activeSelf;
-
-            if (SaveSystem.LoadSettings(saveString, ref isActive))
+            if (SaveSystem.LoadSettings(saveString, out bool isActive))
             {
                 SetActive(isActive);
             }

@@ -57,7 +57,7 @@ namespace HexTecGames.Basics.UI.Buttons
         {
             SelectButton(radioBtn);
         }
-        protected void SelectButton(RadioButton radioBtn, bool notify = true)
+        protected virtual void SelectButton(RadioButton radioBtn, bool notify = true)
         {
             foreach (var btn in buttons)
             {

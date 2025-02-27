@@ -27,7 +27,7 @@ namespace HexTecGames.Basics.UI
         {
             display.Setup(item, this);
         }
-        protected virtual void DisplayItems()
+        public virtual void DisplayItems()
         {
             if (displays != null && displays.Count > 0)
             {
@@ -78,6 +78,11 @@ namespace HexTecGames.Basics.UI
         }
         public virtual void SetItems(List<T> items, bool display = true)
         {
+            if (items == null)
+            {
+                ClearItems(display);
+                return;
+            }
             this.items = new List<T>();
             this.items.AddRange(items);
             if (display)
@@ -85,7 +90,7 @@ namespace HexTecGames.Basics.UI
                 DisplayItems();
             }
         }
-        public void ClearItems(bool display = true)
+        public virtual void ClearItems(bool display = true)
         {
             items.Clear();
             if (display)

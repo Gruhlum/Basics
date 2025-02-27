@@ -167,6 +167,14 @@ public static class Extensions
         sr.color = col;
     }
     #endregion
+    public static bool IsSameColor(this Color32 c1, Color32 c2)
+    {
+        if (c1.r == c2.r && c1.b == c2.b && c1.g == c2.g)
+        {
+            return true;
+        }
+        return false;
+    }
     public static IEnumerator Fade(this CanvasGroup canvasGroup, float startAlpha, float endAlpha, float speed = 1f)
     {
         if (speed <= 0)

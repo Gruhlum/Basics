@@ -237,7 +237,7 @@ namespace HexTecGames.Basics
         /// </summary>
         /// <param name="key">The key that this value is saved under.</param>
         /// <returns>A string value, or null if none could be found.</returns>
-        public static string LoadSettings(string key)
+        private static string LoadSettings(string key)
         {
             if (settingsData == null)
             {
@@ -246,11 +246,24 @@ namespace HexTecGames.Basics
 
             return settingsData.GetOption(key);
         }
-        public static bool LoadSettings(string key, ref int value)
+        public static bool LoadSettings(string key, out string value, string defaultValue = null)
         {
             string result = LoadSettings(key);
             if (string.IsNullOrEmpty(result))
             {
+                value = defaultValue;
+                return false;
+            }
+
+            value = result;
+            return true;
+        }
+        public static bool LoadSettings(string key, out int value, int defaultValue = 0)
+        {
+            string result = LoadSettings(key);
+            if (string.IsNullOrEmpty(result))
+            {
+                value = defaultValue;
                 return false;
             }
 
@@ -262,14 +275,16 @@ namespace HexTecGames.Basics
             catch (Exception e)
             {
                 Debug.Log("Key: " + key + " Error: " + e.Message);
+                value = defaultValue;
                 return false;
             }
         }
-        public static bool LoadSettings(string key, ref float value)
+        public static bool LoadSettings(string key, out float value, float defaultValue = 0)
         {
             string result = LoadSettings(key);
             if (string.IsNullOrEmpty(result))
             {
+                value = defaultValue;
                 return false;
             }
 
@@ -281,14 +296,16 @@ namespace HexTecGames.Basics
             catch (Exception e)
             {
                 Debug.Log("Key: " + key + " Error: " + e.Message);
+                value = defaultValue;
                 return false;
             }
         }
-        public static bool LoadSettings(string key, ref bool value)
+        public static bool LoadSettings(string key, out bool value, bool defaultValue = false)
         {
             string result = LoadSettings(key);
             if (string.IsNullOrEmpty(result))
             {
+                value = defaultValue;
                 return false;
             }
 
@@ -299,8 +316,8 @@ namespace HexTecGames.Basics
             }
             catch (Exception e)
             {
-                Debug.Log("Key: " + key + " Error: "  + e.Message);
-                value = false;
+                Debug.Log("Key: " + key + " Error: " + e.Message);
+                value = defaultValue;
                 return false;
             }
         }

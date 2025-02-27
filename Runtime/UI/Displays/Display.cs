@@ -4,21 +4,8 @@ using UnityEngine;
 
 namespace HexTecGames.Basics.UI
 {
-    public abstract class Display<T> : MonoBehaviour
+    public abstract class Display<T> : DisplayBase<T>
     {
-        public T Item
-        {
-            get
-            {
-                return item;
-            }
-            private set
-            {
-                item = value;
-            }
-        }
-        [SerializeField] private T item = default;
-
         [SerializeField] protected DisplayControllerBase<T> displayC;
 
         public bool IsHighlighted
@@ -42,25 +29,6 @@ namespace HexTecGames.Basics.UI
         public void SetController(DisplayController<T> dc)
         {
             this.displayC = dc;
-        }
-
-#if UNITY_EDITOR
-        [ContextMenu("Draw Item")]
-        public void DrawItem()
-        {
-            if (item != null)
-            {
-                DrawItem(item);
-            }
-        }
-#endif
-
-        protected abstract void DrawItem(T item);
-
-        public virtual void SetItem(T item)
-        {
-            this.Item = item;
-            DrawItem(item);
         }
         public virtual void OnDisplayClicked()
         {
