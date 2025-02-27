@@ -80,12 +80,13 @@ namespace HexTecGames.Basics
         }
         public static List<string> GetFileNames(string path)
         {
-            if (!File.Exists(path))
+            if (!Directory.Exists(path))
             {
-                Debug.LogWarning("File does not exist: " + path);
+                Debug.Log("Directory does not exist: " + path);
                 return null;
             }
-            return GetPathEndObjects(Directory.GetFiles(path));
+            var results = Directory.GetFiles(path);
+            return GetPathEndObjects(results);
         }
         public static List<string> GetDirectoryNames(string path)
         {

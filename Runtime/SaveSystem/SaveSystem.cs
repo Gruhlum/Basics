@@ -345,13 +345,11 @@ namespace HexTecGames.Basics
                 Directory.CreateDirectory(Path.Combine(ProfilePath, directory));
             }
         }
-        public static List<string> FindAllFiles()
-        {
-            return FindAllFiles(defaultFolderName);
-        }
         public static List<string> FindAllFiles(string directory)
         {
-            return FileManager.GetFileNames(directory);
+            string path = Path.Combine(ProfilePath, directory);
+            Debug.Log(ProfilePath + " - " + path);
+            return FileManager.GetFileNames(path);
         }
         /// <summary>
         /// Saves an object as a JSON file inside the BaseDirectory folder.
@@ -435,8 +433,7 @@ namespace HexTecGames.Basics
         /// <returns>The loaded objects, or an empty list of none could be found.</returns>
         public static List<T> LoadJSONAll<T>(string directory) where T : class
         {
-            string path = Path.Combine(ProfilePath, directory);
-            var results = FindAllFiles(path);
+            var results = FindAllFiles(directory);
             List<T> levels = new List<T>();
             if (results == null)
             {
@@ -514,8 +511,7 @@ namespace HexTecGames.Basics
         /// <returns>The loaded objects, or an empty list of none could be found.</returns>
         public static List<T> LoadXMLAll<T>(string directory) where T : class
         {
-            string path = Path.Combine(ProfilePath, directory);
-            var results = FindAllFiles(path);
+            var results = FindAllFiles(directory);
             List<T> levels = new List<T>();
             if (results == null)
             {
