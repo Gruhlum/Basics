@@ -29,6 +29,15 @@ namespace HexTecGames.Basics
             return null;
         }
 
+        public void DeleteOption(string key)
+        {
+            var result = Values.Find(x => x.Key == key);
+            if (result != null)
+            {
+                Values.Remove(result);
+            }
+        }
+
         [System.Serializable]
         public class Setting
         {

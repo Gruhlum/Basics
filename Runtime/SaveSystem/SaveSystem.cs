@@ -190,6 +190,14 @@ namespace HexTecGames.Basics
             return results;
         }
 
+        private static void SaveSettingsToFile()
+        {
+            if (settingsData == null)
+            {
+                return;
+            }
+            SaveJSON(settingsData, settingsFileName);
+        }
         /// <summary>
         /// Saves a value under a specified key inside a JSON file. 
         /// </summary>
@@ -230,7 +238,7 @@ namespace HexTecGames.Basics
                 settingsData = LoadSettingsData();
             }
             settingsData.SetOption(key, value.ToString());
-            SaveJSON(settingsData, settingsFileName);
+            SaveSettingsToFile();
         }
         /// <summary>
         /// Retrieves a value assigned to the key.
@@ -321,6 +329,15 @@ namespace HexTecGames.Basics
                 return false;
             }
         }
+        public static void DeleteSettings(string key)
+        {
+            if (settingsData == null)
+            {
+                settingsData = LoadSettingsData();
+            }
+            settingsData.DeleteOption(key);
+            SaveSettingsToFile();
+        }
         private static SettingsData LoadSettingsData()
         {
             SettingsData data = LoadJSON<SettingsData>(settingsFileName);
@@ -329,6 +346,11 @@ namespace HexTecGames.Basics
                 return new SettingsData();
             }
             else return data;
+        }
+        public static void DeleteFile(string fileName, string directory)
+        {
+            string path = CreatePath(fileName, directory);
+            FileManager.DeleteFile(path);
         }
         private static void CheckDirectories(string directory)
         {
@@ -345,10 +367,13 @@ namespace HexTecGames.Basics
                 Directory.CreateDirectory(Path.Combine(ProfilePath, directory));
             }
         }
+        private static string CreatePath(string fileName, string directory)
+        {
+            return Path.Combine(ProfilePath, directory, fileName);
+        }
         public static List<string> FindAllFiles(string directory)
         {
             string path = Path.Combine(ProfilePath, directory);
-            Debug.Log(ProfilePath + " - " + path);
             return FileManager.GetFileNames(path);
         }
         /// <summary>
@@ -372,7 +397,7 @@ namespace HexTecGames.Basics
         /// <param name="prettyPrint">Should the JSON file have "prettyPrint" or not.</param>
         public static void SaveJSON(object obj, string fileName, string directory, bool prettyPrint = false)
         {
-            string path = Path.Combine(ProfilePath, directory, fileName);
+            string path = CreatePath(fileName, directory);
             try
             {
                 CheckDirectories(directory);
@@ -464,9 +489,10 @@ namespace HexTecGames.Basics
         /// <param name="directory">The name of the subfolder.</param>
         public static void SaveXML(object obj, string fileName, string directory)
         {
+            string path = CreatePath(fileName, directory);
             CheckDirectories(directory);
             var serializer = new XmlSerializer(obj.GetType());
-            using (var stream = new FileStream(Path.Combine(ProfilePath, directory, fileName), FileMode.Create))
+            using (var stream = new FileStream(path, FileMode.Create))
             {
                 serializer.Serialize(stream, obj);
             }
