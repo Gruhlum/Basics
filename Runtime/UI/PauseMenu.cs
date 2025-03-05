@@ -24,13 +24,14 @@ namespace HexTecGames.Basics
 
         public void ToggleMenu()
         {
-            if (AllowToggle.Allowed)
-            {
-                ToggleMenu(!menuGO.activeInHierarchy);
-            }
+            ToggleMenu(!menuGO.activeInHierarchy);
         }
         public virtual void ToggleMenu(bool active)
         {
+            if (!AllowToggle.Allowed)
+            {
+                return;
+            }
             menuGO.SetActive(active);
             OnMenuToggled?.Invoke(active);
         }
