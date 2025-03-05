@@ -24,14 +24,18 @@ namespace HexTecGames.Basics
 
         public void ToggleMenu()
         {
-            ToggleMenu(!menuGO.activeInHierarchy);
+            ActivateMenu(!menuGO.activeInHierarchy);
         }
-        public virtual void ToggleMenu(bool active)
+        public void ActivateMenu(bool active)
         {
             if (!AllowToggle.Allowed)
             {
                 return;
             }
+            ActivateMenuEffect(active);
+        }
+        protected virtual void ActivateMenuEffect(bool active)
+        {
             menuGO.SetActive(active);
             OnMenuToggled?.Invoke(active);
         }
