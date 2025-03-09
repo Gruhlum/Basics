@@ -6,11 +6,9 @@ using UnityEngine.SceneManagement;
 
 namespace HexTecGames.Basics
 {
-	public class MenuController : MonoBehaviour
-	{
-        [SerializeField] private string startMenuName = "StartScene";
-        [SerializeField] private string levelName = "MainScene";
-
+    [CreateAssetMenu(menuName = "HexTecGames/Basics/SceneUtility")]
+    public class SceneUtility : ScriptableObject
+    {
         public void LoadNextScene()
         {
             int index = SceneManager.GetActiveScene().buildIndex + 1;
@@ -23,14 +21,6 @@ namespace HexTecGames.Basics
         public void LoadScene(string name)
         {
             SceneManager.LoadScene(name);
-        }
-        public void LoadStartMenuScene()
-        {
-            LoadScene(startMenuName);
-        }
-        public void StartGame()
-        {
-            LoadScene(levelName);
         }
         public void QuitGame()
         {
