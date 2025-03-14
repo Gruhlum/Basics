@@ -1,4 +1,5 @@
 ﻿using HexTecGames.Basics.UI;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
@@ -8,7 +9,7 @@ using UnityEngine.UI;
 
 namespace HexTecGames.Basics.Profiles
 {
-    public class ProfileDisplay : Display<Profile>, IPointerEnterHandler, IPointerExitHandler
+    public class ProfileDisplay : Display<ProfileDisplay, Profile>, IPointerEnterHandler, IPointerExitHandler
     {
         [SerializeField] private TMP_Text nameGUI = default;
         [SerializeField] private GameObject buttonsGO = default;
@@ -17,6 +18,8 @@ namespace HexTecGames.Basics.Profiles
         [SerializeField] private Color normalColor = Color.white;
         [SerializeField] private Color highlightedColor = Color.white;
 
+        public event Action<ProfileDisplay> OnDeleteClicked;
+        public event Action<ProfileDisplay> OnRenameClicked;
 
         private void OnDisable()
         {
@@ -47,19 +50,13 @@ namespace HexTecGames.Basics.Profiles
             buttonsGO.SetActive(show);
         }
 
-        public void DeleteClicked()
+        public void OnDeleteClick()
         {
-            if (displayC is ProfileDisplayController profileDisplayC)
-            {
-                profileDisplayC.DeleteClicked(this);
-            }
+            OnDeleteClicked?.Invoke(this);
         }
-        public void RenameClicked()
+        public void OnRenameClick()
         {
-            if (displayC is ProfileDisplayController profileDisplayC)
-            {
-                profileDisplayC.RenameClicked(this);
-            }
+            OnRenameClicked?.Invoke(this);
         }
 
         public void OnPointerEnter(PointerEventData eventData)

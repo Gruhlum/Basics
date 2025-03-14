@@ -1,13 +1,24 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 namespace HexTecGames.Basics.UI
 {
-    public abstract class Display<T> : DisplayBase<T>
+    public abstract class Display<D, T> : MonoBehaviour where D : Display<D, T>
     {
-        [SerializeField] protected DisplayControllerBase<T> displayC;
-
+        public T Item
+        {
+            get
+            {
+                return item;
+            }
+            private set
+            {
+                item = value;
+            }
+        }
+        [SerializeField] private T item = default;
         public bool IsHighlighted
         {
             get
@@ -21,18 +32,25 @@ namespace HexTecGames.Basics.UI
         }
         private bool isHighlighted;
 
-        public void Setup(T item, DisplayController<T> dc)
+        public event Action<D> OnDisplayClicked;
+        public event Action<D> OnDeactivated;
+
+        public virtual void SetItem(T item)
         {
-            SetItem(item);
-            SetController(dc);
+            this.Item = item;
+            DrawItem(item);
         }
-        public void SetController(DisplayController<T> dc)
+
+        public virtual void Deactivate()
         {
-            this.displayC = dc;
+            gameObject.SetActive(false);
+            OnDeactivated?.Invoke(this as D);
         }
-        public virtual void OnDisplayClicked()
+
+        protected abstract void DrawItem(T item);
+        public virtual void DisplayClicked()
         {
-            displayC.DisplayClicked(this);
+            OnDisplayClicked?.Invoke(this as D);
         }
         public virtual void SetHighlight(bool active)
         {

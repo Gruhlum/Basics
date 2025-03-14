@@ -5,7 +5,7 @@ using UnityEngine;
 
 namespace HexTecGames.Basics.UI
 {
-	public abstract class AdvancedDisplayController<T> : DisplayController<T> where T : class
+	public abstract class AdvancedDisplayController<D, T> : DisplayController<D, T> where T : class where D : Display<D, T>
     {
         [Header("Advanced")]
         [Min(0)][SerializeField] private int minimumDisplays = default;
@@ -39,9 +39,9 @@ namespace HexTecGames.Basics.UI
                 {
                     if (items.Count <= i)
                     {
-                        SetupDisplay(null, displays[i]);
+                        SetupDisplay(displays[i], null);
                     }
-                    else SetupDisplay(items[i], displays[i]);
+                    else SetupDisplay(displays[i], items[i]);
                 }
             }
             else
@@ -50,7 +50,7 @@ namespace HexTecGames.Basics.UI
                 int totalActiveInstances = displaySpawner.TotalActiveInstances();
                 foreach (var item in items)
                 {
-                    SetupDisplay(item, SpawnDisplay());
+                    SetupDisplay(SpawnDisplay(), item);
                 }
                 if (dummyGO != null)
                 {
@@ -74,7 +74,7 @@ namespace HexTecGames.Basics.UI
                 {
                     for (int i = totalActiveInstances; i < calculateMinItems; i++)
                     {
-                        SetupDisplay(null, SpawnDisplay());
+                        SetupDisplay(SpawnDisplay(), null);
                     }
                 }
             }

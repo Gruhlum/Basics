@@ -6,7 +6,7 @@ using UnityEngine.UI;
 
 namespace HexTecGames.Basics.UI
 {
-    public class DisplayableDisplay : Display<DisplayableObject>
+    public class DisplayableDisplay : Display<DisplayableDisplay, DisplayableObject>
     {
         [SerializeField] private TMP_Text nameGUI = default;
         [SerializeField] private Image icon = default;

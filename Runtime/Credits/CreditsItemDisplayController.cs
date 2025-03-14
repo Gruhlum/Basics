@@ -6,7 +6,7 @@ using Random = UnityEngine.Random;
 
 namespace HexTecGames.Basics.Credits
 {
-	public class CreditsItemDisplayController : DisplayController<CreditsItem>
+	public class CreditsItemDisplayController : DisplayController<CreditsItemDisplay, CreditsItem>
 	{
         private void OnEnable()
         {

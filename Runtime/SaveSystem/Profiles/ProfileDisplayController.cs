@@ -5,14 +5,37 @@ using UnityEngine;
 
 namespace HexTecGames.Basics.Profiles
 {
-    public class ProfileDisplayController : DisplayController<Profile>
+    public class ProfileDisplayController : DisplayController<ProfileDisplay, Profile>
     {
-        [SerializeField] private ProfileController profileC = default;
+        [SerializeField] private ProfileController profileController = default;
 
         public override void DisplayItems()
         {
             base.DisplayItems();
             HighlightActiveProfile();
+        }
+
+        public override void SubscribeEvents(ProfileDisplay display)
+        {
+            base.SubscribeEvents(display);
+            display.OnRenameClicked += Display_OnRenameClicked;
+            display.OnDeleteClicked += Display_OnDeleteClicked;
+        }
+        public override void UnsubscribeEvents(ProfileDisplay display)
+        {
+            base.UnsubscribeEvents(display);
+            display.OnRenameClicked -= Display_OnRenameClicked;
+            display.OnDeleteClicked -= Display_OnDeleteClicked;
+        }
+
+        private void Display_OnDeleteClicked(ProfileDisplay display)
+        {
+            profileController.DeleteProfile(display.Item);
+        }
+
+        private void Display_OnRenameClicked(ProfileDisplay display)
+        {
+            profileController.RenameProfile(display.Item);
         }
 
         private void HighlightActiveProfile()
@@ -23,31 +46,19 @@ namespace HexTecGames.Basics.Profiles
                 {
                     continue;
                 }
-                if (display is ProfileDisplay profileDisplay)
+                if (SaveSystem.CurrentProfile == null || display.Item == null)
                 {
-                    if (SaveSystem.CurrentProfile == null || profileDisplay.Item == null)
-                    {
-                        profileDisplay.SetHighlighted(false);
-                    }
-                    else profileDisplay.SetHighlighted(SaveSystem.CurrentProfile.Name == profileDisplay.Item.Name);
+                    display.SetHighlighted(false);
                 }
+                else display.SetHighlighted(SaveSystem.CurrentProfile.Name == display.Item.Name);
             }
         }
 
-        public override void DisplayClicked(Display<Profile> display)
+        public override void DisplayClicked(ProfileDisplay display)
         {
             base.DisplayClicked(display);
-            profileC.SelectProfile(display.Item);
+            profileController.SelectProfile(display.Item);
             HighlightActiveProfile();
-        }
-
-        public void DeleteClicked(ProfileDisplay display)
-        {
-            profileC.DeleteProfile(display.Item);
-        }
-        public void RenameClicked(ProfileDisplay display)
-        {
-            profileC.RenameProfile(display.Item);
         }
     }
 }

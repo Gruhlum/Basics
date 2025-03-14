@@ -8,7 +8,7 @@ using Random = UnityEngine.Random;
 
 namespace HexTecGames.Basics.Credits
 {
-    public class CreditsItemDisplay : Display<CreditsItem>
+    public class CreditsItemDisplay : Display<CreditsItemDisplay, CreditsItem>
     {
         [SerializeField] private TMP_Text nameGUI = default;
         [SerializeField] private TMP_Text roleGUI = default;

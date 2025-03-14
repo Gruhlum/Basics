@@ -6,27 +6,25 @@ using UnityEngine;
 
 namespace HexTecGames.Basics.UI
 {
-    public abstract class DisplayController<T> : DisplayControllerBase<T>
+    public abstract class DisplayController<D, T> : DisplayControllerBase<D, T> where D : Display<D, T>
     {
-        [SerializeField] protected Spawner<Display<T>> displaySpawner = default;
-        [SerializeField] protected List<Display<T>> displays = default;
+        [SerializeField] protected Spawner<D> displaySpawner = default;
+        [SerializeField] protected List<D> displays = default;
         [Space]
         [SerializeField, SerializeReference] protected List<T> items = new List<T>();
-       
+
         protected virtual void Reset()
         {
-            displays = GetComponentsInChildren<Display<T>>().ToList();
+            displays = GetComponentsInChildren<D>().ToList();
         }
 
-        protected Display<T> SpawnDisplay()
+
+        protected D SpawnDisplay()
         {
-            Display<T> display = displaySpawner.Spawn();
+            D display = displaySpawner.Spawn();
             return display;
         }
-        protected virtual void SetupDisplay(T item, Display<T> display)
-        {
-            display.Setup(item, this);
-        }
+
         public virtual void DisplayItems()
         {
             if (displays != null && displays.Count > 0)
@@ -36,9 +34,9 @@ namespace HexTecGames.Basics.UI
                     displays[i].gameObject.SetActive(true);
                     if (items.Count != 0 && items.Count <= i)
                     {
-                        displays[i].SetController(this);
+
                     }
-                    else SetupDisplay(items[i], displays[i]);
+                    else SetupDisplay(displays[i], items[i]);
                 }
             }
             else
@@ -46,17 +44,17 @@ namespace HexTecGames.Basics.UI
                 displaySpawner.DeactivateAll();
                 foreach (var item in items)
                 {
-                    SetupDisplay(item, SpawnDisplay());
+                    SetupDisplay(SpawnDisplay(), item);
                 }
             }
-        }       
+        }
         public void SelectFirstDisplay()
         {
             if (displays == null || displays.Count == 0)
             {
                 return;
             }
-            displays[0].OnDisplayClicked();
+            displays[0].DisplayClicked();
         }
         public List<T> GetItems()
         {
@@ -68,7 +66,7 @@ namespace HexTecGames.Basics.UI
         {
             return items.Count;
         }
-        public List<Display<T>> GetDisplays()
+        public List<D> GetDisplays()
         {
             if (displays != null && displays.Count > 0)
             {
@@ -95,7 +93,7 @@ namespace HexTecGames.Basics.UI
             items.Clear();
             if (display)
             {
-                displaySpawner.DeactivateAll();
+                DisplayItems();
             }
         }
         public virtual void InsertItem(T item, int index = 0, bool display = true)
