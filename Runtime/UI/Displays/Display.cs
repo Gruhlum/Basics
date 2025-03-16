@@ -35,6 +35,11 @@ namespace HexTecGames.Basics.UI
         public event Action<D> OnDisplayClicked;
         public event Action<D> OnDeactivated;
 
+        protected virtual void OnDisable()
+        {
+            OnDeactivated?.Invoke(this as D);
+        }
+
         public virtual void SetItem(T item)
         {
             this.Item = item;
@@ -44,7 +49,6 @@ namespace HexTecGames.Basics.UI
         public virtual void Deactivate()
         {
             gameObject.SetActive(false);
-            OnDeactivated?.Invoke(this as D);
         }
 
         protected abstract void DrawItem(T item);

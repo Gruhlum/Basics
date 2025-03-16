@@ -41,12 +41,12 @@ namespace HexTecGames.Basics.UI
         }
         private void Display_OnDisplayClicked(D display)
         {
-            OnDisplayClicked?.Invoke(display as D);
+            OnDisplayClicked?.Invoke(display);
         }
         private void Display_OnDeactivated(D display)
         {
-            UnsubscribeEvents(display as D);
-            OnDisplayDeactivated?.Invoke(display as D);
+            UnsubscribeEvents(display);
+            OnDisplayDeactivated?.Invoke(display);
         }
     }
 }

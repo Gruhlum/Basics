@@ -18,13 +18,11 @@ namespace HexTecGames.Basics.UI
             displays = GetComponentsInChildren<D>().ToList();
         }
 
-
         protected D SpawnDisplay()
         {
             D display = displaySpawner.Spawn();
             return display;
         }
-
         public virtual void DisplayItems()
         {
             if (displays != null && displays.Count > 0)
