@@ -4,7 +4,7 @@ using TMPro;
 using UnityEditor;
 using UnityEngine;
 
-namespace HexTecGames.Basics
+namespace HexTecGames.Basics.UI
 {
 	public class VersionDisplay : MonoBehaviour
 	{

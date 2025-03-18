@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace HexTecGames
+namespace HexTecGames.Basics.UI.Buttons
 {
     [RequireComponent(typeof(Button))]
     public abstract class BaseButton : MonoBehaviour
