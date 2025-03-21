@@ -10,11 +10,6 @@ namespace HexTecGames.Basics.UI
         public event Action<D> OnDisplayClicked;
         public event Action<D> OnDisplayDeactivated;
 
-        public virtual void DisplayClicked(D display)
-        {
-            OnDisplayClicked?.Invoke(display);
-        }
-
         protected virtual void SetupDisplay(D display, T item)
         {
             display.SetItem(item);
@@ -39,11 +34,11 @@ namespace HexTecGames.Basics.UI
             display.OnDisplayClicked -= Display_OnDisplayClicked;
             display.OnDeactivated -= Display_OnDeactivated;
         }
-        private void Display_OnDisplayClicked(D display)
+        protected virtual void Display_OnDisplayClicked(D display)
         {
             OnDisplayClicked?.Invoke(display);
         }
-        private void Display_OnDeactivated(D display)
+        protected virtual void Display_OnDeactivated(D display)
         {
             UnsubscribeEvents(display);
             OnDisplayDeactivated?.Invoke(display);

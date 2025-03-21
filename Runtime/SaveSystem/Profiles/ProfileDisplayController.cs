@@ -54,9 +54,9 @@ namespace HexTecGames.Basics.Profiles
             }
         }
 
-        public override void DisplayClicked(ProfileDisplay display)
+        protected override void Display_OnDisplayClicked(ProfileDisplay display)
         {
-            base.DisplayClicked(display);
+            base.Display_OnDisplayClicked(display);
             profileController.SelectProfile(display.Item);
             HighlightActiveProfile();
         }
