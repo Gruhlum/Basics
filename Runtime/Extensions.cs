@@ -331,12 +331,21 @@ public static class Extensions
 
     public static bool DetectUIObject<T>(this GraphicRaycaster raycaster, out T obj) where T : Component
     {
-        return raycaster.DetectUIObject(EventSystem.current, out obj);
+        return raycaster.DetectUIObject(out obj, EventSystem.current, Input.mousePosition);
     }
-    public static bool DetectUIObject<T>(this GraphicRaycaster raycaster, EventSystem eventSys, out T obj) where T : Component
+    public static bool DetectUIObject<T>(this GraphicRaycaster raycaster, out T obj, EventSystem eventSys) where T : Component
+    {
+        return raycaster.DetectUIObject(out obj, eventSys, Input.mousePosition);
+    }
+    public static bool DetectUIObject<T>(this GraphicRaycaster raycaster, out T obj, Vector3 position) where T : Component
+    {
+        return raycaster.DetectUIObject(out obj, EventSystem.current, position);
+    }
+    
+    public static bool DetectUIObject<T>(this GraphicRaycaster raycaster, out T obj, EventSystem eventSys, Vector3 position) where T : Component
     {
         var m_PointerEventData = new PointerEventData(eventSys);
-        m_PointerEventData.position = Input.mousePosition;
+        m_PointerEventData.position = position;
 
         List<RaycastResult> results = new List<RaycastResult>();
 
@@ -353,10 +362,23 @@ public static class Extensions
         obj = null;
         return false;
     }
+
+    public static RaycastResult? DetectAnyUIObject(this GraphicRaycaster raycaster)
+    {
+        return raycaster.DetectAnyUIObject(EventSystem.current, Input.mousePosition);
+    }
+    public static RaycastResult? DetectAnyUIObject(this GraphicRaycaster raycaster, Vector3 position)
+    {
+        return raycaster.DetectAnyUIObject(EventSystem.current, position);
+    } 
     public static RaycastResult? DetectAnyUIObject(this GraphicRaycaster raycaster, EventSystem eventSys)
     {
+        return raycaster.DetectAnyUIObject(eventSys, Input.mousePosition);
+    }
+    public static RaycastResult? DetectAnyUIObject(this GraphicRaycaster raycaster, EventSystem eventSys, Vector3 position)
+    {
         var m_PointerEventData = new PointerEventData(eventSys);
-        m_PointerEventData.position = Input.mousePosition;
+        m_PointerEventData.position = position;
 
         List<RaycastResult> results = new List<RaycastResult>();
 

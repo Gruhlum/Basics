@@ -79,8 +79,8 @@ namespace HexTecGames.Basics.UI
                 ClearItems(display);
                 return;
             }
-            this.items = new List<T>();
-            this.items.AddRange(items);
+            this.items = items;
+
             if (display)
             {
                 DisplayItems();

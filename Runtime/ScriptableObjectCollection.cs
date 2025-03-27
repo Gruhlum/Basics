@@ -8,6 +8,18 @@ namespace HexTecGames.Basics
     {
         [SerializeField] private List<T> items = new List<T>();
 
+
+        public T FindItem(string name)
+        {
+            foreach (var item in items)
+            {
+                if (item.name == name)
+                {
+                    return item;
+                }
+            }
+            return null;
+        }
         public T GetItem(int index)
         {
             if (index < 0)

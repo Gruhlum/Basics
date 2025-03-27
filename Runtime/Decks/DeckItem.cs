@@ -5,7 +5,7 @@ using UnityEngine;
 namespace HexTecGames
 {
     [System.Serializable]
-    public struct DeckItem<T>
+    public class DeckItem<T>
     {
         public int amount;
         public T item;

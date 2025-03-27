@@ -7,8 +7,18 @@ using Random = UnityEngine.Random;
 
 namespace HexTecGames
 {
-    public static class BasicUtilities
+    public static class Utility
     {
+        public static int RollTotalProccs(int value)
+        {
+            int proccs = value / 100;
+            int remainder = value % 100;
+            if (Random.Range(0, 100) < remainder)
+            {
+                proccs++;
+            }
+            return proccs;
+        }
         public static string ToRomanNumber(int number)
         {
             StringBuilder result = new StringBuilder();

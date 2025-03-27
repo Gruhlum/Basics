@@ -38,7 +38,7 @@ namespace HexTecGames
                 lastCritChance = critChance;
                 UpdateCritDeck();
             }
-            if (critDeck.RevealNextCard())
+            if (critDeck.GetNext())
             {
                 Debug.Log("Crit!");
             }

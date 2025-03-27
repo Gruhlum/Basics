@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 namespace HexTecGames.Basics
@@ -9,41 +10,68 @@ namespace HexTecGames.Basics
     [System.Serializable]
     public class Deck<T>
     {
-        private Stack<T> cards = new Stack<T>();
+        protected List<DeckItem<T>> totalItems = new List<DeckItem<T>>();
+        protected List<DeckItem<T>> currentItems = new List<DeckItem<T>>();
 
-        private List<DeckItem<T>> totalItems = new List<DeckItem<T>>();
 
-        public Deck(params DeckItem<T>[] items)
+        public Deck(List<DeckItem<T>> items)
         {
             foreach (var item in items)
             {
                 totalItems.Add(item);
             }
 
-            Shuffle();
+            GenerateDeck();
+        }
+        public Deck(params DeckItem<T>[] items) : this(items.ToList())
+        {
         }
 
-        public T RevealNextCard()
+        private DeckItem<T> RollDeckItem()
         {
-            if (cards.Count == 0)
+            int totalTickets = currentItems.Max(x => x.amount);
+            int rng = Random.Range(0, totalTickets);
+            foreach (var item in currentItems)
             {
-                Shuffle();
-            }
-            return cards.Pop();
-        }
-
-        public void Shuffle()
-        {
-            List<T> results = new List<T>();
-            foreach (var itemList in totalItems)
-            {
-                for (int i = 0; i < itemList.amount; i++)
+                if (rng < item.amount)
                 {
-                    results.Add(itemList.item);
+                    return item;
+                }
+                rng -= item.amount;
+            }
+            Debug.Log("Error: Could not determine a valid deck!");
+            return currentItems[0];
+        }
+
+        public bool HasRollsLeft()
+        {
+            foreach (var item in currentItems)
+            {
+                if (item.amount > 0)
+                {
+                    return true;
                 }
             }
-            results.Shuffle();
-            cards = new Stack<T>(results);
+            return false;
         }
+        protected void GenerateDeck()
+        {
+            currentItems = new List<DeckItem<T>>(totalItems);
+        }
+
+        public T GetNext()
+        {
+            if (currentItems.Count == 0)
+            {
+                GenerateDeck();
+            }
+            DeckItem<T> deck = RollDeckItem();
+            deck.amount--;
+            if (deck.amount <= 0)
+            {
+                currentItems.Remove(deck);
+            }
+            return deck.item;
+        }       
     }
 }
