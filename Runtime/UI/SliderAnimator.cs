@@ -1,5 +1,7 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
+using HexTecGames.EaseFunctions;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -16,56 +18,82 @@ namespace HexTecGames.Basics.UI
         }
         [SerializeField] private Slider slider = default;
 
+        [SerializeField] private EaseFunction easeFunction = default;
         [SerializeField] private float speed = 10;
+        [SerializeField] private float waitTimeOnFull = 0.1f;
 
         private float targetValue;
-        private bool stopAnimation;
+        private Coroutine fillAnimationCoroutine;
+        private int totalRevolutions;
+        private bool canCancel = true;
 
         private void Reset()
         {
             slider = GetComponent<Slider>();
         }
-        private void Awake()
+        private void StopAnimationCoroutine()
         {
-            targetValue = slider.value;
+            if (fillAnimationCoroutine != null)
+            {
+                StopCoroutine(fillAnimationCoroutine);
+            }
+        }
+        public void AddRevolution(int amount = 1)
+        {
+            totalRevolutions += amount;
+            if (fillAnimationCoroutine == null)
+            {
+                fillAnimationCoroutine = StartCoroutine(AnimateFill());
+            }
         }
 
-        public void SetValue(float value, bool instantly = false)
+        public void SetValueInstantly(float value)
         {
-            if (instantly)
-            {
-                Slider.value = value;
-            }
+            StopAnimationCoroutine();
+            slider.value = value;
             targetValue = value;
         }
-        public void StartFillAndReset(float duration, float remainder = 0f, float waitTime = 0.1f)
-        {
-            StartCoroutine(FillAndReset(duration, remainder, waitTime));
-        }
-        private void Update()
-        {
-            if (!stopAnimation && !Mathf.Approximately(targetValue, slider.value))
-            {
-                slider.value = Mathf.Lerp(slider.value, targetValue, Time.deltaTime * speed);
-            }
-        }
-        private IEnumerator FillAndReset(float duration, float remainder, float waitTime)
-        {
-            stopAnimation = true;
-            //Debug.Log("Start Fill");
-            float timer = 0;
-            float startValue = slider.value;
-            while (timer <= duration)
-            {
-                yield return null;
-                timer += Time.deltaTime;
-                slider.value = Mathf.Lerp(startValue, slider.maxValue, timer / duration);
 
+        public void SetValue(float value)
+        {
+            targetValue = value;
+
+            if (canCancel)
+            {
+                StopAnimationCoroutine();
+                fillAnimationCoroutine = StartCoroutine(AnimateFill());
+            }  
+        }
+
+        private IEnumerator AnimateFill()
+        {
+            while (totalRevolutions > 0)
+            {
+                canCancel = false;
+                yield return AnimateBar(slider.value, slider.maxValue);
+                yield return new WaitForSeconds(waitTimeOnFull);
+                totalRevolutions--;
+                slider.value = slider.minValue;
             }
-            yield return new WaitForSeconds(waitTime);
-            slider.value = 0;
-            targetValue = Mathf.Max(0, remainder);
-            stopAnimation = false;
+            canCancel = true;
+            yield return AnimateBar(slider.value, targetValue);
+
+            fillAnimationCoroutine = null;
+        }
+
+        private IEnumerator AnimateBar(float startValue, float targetValue)
+        {
+            float timer = 0;
+            //float percentDistance = (targetValue - startValue) / (slider.maxValue - slider.minValue);
+            //Debug.Log(percentDistance);
+            //percentDistance = Mathf.Min(percentDistance, 0.8f);
+            while (timer < 1)
+            {
+                float progress = easeFunction.GetValue(timer);
+                slider.value = Mathf.Lerp(startValue, targetValue, progress);
+                yield return null;
+                timer += Time.deltaTime * speed;// * (1 - percentDistance);
+            }
         }
     }
 }
