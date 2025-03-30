@@ -5,7 +5,7 @@ using UnityEngine;
 
 namespace HexTecGames.Basics.UI
 {
-	public abstract class AdvancedDisplayController<D, T> : DisplayController<D, T> where T : class where D : Display<D, T>
+    public abstract class AdvancedDisplayController<D, T> : DisplayController<D, T> where T : class where D : Display<D, T>
     {
         [Header("Advanced")]
         [Min(0)][SerializeField] private int minimumDisplays = default;
@@ -35,28 +35,31 @@ namespace HexTecGames.Basics.UI
         {
             if (displays != null && displays.Count > 0)
             {
-                for (int i = 0; i < displays.Count; i++)
-                {
-                    if (items.Count <= i)
-                    {
-                        SetupDisplay(displays[i], null);
-                    }
-                    else SetupDisplay(displays[i], items[i]);
-                }
+                UseExistingDisplays();
             }
             else
             {
-                displaySpawner.DeactivateAll();
-                int totalActiveInstances = displaySpawner.TotalActiveInstances();
-                foreach (var item in items)
-                {
-                    SetupDisplay(SpawnDisplay(), item);
-                }
-                if (dummyGO != null)
-                {
-                    dummyGO.transform.SetSiblingIndex(totalActiveInstances);
-                }
-                if (totalActiveInstances >= maximumDisplays)
+                CreateRequiredDisplays();
+            }
+        }
+        private void CreateRequiredDisplays()
+        {
+            displaySpawner.DeactivateAll();
+            int activeItems = items.Count;
+
+            foreach (var item in items)
+            {
+                SetupDisplay(SpawnDisplay(), item);
+            }
+
+            int minItems = minimumDisplays;
+
+            if (dummyGO != null)
+            {
+                minItems--;
+                dummyGO.transform.SetSiblingIndex(activeItems);
+
+                if (activeItems >= maximumDisplays)
                 {
                     if (hideDummyOnLimitReached)
                     {
@@ -65,18 +68,25 @@ namespace HexTecGames.Basics.UI
                     return;
                 }
                 else dummyGO.SetActive(true);
-                int calculateMinItems = minimumDisplays;
-                if (dummyGO != null)
+            }
+
+            if (activeItems < minItems)
+            {
+                for (int i = activeItems; i < minItems; i++)
                 {
-                    calculateMinItems -= 1;
+                    SetupDisplay(SpawnDisplay(), null);
                 }
-                if (totalActiveInstances < calculateMinItems)
+            }
+        }
+        private void UseExistingDisplays()
+        {
+            for (int i = 0; i < displays.Count; i++)
+            {
+                if (items.Count <= i)
                 {
-                    for (int i = totalActiveInstances; i < calculateMinItems; i++)
-                    {
-                        SetupDisplay(SpawnDisplay(), null);
-                    }
+                    SetupDisplay(displays[i], null);
                 }
+                else SetupDisplay(displays[i], items[i]);
             }
         }
 
