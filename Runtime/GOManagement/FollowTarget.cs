@@ -38,6 +38,8 @@ namespace HexTecGames.Basics
         [SerializeField, FormerlySerializedAs("Target")] private Transform target = default;
         [SerializeField, FormerlySerializedAs("Offset")] private Vector3 offset = default;
 
+        private Coroutine offsetAnimation;
+
 
         private void Reset()
         {
@@ -58,7 +60,11 @@ namespace HexTecGames.Basics
         }
         public void SetOffset(Vector3 offset, float duration, EaseFunction easeFunction)
         {
-            StartCoroutine(AnimateOffsetChange(this.Offset, offset, duration, easeFunction));
+            if (offsetAnimation != null)
+            {
+                StopCoroutine(offsetAnimation);
+            }
+            offsetAnimation = StartCoroutine(AnimateOffsetChange(this.Offset, offset, duration, easeFunction));
         }
 
         public void AddOffset(Vector3 offsetToAdd)
@@ -67,7 +73,11 @@ namespace HexTecGames.Basics
         }
         public void AddOffset(Vector3 offsetToAdd, float duration, EaseFunction easeFunction)
         {
-            StartCoroutine(AnimateOffsetChange(this.Offset, this.Offset + offsetToAdd, duration, easeFunction));
+            if (offsetAnimation != null)
+            {
+                StopCoroutine(offsetAnimation);
+            }
+            offsetAnimation = StartCoroutine(AnimateOffsetChange(this.Offset, this.Offset + offsetToAdd, duration, easeFunction));
         }
         private IEnumerator AnimateOffsetChange(Vector3 startOffset, Vector3 endOffset, float duration, EaseFunction easeFunction)
         {
@@ -78,8 +88,8 @@ namespace HexTecGames.Basics
                 this.Offset = Vector3.Lerp(startOffset, endOffset, progress);
                 yield return null;
                 timer += Time.deltaTime;
-
             }
+            offsetAnimation = null;
         }
     }
 }
