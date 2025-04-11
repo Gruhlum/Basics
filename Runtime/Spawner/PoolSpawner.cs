@@ -127,6 +127,7 @@ namespace HexTecGames.Basics
             {
                 DestroyAll();
             }
+
             foreach (var instance in Instances)
             {
                 if (instance != null)

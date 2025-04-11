@@ -177,8 +177,8 @@ namespace HexTecGames.Basics
             for (int index = 0; index < eventSystemRaycastResults.Count; index++)
             {
                 RaycastResult raycastResult = eventSystemRaycastResults[index];
-
-                if (SortingLayer.GetLayerValueFromID(raycastResult.sortingLayer) == uiLayer)
+                
+                if (raycastResult.gameObject.layer == uiLayer)
                 {
                     PointerUIElement = raycastResult.gameObject;
                     return true;

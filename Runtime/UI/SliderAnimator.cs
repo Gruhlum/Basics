@@ -24,6 +24,7 @@ namespace HexTecGames.Basics.UI
 
         private float targetValue;
         private Coroutine fillAnimationCoroutine;
+        private Coroutine subCoroutine;
         private int totalRevolutions;
         private bool canCancel = true;
 
@@ -37,32 +38,62 @@ namespace HexTecGames.Basics.UI
             {
                 StopCoroutine(fillAnimationCoroutine);
             }
+            if (subCoroutine != null)
+            {
+                StopCoroutine(subCoroutine);
+            }
         }
+
+        public float GetPercentProgress()
+        {
+            return GetPercentProgress(Slider.value);
+        }
+        public float GetPercentProgress(float value)
+        {
+            float difference = Slider.maxValue - Slider.minValue;
+            return value / difference;
+        }
+
         public void AddRevolution(int amount = 1)
         {
             totalRevolutions += amount;
             if (fillAnimationCoroutine == null)
             {
+                canCancel = false;
                 fillAnimationCoroutine = StartCoroutine(AnimateFill());
             }
         }
 
-        public void SetValueInstantly(float value)
+        private void SetValueInstantly(float value)
         {
-            StopAnimationCoroutine();
-            slider.value = value;
-            targetValue = value;
-        }
-
-        public void SetValue(float value)
-        {
-            targetValue = value;
+            float range = Slider.maxValue - Slider.minValue;
+            float progress = value / range;
+            float currentValue = easeFunction.GetValue(progress) * range;
+            targetValue = currentValue;
 
             if (canCancel)
             {
                 StopAnimationCoroutine();
+            }
+            slider.value = currentValue;
+        }
+
+        private void SetValue(float value)
+        {
+            targetValue = value;
+            if (canCancel)
+            {
+                StopAnimationCoroutine();
                 fillAnimationCoroutine = StartCoroutine(AnimateFill());
-            }  
+            }
+        }
+        public void SetValue(float value, bool instantly = false)
+        {
+            if (instantly)
+            {
+                SetValueInstantly(value);
+            }
+            else SetValue(value);
         }
 
         private IEnumerator AnimateFill()
@@ -76,9 +107,9 @@ namespace HexTecGames.Basics.UI
                 slider.value = slider.minValue;
             }
             canCancel = true;
-            yield return AnimateBar(slider.value, targetValue);
-
             fillAnimationCoroutine = null;
+
+            subCoroutine = StartCoroutine(AnimateBar(slider.value, targetValue));
         }
 
         private IEnumerator AnimateBar(float startValue, float targetValue)
@@ -89,11 +120,13 @@ namespace HexTecGames.Basics.UI
             //percentDistance = Mathf.Min(percentDistance, 0.8f);
             while (timer < 1)
             {
+                timer += Time.deltaTime * speed;// * (1 - percentDistance);
                 float progress = easeFunction.GetValue(timer);
                 slider.value = Mathf.Lerp(startValue, targetValue, progress);
                 yield return null;
-                timer += Time.deltaTime * speed;// * (1 - percentDistance);
+                //Debug.Log(progress + " - " + slider.value + " - " + targetValue);
             }
+            subCoroutine = null;
         }
     }
 }

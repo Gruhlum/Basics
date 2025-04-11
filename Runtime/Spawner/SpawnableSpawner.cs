@@ -27,6 +27,25 @@ namespace HexTecGames.Basics
             spawnable.OnDeactivated += Spawnable_OnDeactivated;
             return spawnable as T;
         }
+
+        public override void DeactivateAll()
+        {
+            if (Application.isPlaying == false)
+            {
+                DestroyAll();
+            }
+
+            HashSet<T> instances = new HashSet<T>(Instances);
+
+            foreach (var instance in instances)
+            {
+                if (instance != null)
+                {
+                    instance.gameObject.SetActive(false);
+                }
+            }
+        }
+
         protected override T GetEmptyInstance()
         {
             if (deactivatedInstances.Count > 0)
