@@ -30,20 +30,7 @@ namespace HexTecGames.Basics
 
         public override void DeactivateAll()
         {
-            if (Application.isPlaying == false)
-            {
-                DestroyAll();
-            }
-
-            HashSet<T> instances = new HashSet<T>(Instances);
-
-            foreach (var instance in instances)
-            {
-                if (instance != null)
-                {
-                    instance.gameObject.SetActive(false);
-                }
-            }
+            Debug.Log("Cannot Deactivate SpawnableSpawner Items");
         }
 
         protected override T GetEmptyInstance()

@@ -15,15 +15,15 @@ namespace HexTecGames.Basics.Profiles
             HighlightActiveProfile();
         }
 
-        public override void SubscribeEvents(ProfileDisplay display)
+        public override void AddDisplayEvents(ProfileDisplay display)
         {
-            base.SubscribeEvents(display);
+            base.AddDisplayEvents(display);
             display.OnRenameClicked += Display_OnRenameClicked;
             display.OnDeleteClicked += Display_OnDeleteClicked;
         }
-        public override void UnsubscribeEvents(ProfileDisplay display)
+        public override void RemoveDisplayEvents(ProfileDisplay display)
         {
-            base.UnsubscribeEvents(display);
+            base.RemoveDisplayEvents(display);
             display.OnRenameClicked -= Display_OnRenameClicked;
             display.OnDeleteClicked -= Display_OnDeleteClicked;
         }

@@ -9,14 +9,10 @@ namespace HexTecGames.Basics.UI
     public abstract class DisplayController<D, T> : DisplayControllerBase<D, T> where D : Display<D, T>
     {
         [SerializeField] protected Spawner<D> displaySpawner = default;
-        [SerializeField] protected List<D> displays = default;
         [Space]
         [SerializeField, SerializeReference] protected List<T> items = new List<T>();
 
-        protected virtual void Reset()
-        {
-            displays = GetComponentsInChildren<D>().ToList();
-        }
+
 
         protected D SpawnDisplay()
         {
@@ -25,34 +21,19 @@ namespace HexTecGames.Basics.UI
         }
         public virtual void DisplayItems()
         {
-            if (displays != null && displays.Count > 0)
+            displaySpawner.DeactivateAll();
+            foreach (var item in items)
             {
-                for (int i = 0; i < displays.Count; i++)
-                {
-                    displays[i].gameObject.SetActive(true);
-                    if (items.Count != 0 && items.Count <= i)
-                    {
-
-                    }
-                    else SetupDisplay(displays[i], items[i]);
-                }
-            }
-            else
-            {
-                displaySpawner.DeactivateAll();
-                foreach (var item in items)
-                {
-                    SetupDisplay(SpawnDisplay(), item);
-                }
+                SetupDisplay(SpawnDisplay(), item);
             }
         }
         public void SelectFirstDisplay()
         {
-            if (displays == null || displays.Count == 0)
+            if (displaySpawner.TotalActiveInstances() <= 0)
             {
                 return;
             }
-            displays[0].DisplayClicked();
+            displaySpawner.GetInstances().First().DisplayClicked();
         }
         public List<T> GetItems()
         {
@@ -66,11 +47,7 @@ namespace HexTecGames.Basics.UI
         }
         public List<D> GetDisplays()
         {
-            if (displays != null && displays.Count > 0)
-            {
-                return displays;
-            }
-            else return displaySpawner.ToList();
+            return displaySpawner.ToList();
         }
         public virtual void SetItems(List<T> items, bool display = true)
         {

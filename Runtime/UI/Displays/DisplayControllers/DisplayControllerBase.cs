@@ -13,9 +13,9 @@ namespace HexTecGames.Basics.UI
         protected virtual void SetupDisplay(D display, T item)
         {
             display.SetItem(item);
-            SubscribeEvents(display);
+            AddDisplayEvents(display);
         }
-        public virtual void SubscribeEvents(D display)
+        public virtual void AddDisplayEvents(D display)
         {
             if (display == null)
             {
@@ -25,7 +25,7 @@ namespace HexTecGames.Basics.UI
             display.OnDeactivated += Display_OnDeactivated;
         }
 
-        public virtual void UnsubscribeEvents(D display)
+        public virtual void RemoveDisplayEvents(D display)
         {
             if (display == null)
             {
@@ -40,7 +40,7 @@ namespace HexTecGames.Basics.UI
         }
         protected virtual void Display_OnDeactivated(D display)
         {
-            UnsubscribeEvents(display);
+            RemoveDisplayEvents(display);
             OnDisplayDeactivated?.Invoke(display);
         }
     }

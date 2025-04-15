@@ -33,14 +33,7 @@ namespace HexTecGames.Basics.UI
         }
         public override void DisplayItems()
         {
-            if (displays != null && displays.Count > 0)
-            {
-                UseExistingDisplays();
-            }
-            else
-            {
-                CreateRequiredDisplays();
-            }
+            CreateRequiredDisplays();
         }
         private void CreateRequiredDisplays()
         {
@@ -76,17 +69,6 @@ namespace HexTecGames.Basics.UI
                 {
                     SetupDisplay(SpawnDisplay(), null);
                 }
-            }
-        }
-        private void UseExistingDisplays()
-        {
-            for (int i = 0; i < displays.Count; i++)
-            {
-                if (items.Count <= i)
-                {
-                    SetupDisplay(displays[i], null);
-                }
-                else SetupDisplay(displays[i], items[i]);
             }
         }
 

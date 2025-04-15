@@ -14,7 +14,7 @@ namespace HexTecGames.HotkeySystem
             btn = GetComponent<Button>();
         }
 
-        protected override void OnHotkeyPressed()
+        public override void OnHotkeyPressed()
         {
             btn.onClick?.Invoke();
         }

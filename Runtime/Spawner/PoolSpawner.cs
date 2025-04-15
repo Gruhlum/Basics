@@ -174,6 +174,10 @@ namespace HexTecGames.Basics
             Instances.Clear();
         }
 
+        public HashSet<T> GetInstances()
+        {
+            return new HashSet<T>(Instances);
+        }
         public IEnumerator<T> GetEnumerator()
         {
             return Instances.GetEnumerator();

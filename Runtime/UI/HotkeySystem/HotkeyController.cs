@@ -9,25 +9,19 @@ namespace HexTecGames.HotkeySystem
     {
         private Dictionary<KeyCode, Action> hotkeys = new Dictionary<KeyCode, Action>();
 
-        private static HotkeyController lastActiveController;
 
-        private void OnEnable()
+        private void Start()
         {
-            lastActiveController = this;
-        }
-        private void OnDisable()
-        {
-            if (lastActiveController == this)
+            var results = FindObjectsOfType<HotkeyUser>(true);
+
+            foreach (var result in results)
             {
-                lastActiveController = null;
+                AddHotkey(result);
             }
         }
+
         private void Update()
         {
-            if (lastActiveController != this && lastActiveController != null)
-            {
-                return;
-            }
             foreach (var hotkey in hotkeys)
             {
                 if (Input.GetKeyDown(hotkey.Key))
@@ -37,6 +31,10 @@ namespace HexTecGames.HotkeySystem
             }
         }
 
+        public void AddHotkey(HotkeyUser btn)
+        {
+            AddHotkey(btn.KeyCode, btn.OnHotkeyPressed);
+        }
         public void AddHotkey(KeyCode keyCode, Action action)
         {
             if (!hotkeys.TryAdd(keyCode, action))

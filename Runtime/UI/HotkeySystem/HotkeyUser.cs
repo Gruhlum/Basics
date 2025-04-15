@@ -7,19 +7,20 @@ namespace HexTecGames.HotkeySystem
 {
     public abstract class HotkeyUser : MonoBehaviour
     {
-        [SerializeField] private HotkeyController hotkeyController = default;
         [SerializeField] private KeyCode keyCode = default;
 
-        protected virtual void Start()
+        public KeyCode KeyCode
         {
-            SetupHotkey();
+            get
+            {
+                return this.keyCode;
+            }
+            set
+            {
+                this.keyCode = value;
+            }
         }
 
-        private void SetupHotkey()
-        {
-            hotkeyController.AddHotkey(keyCode, OnHotkeyPressed);
-        }
-
-        protected abstract void OnHotkeyPressed();
+        public abstract void OnHotkeyPressed();
     }
 }
