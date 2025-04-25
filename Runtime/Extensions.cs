@@ -329,6 +329,57 @@ public static class Extensions
     }
     #endregion
 
+    /// <summary>
+    /// Tries to find the closest Component. Order is Transform -> Parent -> Children
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
+    /// <param name="transform"></param>
+    /// <param name="includeInactive"></param>
+    /// <returns>T if it can be found, otherwise null</returns>
+    public static T GetClosestComponent<T>(this Component transform, bool includeInactive = false) where T : Component
+    {
+        if (transform.TryGetComponent(out T t))
+        {
+            return t;
+        }
+        T result = transform.GetComponentInParent<T>(includeInactive);
+        if (result != null)
+        {
+            return result;
+        }
+        result = transform.GetComponentInChildren<T>(includeInactive);
+        if (result != null)
+        {
+            return result;
+        }
+        return null;
+    }
+    /// <summary>
+    /// Tries to find the closest Component. Order is Transform -> Parent -> Children
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
+    /// <param name="transform"></param>
+    /// <param name="includeInactive"></param>
+    /// <returns>T if it can be found, otherwise null</returns>
+    public static T GetClosestComponent<T>(this GameObject go, bool includeInactive = false) where T : Component
+    {
+        if (go.TryGetComponent(out T t))
+        {
+            return t;
+        }
+        T result = go.GetComponentInParent<T>(includeInactive);
+        if (result != null)
+        {
+            return result;
+        }
+        result = go.GetComponentInChildren<T>(includeInactive);
+        if (result != null)
+        {
+            return result;
+        }
+        return null;
+    }
+
     public static bool DetectUIObject<T>(this GraphicRaycaster raycaster, out T obj) where T : Component
     {
         return raycaster.DetectUIObject(out obj, EventSystem.current, Input.mousePosition);

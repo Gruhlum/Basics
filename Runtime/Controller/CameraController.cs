@@ -11,9 +11,9 @@ namespace HexTecGames.Basics
     {
         [SerializeField] private Camera cam = default;
 
-        public int ZoomSpeed = 1;
-        public int MinZoom = 5;
-        public int MaxZoom = 50;
+        public float ZoomSpeed = 1;
+        public float MinZoom = 5;
+        public float MaxZoom = 50;
 
         public float MoveStep = 1f;
 
@@ -48,6 +48,11 @@ namespace HexTecGames.Basics
         {
             cam.orthographicSize -= Input.mouseScrollDelta.normalized.y * ZoomSpeed;
             cam.orthographicSize = Mathf.Clamp(cam.orthographicSize, MinZoom, MaxZoom);
+        }
+
+        public void SetPosition(Vector2 position)
+        {
+            cam.transform.position = new Vector3(position.x, position.y, cam.transform.position.z);
         }
 
         private void HandlePositionMovement()

@@ -8,7 +8,7 @@ namespace HexTecGames.HotkeySystem
     public class HotkeyController : MonoBehaviour
     {
         private Dictionary<KeyCode, Action> hotkeys = new Dictionary<KeyCode, Action>();
-
+        private int numberHotkeyCount;
 
         private void Start()
         {
@@ -29,6 +29,16 @@ namespace HexTecGames.HotkeySystem
                     hotkey.Value.Invoke();
                 }
             }
+        }
+
+        public void AddNextNumberHotkey(Action action)
+        {
+            if (numberHotkeyCount >= SimpleHotkeys.alphaKeycodes.Length)
+            {
+                return;
+            }
+            AddHotkey(SimpleHotkeys.alphaKeycodes[numberHotkeyCount], action);
+            numberHotkeyCount++;
         }
 
         public void AddHotkey(HotkeyUser btn)

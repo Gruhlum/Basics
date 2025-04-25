@@ -12,7 +12,7 @@ namespace HexTecGames.Basics
     public class MouseController : MonoBehaviour
     {
         [SerializeField] private Camera mainCam = default;
-        [SerializeField] private int uiLayer = 1;
+        [SerializeField] private int uiLayer = 5;
 
         public GameObject PointerUIElement
         {

@@ -19,9 +19,18 @@ namespace HexTecGames.Basics.UI
         }
         [SerializeField] private SubMenu previousMenu = default;
 
+        [SerializeField] private List<GameObject> additionalGOs = default;
+
         public void SetActive(bool active)
         {
             gameObject.SetActive(active);
+            if (additionalGOs != null && additionalGOs.Count > 0)
+            {
+                foreach (var go in additionalGOs)
+                {
+                    go.SetActive(active);
+                }
+            }
         }
     }
 }

@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 namespace HexTecGames
@@ -8,24 +9,6 @@ namespace HexTecGames
     [System.Serializable]
     public class LayerStack<T>
     {
-        //public float RotationDuration
-        //{
-        //    get
-        //    {
-        //        return rotationDuration;
-        //    }
-        //    set
-        //    {
-        //        rotationDuration = value;
-        //    }
-        //}
-        //private float rotationDuration;
-
-        //private bool rotateItems;
-
-        //private float rotationTimer;
-        //private int rotationIndex;
-
         private int activeElementsIndex = -1;
         private int activeLayerIndex = -1;
 
@@ -43,68 +26,19 @@ namespace HexTecGames
         private T activeItem;
 
 
-        private List<T>[] items = new List<T>[4];
+        private Dictionary<int, List<T>> items = new Dictionary<int, List<T>>();
 
         public event Action<T> OnActiveItemChanged;
 
 
         public LayerStack()
         {
-
         }
-        //public LayerStack(int layers, float rotationTime) : this(layers)
-        //{
-        //    if (rotationTime <= 0)
-        //    {
-        //        Debug.Log("rotationTime needs to be greater than 0");
-        //        return;
-        //    }
-        //    RotationDuration = rotationTime;
-        //    rotateItems = true;
-        //}
 
         public void Clear()
         {
-            foreach (var list in items)
-            {
-                if (list != null)
-                {
-                    list.Clear();
-                }
-            }
+            items.Clear();
         }
-        //public void AdvanceTime(float increase)
-        //{
-        //    if (!rotateItems)
-        //    {
-        //        return;
-        //    }
-        //    if (activeElementsIndex <= -1)
-        //    {
-        //        return;
-        //    }
-        //    if (activeLayerIndex <= -1)
-        //    {
-        //        return;
-        //    }
-        //    if (items[activeLayerIndex].Count <= 1)
-        //    {
-        //        return;
-        //    }
-
-        //    rotationTimer += increase;
-        //    if (rotationTimer >= RotationDuration)
-        //    {
-        //        rotationTimer = 0;
-        //        rotationIndex++;
-        //        if (rotationIndex >= items[activeLayerIndex].Count)
-        //        {
-        //            rotationIndex = 0;
-        //        }
-        //        UpdateActiveItem();
-        //    }
-        //}
-
         /// <summary>
         /// Adds an item to the stack.
         /// </summary>
@@ -112,66 +46,35 @@ namespace HexTecGames
         /// <param name="index">The items with highest index will be shown first. Needs to be >= 0</param>
         public void Add(T item, int index)
         {
-            if (index < 0)
+            if (items.TryGetValue(index, out List<T> itemList))
             {
-                Debug.Log("index is Negative!");
-                return;
+                itemList.Add(item);
             }
-            if (index >= items.Length)
-            {
-                Array.Resize(ref items, index + 1);
-            }
-            if (items[index] == null)
-            {
-                items[index] = new List<T>();
-            }
-            items[index].Add(item);
+            else items.Add(index, new List<T>() { item });
             UpdateActiveItem();
         }
         public void Remove(T item, int index)
         {
-            if (index < 0)
+            if (items.TryGetValue(index, out List<T> itemList))
             {
-                Debug.Log("index is Negative!");
-                return;
-            }
-            if (index >= items.Length)
-            {
-                Debug.Log("index out of Range!");
-                return;
-            }
-            int listIndex = FindIndex(item, items[index]);
-            if (listIndex < 0)
-            {
-                return;
-            }
-            items[index].RemoveAt(listIndex);
-            UpdateActiveItem();
-        }
-        protected int FindIndex(T item, List<T> list)
-        {
-            for (int i = 0; i < list.Count; i++)
-            {
-                if (list[i].Equals(item))
+                itemList.Remove(item);
+                if (itemList.Count <= 0)
                 {
-                    return i;
+                    items.Remove(index);
                 }
             }
-            return -1;
+            UpdateActiveItem();
         }
         private void UpdateActiveItem()
         {
-            activeLayerIndex = GetTopLayerIndex();
+            T result = FindActiveItem();
 
-            if (activeLayerIndex <= -1)
+            if (result == null)
             {
-                Debug.Log("Empty stack!");
+                OnActiveItemChanged?.Invoke(default);
                 return;
             }
 
-            activeElementsIndex = GetActiveItemIndex();
-
-            T result = items[activeLayerIndex][activeElementsIndex];
             if (ActiveItem != null && ActiveItem.Equals(result))
             {
                 return;
@@ -180,20 +83,33 @@ namespace HexTecGames
             ActiveItem = result;
             OnActiveItemChanged?.Invoke(ActiveItem);
         }
+
+        private T FindActiveItem()
+        {
+            if (items == null || items.Count <= 0)
+            {
+                return default;
+            }
+            int highestKey = items.Keys.Max();
+
+            if (!items.TryGetValue(highestKey, out List<T> itemList))
+            {
+                return default;
+            }
+
+            if (itemList.Count <= 0)
+            {
+                return default;
+            }
+
+            activeElementsIndex = GetActiveItemIndex();
+
+            return itemList[activeElementsIndex];
+        }
+
         private int GetActiveItemIndex()
         {
             return 0;
-        }
-        private int GetTopLayerIndex()
-        {
-            for (int i = items.Length - 1; i >= 0; i--)
-            {
-                if (items[i] != null && items[i].Count > 0)
-                {
-                    return i;
-                }
-            }
-            return -1;
         }
     }
 }

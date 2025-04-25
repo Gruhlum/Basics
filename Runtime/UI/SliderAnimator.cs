@@ -84,7 +84,10 @@ namespace HexTecGames.Basics.UI
             if (canCancel)
             {
                 StopAnimationCoroutine();
-                fillAnimationCoroutine = StartCoroutine(AnimateFill());
+                if (true || gameObject.activeInHierarchy)
+                {
+                    fillAnimationCoroutine = StartCoroutine(AnimateFill());
+                }
             }
         }
         public void SetValue(float value, bool instantly = false)
