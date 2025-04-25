@@ -7,7 +7,7 @@ using UnityEngine.UI;
 
 namespace HexTecGames.Basics.UI.Buttons
 {
-    public class BetterButton : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IPointerClickHandler, IPointerDownHandler
+    public class BetterButton : Selectable, IPointerEnterHandler, IPointerExitHandler, IPointerClickHandler, IPointerDownHandler
     {
         /* events for click and mouseover
 		 * list of special effects:
@@ -37,8 +37,15 @@ namespace HexTecGames.Basics.UI.Buttons
         [SerializeField] private UnityEvent OnClick = default;
         [SerializeField] private UnityEvent OnMouseEnter = default;
 
-        public void OnValidate()
+
+        protected override void Reset()
         {
+            base.Reset();
+        }
+        protected override void OnValidate()
+        {
+            base.OnValidate();
+
             if (hoverEffects != null)
             {
                 foreach (var effect in hoverEffects)
@@ -60,20 +67,21 @@ namespace HexTecGames.Basics.UI.Buttons
                 }
             }
         }
-        private void Update()
-        {
-            if (!isHovering && Input.GetMouseButtonUp(0))
-            {
-                isPointerDown = false;
-                foreach (var effect in mouseDownEffects)
-                {
-                    effect.Remove();
-                }
-            }
-        }
+        //protected void Update()
+        //{
+        //    if (!isHovering && Input.GetMouseButtonUp(0))
+        //    {
+        //        isPointerDown = false;
+        //        foreach (var effect in mouseDownEffects)
+        //        {
+        //            effect.Remove();
+        //        }
+        //    }
+        //}
 
-        void OnDisable()
+        protected override void OnDisable()
         {
+            base.OnDisable();
             foreach (var effect in hoverEffects)
             {
                 effect.Remove();
@@ -86,6 +94,10 @@ namespace HexTecGames.Basics.UI.Buttons
 
         public void OnPointerClick(PointerEventData eventData)
         {
+            if (!interactable)
+            {
+                return;
+            }
             isPointerDown = false;
             foreach (var effect in mouseDownEffects)
             {
@@ -101,8 +113,9 @@ namespace HexTecGames.Basics.UI.Buttons
             OnClick?.Invoke();
         }
 
-        public void OnPointerDown(PointerEventData eventData)
+        public override void OnPointerDown(PointerEventData eventData)
         {
+            base.OnPointerDown(eventData);
             isPointerDown = true;
             if (isHovering)
             {
@@ -117,8 +130,13 @@ namespace HexTecGames.Basics.UI.Buttons
             }
         }
 
-        public void OnPointerEnter(PointerEventData eventData)
+        public override void OnPointerEnter(PointerEventData eventData)
         {
+            if (!interactable)
+            {
+                return;
+            }
+            base.OnPointerEnter(eventData);
             isHovering = true;
             if (isPointerDown)
             {
@@ -131,8 +149,13 @@ namespace HexTecGames.Basics.UI.Buttons
             OnMouseEnter?.Invoke();
         }
 
-        public void OnPointerExit(PointerEventData eventData)
+        public override void OnPointerExit(PointerEventData eventData)
         {
+            if (!interactable)
+            {
+                return;
+            }
+            base.OnPointerEnter(eventData);
             isHovering = false;
             foreach (var effect in hoverEffects)
             {
