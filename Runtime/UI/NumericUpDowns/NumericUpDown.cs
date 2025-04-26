@@ -76,7 +76,7 @@ namespace HexTecGames.Basics.UI
         public void SetMaxNumber(int value)
         {
             MaxNumber = value;
-            SetCurrentNumber(ClampNumber(value));
+            SetCurrentNumber(ClampNumber(CurrentNumber));
         }
         public void SetMinNumber(int value)
         {
