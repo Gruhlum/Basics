@@ -9,7 +9,7 @@ namespace HexTecGames.Basics
     /// Objects notify spawner when they are disabled, so we don't need to find a disabled object first when we need a new one.
     /// </summary>
     [System.Serializable]
-    public class SpawnableSpawner<T> : PoolSpawner<T> where T : Component, ISpawnable
+    public class SpawnableSpawner<T> : PoolSpawner<T> where T : Component, ISpawnable<T>
     {
         protected override HashSet<T> Instances
         {
@@ -23,7 +23,7 @@ namespace HexTecGames.Basics
 
         public override T Spawn(bool activate)
         {
-            ISpawnable spawnable = base.Spawn(activate);
+            T spawnable = base.Spawn(activate);
             spawnable.OnDeactivated += Spawnable_OnDeactivated;
             return spawnable as T;
         }
@@ -41,11 +41,11 @@ namespace HexTecGames.Basics
             }
             else return CreateNewInstance();
         }
-        private void Spawnable_OnDeactivated(ISpawnable spawnable)
+        private void Spawnable_OnDeactivated(T spawnable)
         {
-            deactivatedInstances.Push(spawnable as T);
+            deactivatedInstances.Push(spawnable);
             spawnable.OnDeactivated -= Spawnable_OnDeactivated;
-            Remove(spawnable as T);
+            Remove(spawnable);
         }
     }
 }

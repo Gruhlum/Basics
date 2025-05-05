@@ -1,9 +1,10 @@
-﻿#if UNITY_2019_3_OR_NEWER
-using System;
+﻿using System;
 using System.Linq;
 using System.Collections.Generic;
+using UnityEditor;
 
-namespace MackySoft.SerializeReferenceExtensions.Editor {
+namespace MackySoft.SerializeReferenceExtensions.Editor
+{
 	public static class TypeMenuUtility {
 
 		public const string k_NullDisplayName = "<null>";
@@ -32,9 +33,13 @@ namespace MackySoft.SerializeReferenceExtensions.Editor {
 					return -999;
 				}
 				return GetAttribute(type)?.Order ?? 0;
+			}).ThenBy(type => {
+				if (type == null) {
+					return null;
+				}
+				return GetAttribute(type)?.MenuName ?? type.Name;
 			});
 		}
 
 	}
 }
-#endif

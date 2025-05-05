@@ -38,6 +38,7 @@ namespace HexTecGames.Basics.UI.Buttons
         [SerializeField] private UnityEvent OnMouseEnter = default;
 
 
+#if UNITY_EDITOR
         protected override void Reset()
         {
             base.Reset();
@@ -67,6 +68,7 @@ namespace HexTecGames.Basics.UI.Buttons
                 }
             }
         }
+#endif
         //protected void Update()
         //{
         //    if (!isHovering && Input.GetMouseButtonUp(0))

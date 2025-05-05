@@ -1,5 +1,4 @@
-﻿#if UNITY_2019_3_OR_NEWER
-using System;
+﻿using System;
 using System.Linq;
 using System.Collections.Generic;
 using UnityEngine;
@@ -44,6 +43,11 @@ namespace MackySoft.SerializeReferenceExtensions.Editor {
 				if (splittedTypePath.Length <= 1) {
 					continue;
 				}
+				// If they explicitly want sub category, let them do.
+				if (TypeMenuUtility.GetAttribute(type) != null) {
+					isSingleNamespace = false;
+					break;
+				}
 				for (int k = 0;(splittedTypePath.Length - 1) > k;k++) {
 					string ns = namespaces[k];
 					if (ns == null) {
@@ -53,6 +57,10 @@ namespace MackySoft.SerializeReferenceExtensions.Editor {
 						isSingleNamespace = false;
 						break;
 					}
+				}
+
+				if (!isSingleNamespace) {
+					break;
 				}
 			}
 
@@ -129,4 +137,3 @@ namespace MackySoft.SerializeReferenceExtensions.Editor {
 
 	}
 }
-#endif

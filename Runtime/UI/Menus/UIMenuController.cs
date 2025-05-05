@@ -22,6 +22,11 @@ namespace HexTecGames.Basics.UI
             if (subMenus == null || subMenus.Count == 0)
             {
                 gameObject.SetActive(false);
+                return;
+            }
+            if (subMenus[0].gameObject.activeInHierarchy)
+            {
+                SetCurrentMenu(subMenus[0]);
             }
         }
 

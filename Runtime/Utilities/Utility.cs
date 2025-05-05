@@ -49,5 +49,23 @@ namespace HexTecGames
 
             return new Color(r, g, b, 1);
         }
+
+        public static int GenerateRandomNumber(int length)
+        {
+            int min = Mathf.RoundToInt(Mathf.Pow(10, length - 1));
+            int max = min * 10;
+            return Random.Range(min, max);
+        }
+
+        public static string GenerateRandomWord(int length)
+        {
+            StringBuilder stringBuilder = new StringBuilder();
+
+            for (int i = 0; i < length; i++)
+            {
+                stringBuilder.Append((char)('A' + Random.Range(0, 26)));
+            }
+            return stringBuilder.ToString();
+        }
     }
 }

@@ -8,9 +8,9 @@ namespace HexTecGames.Basics.UI.Buttons
     [System.Serializable]
     public class ImageColorEffect : ImageEffect
     {
-        [SerializeField] private Color targetColor = Color.white;        
+        [SerializeField] private Color targetColor = Color.white;
 
-        private Color oldColor;
+        private Color? oldColor;
 
         public override void Apply()
         {
@@ -21,7 +21,10 @@ namespace HexTecGames.Basics.UI.Buttons
 
         public override void Remove()
         {
-            img.color = oldColor;
+            if (oldColor != null)
+            {
+                img.color = oldColor.Value;
+            }
         }
     }
 }

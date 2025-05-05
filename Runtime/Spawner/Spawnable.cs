@@ -5,9 +5,9 @@ using UnityEngine;
 
 namespace HexTecGames.Basics
 {
-    public class Spawnable : MonoBehaviour, ISpawnable
+    public class Spawnable : MonoBehaviour, ISpawnable<Spawnable>
     {
-        public event Action<ISpawnable> OnDeactivated;
+        public event Action<Spawnable> OnDeactivated;
 
         protected virtual void OnDisable()
         {

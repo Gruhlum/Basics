@@ -5,8 +5,8 @@ using UnityEngine;
 
 namespace HexTecGames.Basics
 {
-    public interface ISpawnable
+    public interface ISpawnable<T>
     {
-        public event Action<ISpawnable> OnDeactivated;
+        public event Action<T> OnDeactivated;
     }
 }

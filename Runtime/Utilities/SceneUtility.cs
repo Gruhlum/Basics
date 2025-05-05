@@ -4,12 +4,11 @@ using UnityEditor;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-namespace HexTecGames.Basics
+namespace HexTecGames
 {
-    [CreateAssetMenu(menuName = "HexTecGames/Basics/SceneUtility")]
-    public class SceneUtility : ScriptableObject
+    public static class SceneUtility
     {
-        public void LoadNextScene()
+        public static void LoadNextScene()
         {
             int index = SceneManager.GetActiveScene().buildIndex + 1;
             if (index >= SceneManager.sceneCount)
@@ -18,11 +17,11 @@ namespace HexTecGames.Basics
             }
             SceneManager.LoadScene(index);
         }
-        public void LoadScene(string name)
+        public static void LoadScene(string name)
         {
             SceneManager.LoadScene(name);
         }
-        public void QuitGame()
+        public static void QuitGame()
         {
 #if (UNITY_EDITOR)
             if (Application.isEditor)

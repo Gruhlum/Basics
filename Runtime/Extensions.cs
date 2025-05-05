@@ -30,7 +30,7 @@ public static class Extensions
     {
         return cam.ScreenToWorldPoint(Input.mousePosition + offset + new Vector3(0, 0, -Camera.main.transform.position.z));
     }
-    public static int LoopValue(this int value, int max)
+    public static int WrapDirection(this int value, int max)
     {
         value %= max;
         if (value < 0)
@@ -70,6 +70,7 @@ public static class Extensions
     #region Layout Components
     public static void CopyData(this HorizontalOrVerticalLayoutGroup reciever, HorizontalOrVerticalLayoutGroup sender)
     {
+        reciever.GetComponent<RectTransform>().sizeDelta = sender.GetComponent<RectTransform>().sizeDelta;
         reciever.padding = sender.padding;
         reciever.childAlignment = sender.childAlignment;
 

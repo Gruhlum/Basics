@@ -7,9 +7,8 @@ using static UnityEngine.UI.ContentSizeFitter;
 
 namespace HexTecGames.Basics.UI
 {
-    public class TableController : LayoutGroup
+    public class TableController : HorizontalOrVerticalLayoutGroup
     {
-        [SerializeField] private HorizontalOrVerticalLayoutGroup parentLayout = default;
         [SerializeField] private List<HorizontalOrVerticalLayoutGroup> contentItems = default;
         [Space]
         [SerializeField] private bool useHeader = default;
@@ -19,41 +18,45 @@ namespace HexTecGames.Basics.UI
 
         private DrivenRectTransformTracker drivingTracker;
 
-        private Transform Parent
-        {
-            get
-            {
-                if (parentLayout == null)
-                {
-                    return null;
-                }
-                return parentLayout.transform;
-            }
-        }
-
         private Orientation Orientation
         {
             get
             {
-                if (parentLayout != null)
-                {
-                    if (parentLayout is VerticalLayoutGroup)
-                    {
-                        return Orientation.Vertical;
-                    }
-                }
-                return Orientation.Horizontal;
+                return orientation;
             }
         }
+        [SerializeField] private Orientation orientation = default;
 
 #if UNITY_EDITOR
         protected override void Reset()
         {
             base.Reset();
-            parentLayout = GetComponent<HorizontalOrVerticalLayoutGroup>();
-            header = FindHeader();
+            if (useHeader)
+            {
+                header = FindHeader();
+            }
             contentItems = FindContentItems();
             Refresh();
+        }
+        protected override void Update()
+        {
+            if (Application.isPlaying)
+            {
+                return;
+            }
+
+            int lastCount = 0;
+            if (contentItems != null)
+            {
+                lastCount = contentItems.Count;
+            }
+            
+            contentItems = FindContentItems();
+            if (contentItems != null && lastCount != contentItems.Count)
+            {
+                LayoutRebuilder.MarkLayoutForRebuild(transform as RectTransform);
+            }
+            base.Update();
         }
 #endif
 
@@ -78,14 +81,17 @@ namespace HexTecGames.Basics.UI
         }
         private List<HorizontalOrVerticalLayoutGroup> FindContentItems()
         {
-            if (Parent == null || Parent.childCount <= 1)
+            if (transform.childCount <= 0)
             {
                 return null;
             }
             List<HorizontalOrVerticalLayoutGroup> results = new List<HorizontalOrVerticalLayoutGroup>();
-            for (int i = 1; i < Parent.childCount; i++)
+
+            int startIndex = useHeader ? 1 : 0;
+
+            for (int i = startIndex; i < transform.childCount; i++)
             {
-                if (Parent.GetChild(i).TryGetComponent(out HorizontalOrVerticalLayoutGroup layoutGroup))
+                if (transform.GetChild(i).TryGetComponent(out HorizontalOrVerticalLayoutGroup layoutGroup))
                 {
                     results.Add(layoutGroup);
                 }
@@ -124,10 +130,6 @@ namespace HexTecGames.Basics.UI
             {
                 return;
             }
-            if (fitMode == FitMode.Unconstrained)
-            {
-                return;
-            }
 
             List<HorizontalOrVerticalLayoutGroup> allItems = new List<HorizontalOrVerticalLayoutGroup>(contentItems);
             if (useHeader && header != null)
@@ -135,12 +137,52 @@ namespace HexTecGames.Basics.UI
                 allItems.Add(header);
             }
 
-            int totalRows = allItems[0].transform.childCount;
+            HorizontalOrVerticalLayoutGroup leader = allItems[0];
+            int totalRows = leader.transform.childCount;
             Orientation orientation = Orientation;
 
             for (int i = 0; i < totalRows; i++)
             {
+                float minSize = CalculateTargetSize(allItems, i);
+                ApplyTargetSize(allItems, orientation, i, minSize);
+            }
+        }
+
+        private void ApplyTargetSize(List<HorizontalOrVerticalLayoutGroup> allItems, Orientation orientation, int index, float minSize)
+        {
+            for (int i = 0; i < allItems.Count; i++)
+            {
+                if (fitMode == FitMode.Unconstrained && i == 0)
+                {
+                    continue;
+                }
+                HorizontalOrVerticalLayoutGroup item = allItems[i];
+                RectTransform result = item.transform.GetChild(index).GetComponent<RectTransform>();
+                if (orientation == Orientation.Vertical)
+                {
+                    result.sizeDelta = new Vector2(minSize, result.sizeDelta.y);
+                }
+                else
+                {
+                    result.sizeDelta = new Vector2(result.sizeDelta.x, minSize);
+                }
+            }
+        }
+
+        private float CalculateTargetSize(List<HorizontalOrVerticalLayoutGroup> allItems, int index)
+        {
+            if (fitMode == FitMode.Unconstrained)
+            {
+                if (Orientation == Orientation.Vertical)
+                {
+                    return allItems[0].transform.GetChild(index).GetComponent<RectTransform>().sizeDelta.x;
+                }
+                else return allItems[0].transform.GetChild(index).GetComponent<RectTransform>().sizeDelta.y;
+            }
+            else
+            {
                 float minSize = 0;
+
                 foreach (var item in allItems)
                 {
                     float result = 0;
@@ -148,22 +190,22 @@ namespace HexTecGames.Basics.UI
                     {
                         if (fitMode == FitMode.MinSize)
                         {
-                            result = LayoutUtility.GetMinWidth(item.transform.GetChild(i).GetComponent<RectTransform>());
+                            result = LayoutUtility.GetMinWidth(item.transform.GetChild(index).GetComponent<RectTransform>());
                         }
                         else if (fitMode == FitMode.PreferredSize)
                         {
-                            result = LayoutUtility.GetPreferredWidth(item.transform.GetChild(i).GetComponent<RectTransform>());
+                            result = LayoutUtility.GetPreferredWidth(item.transform.GetChild(index).GetComponent<RectTransform>());
                         }
                     }
                     else
                     {
                         if (fitMode == FitMode.MinSize)
                         {
-                            result = LayoutUtility.GetMinHeight(item.transform.GetChild(i).GetComponent<RectTransform>());
+                            result = LayoutUtility.GetMinHeight(item.transform.GetChild(index).GetComponent<RectTransform>());
                         }
                         else if (fitMode == FitMode.PreferredSize)
                         {
-                            result = LayoutUtility.GetPreferredHeight(item.transform.GetChild(i).GetComponent<RectTransform>());
+                            result = LayoutUtility.GetPreferredHeight(item.transform.GetChild(index).GetComponent<RectTransform>());
                         }
                     }
                     if (minSize < result)
@@ -171,47 +213,43 @@ namespace HexTecGames.Basics.UI
                         minSize = result;
                     }
                 }
-                foreach (var item in allItems)
-                {
-                    RectTransform result = item.transform.GetChild(i).GetComponent<RectTransform>();
-                    if (orientation == Orientation.Vertical)
-                    {
-                        result.sizeDelta = new Vector2(minSize, result.sizeDelta.y);
-                    }
-                    else
-                    {
-                        result.sizeDelta = new Vector2(result.sizeDelta.x, minSize);
-                    }
-                }
+                return minSize;
             }
         }
 
         private HorizontalOrVerticalLayoutGroup FindHeader()
         {
-            if (Parent == null || Parent.childCount <= 0)
+            if (transform.childCount <= 0)
             {
                 return null;
             }
-            if (Parent.GetChild(0).TryGetComponent(out HorizontalOrVerticalLayoutGroup layoutGroup))
+            if (transform.GetChild(0).TryGetComponent(out HorizontalOrVerticalLayoutGroup layoutGroup))
             {
                 return layoutGroup;
             }
             return null;
         }
 
+        public override void CalculateLayoutInputHorizontal()
+        {
+            base.CalculateLayoutInputHorizontal();
+            Refresh();
+            CalcAlongAxis(0, Orientation == Orientation.Vertical);
+        }
         public override void CalculateLayoutInputVertical()
         {
             Refresh();
+            CalcAlongAxis(1, Orientation == Orientation.Vertical);
         }
-
         public override void SetLayoutHorizontal()
         {
             Refresh();
+            SetChildrenAlongAxis(0, Orientation == Orientation.Vertical);
         }
-
         public override void SetLayoutVertical()
         {
             Refresh();
+            SetChildrenAlongAxis(1, Orientation == Orientation.Vertical);
         }
     }
 }
