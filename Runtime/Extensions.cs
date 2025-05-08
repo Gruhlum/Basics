@@ -8,6 +8,7 @@ using UnityEngine.UI;
 using System.Text;
 using System.IO;
 using UnityEngine.EventSystems;
+using TMPro;
 
 public static class Extensions
 {
@@ -166,6 +167,36 @@ public static class Extensions
         Color col = sr.color;
         col.a = alpha / 255f;
         sr.color = col;
+    }
+    public static void SetAlpha(this TMP_Text textGUI, float alpha)
+    {
+        Color col = textGUI.color;
+        col.a = alpha;
+        textGUI.color = col;
+    }
+    public static void SetAlpha(this TMP_Text textGUI, int alpha)
+    {
+        Color col = textGUI.color;
+        col.a = alpha / 255f;
+        textGUI.color = col;
+    }
+    public static void SetAlpha(this ref Color color, float alpha)
+    {
+        color.a = alpha;
+    }
+    public static void SetAlpha(this ref Color color, int alpha)
+    {
+        color.a = alpha / 255f;
+    }
+    public static Color GetColorWithAlpha(this Color color, float alpha)
+    {
+        color.a = alpha;
+        return color;
+    }
+    public static Color GetColorWithAlpha(this Color color, int alpha)
+    {
+        color.a = alpha / 255f;
+        return color;
     }
     #endregion
     public static bool IsSameColor(this Color32 c1, Color32 c2)
