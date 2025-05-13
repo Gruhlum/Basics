@@ -17,12 +17,17 @@ namespace HexTecGames.Basics.UIGrid
         public int columns;
         public int totalWidth;
         public int totalHeight;
+        public int maxRange = 3;
 
         public Vector2 offset;
 
+        public Grid(GridSettings gridSettings) : this(gridSettings.Width, gridSettings.Height, gridSettings.cellWidth, gridSettings.cellHeight)
+        {
+        }
+
         public Grid(int width, int height, int cellWidth, int cellHeight)
         {
-            Debug.Log(width + " - " + height + " - " + cellWidth + " - " + cellHeight);
+            //Debug.Log(width + " - " + height + " - " + cellWidth + " - " + cellHeight);
             rows = width / cellWidth;
             if (rows % 2 == 0)
             {
@@ -62,81 +67,174 @@ namespace HexTecGames.Basics.UIGrid
             //Debug.Log(cellSizeOffset + " - " + leftOverOffset);
             return cellSizeOffset + gapOffset;
         }
-
         public Vector2 GetPosition(Vector2 viewportPosition, T obj)
         {
-            float positionX = (Mathf.Lerp(0, rows - 1, viewportPosition.x));
-            float positionY = (Mathf.Lerp(0, columns - 1, viewportPosition.y));
-
-            //Debug.Log(positionX + " - " + positionY);
-            //List<Cell> cells = GetRequiredCells(positionX, positionY, width, height);
-
-            //foreach (var cell in cells)
-            //{
-            //    cell.occupyingObject = obj;
-            //}
-
-            //float targetX = cells.Sum(cell => cell.x) / cells.Count;
-            //float targetY = cells.Sum(cell => cell.y) / cells.Count;
-            var cell = GetClosestCell(positionX, positionY, 3);
+            var cell = GetClosestCell(viewportPosition);
             if (cell == null)
             {
-                cell = Cells[Mathf.RoundToInt(positionY), Mathf.RoundToInt(positionY)];
-                return cell.CalculateViewportPosition();
+
             }
-            else cell.SetObject(obj);
+            cell.SetObject(obj);
 
             return cell.CalculateViewportPosition();
         }
 
-        private Cell<T> GetClosestCell(float positionX, float positionY, int maxRange)
+        private List<Cell<T>> GetNeighbours(List<Cell<T>> cellsToCheck)
         {
+            List<Cell<T>> results = new List<Cell<T>>();
 
+            foreach (var cell in cellsToCheck)
+            {
+                results.AddRange(GetNeighbours(cell));
+            }
+
+            return results;
+        }
+        private List<Cell<T>> GetNeighbours(Cell<T> center)
+        {
+            List<Cell<T>> results = new List<Cell<T>>();
+
+            Vector2Int direction = Vector2Int.up;
+
+            for (int i = 0; i < 4; i++)
+            {
+                int targetX = center.x + direction.x;
+
+                if (targetX < 0 || targetX >= rows)
+                {
+                    continue;
+                }
+                int targetY = center.y + direction.y;
+                if (targetY < 0 || targetY >= columns)
+                {
+                    continue;
+                }
+                results.Add(Cells[targetX, targetY]);
+                direction = RotateDirection(direction, true);
+            }
+
+            return results;
+        }
+        public Cell<T> GetClosestCell(Vector2 viewportPosition, bool emptyCell = true)
+        {
+            float positionX = (Mathf.Lerp(0, rows - 1, viewportPosition.x));
+            float positionY = (Mathf.Lerp(0, columns - 1, viewportPosition.y));
+
+            return GetClosestCell(positionX, positionY, emptyCell);
+        }
+        public Cell<T> GetClosestCell(float positionX, float positionY, bool emptyCell = true)
+        {
+            Cell<T> cell = GetCenterCell(positionX, positionY);
+            if (!emptyCell || cell.spawnable == null)
+            {
+                return cell;
+            }
+            List<List<Cell<T>>> cellsToCheck = new List<List<Cell<T>>>();
+
+            var directNeighbours = GetNeighbours(cell);
+            foreach (var neigbour in directNeighbours)
+            {
+                if (neigbour.spawnable == null)
+                {
+                    return neigbour;
+                }
+                else
+                {
+                    var result = new List<Cell<T>>() { neigbour };
+                    cellsToCheck.Add(result);
+                }
+            }
+
+            HashSet<Cell<T>> checkedCells = new HashSet<Cell<T>>() { cell };
+
+            int currentRange = 1;
+
+            while (currentRange < maxRange && cellsToCheck.Any(x => x.Count > 0))
+            {
+                currentRange++;
+                for (int i = 0; i < 4; i++)
+                {
+                    if (cellsToCheck[i].Count == 0)
+                    {
+                        continue;
+                    }
+                    List<Cell<T>> neighbours = GetNeighbours(cellsToCheck[i]);
+                    cellsToCheck[i].Clear();
+                    foreach (var neighbour in neighbours)
+                    {
+                        if (checkedCells.Contains(neighbour))
+                        {
+                            continue;
+                        }
+                        if (neighbour.spawnable == null)
+                        {
+                            return neighbour;
+                        }
+                        checkedCells.Add(neighbour);
+                        cellsToCheck[i].Add(neighbour);
+                    }
+                }
+            }
+            return null;
+        }
+
+        private Cell<T> GetCenterCell(float positionX, float positionY)
+        {
             int roundedX = Mathf.RoundToInt(positionX);
             int roundedY = Mathf.RoundToInt(positionY);
 
             var cell = Cells[roundedX, roundedY];
-
-            if (cell.spawnable == null)
-            {
-                return cell;
-            }
-
-            int distanceX = 1;
-            int distanceY = 1;
-
-            for (int range = 0; range < maxRange; range++)
-            {
-                Vector2Int direction = Vector2Int.up;
-
-                for (int i = 0; i < 4; i++)
-                {
-                    Cell<T> target = Cells[roundedX + direction.x * (distanceX + range), roundedY + direction.y * (distanceY + range)];
-                    if (target.spawnable == null)
-                    {
-                        return target;
-                    }
-                    direction = RotateDirection(direction, true);
-                }
-
-                direction = new Vector2Int(1, 1);
-
-                for (int i = 0; i < 4; i++)
-                {
-                    for (int j = 0; j < range; j++)
-                    {
-                        Cell<T> target = Cells[roundedX + direction.x * (distanceX + range), roundedY + direction.y * (distanceY + range)];
-                        if (target.spawnable == null)
-                        {
-                            return target;
-                        }
-                        direction = RotateDirection(direction, true);
-                    }
-                   
-                }
-            }
             return cell;
         }
+
+        //private Cell<T> GetClosestCell(float positionX, float positionY, int maxRange)
+        //{
+
+        //    int roundedX = Mathf.RoundToInt(positionX);
+        //    int roundedY = Mathf.RoundToInt(positionY);
+
+        //    var cell = Cells[roundedX, roundedY];
+
+        //    if (cell.spawnable == null)
+        //    {
+        //        return cell;
+        //    }
+
+        //    int distanceX = 1;
+        //    int distanceY = 1;
+
+        //    for (int range = 0; range < maxRange; range++)
+        //    {
+        //        Vector2Int direction = Vector2Int.up;
+
+        //        for (int i = 0; i < 4; i++)
+        //        {
+        //            Cell<T> target = Cells[roundedX + direction.x * (distanceX + range), roundedY + direction.y * (distanceY + range)];
+        //            if (target.spawnable == null)
+        //            {
+        //                return target;
+        //            }
+        //            direction = RotateDirection(direction, true);
+        //        }
+
+        //        direction = new Vector2Int(1, 1);
+
+        //        for (int i = 0; i < 4; i++)
+        //        {
+        //            for (int j = 0; j < range; j++)
+        //            {
+        //                Cell<T> target = Cells[roundedX + direction.x * (distanceX + range), roundedY + direction.y * (distanceY + range)];
+        //                if (target.spawnable == null)
+        //                {
+        //                    return target;
+        //                }
+        //                direction = RotateDirection(direction, true);
+        //            }
+
+        //        }
+        //    }
+        //    return cell;
+        //}
 
         //private Cell<T> GetClosestCell(float positionX, float positionY, int maxRange)
         //{

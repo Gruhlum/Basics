@@ -7,33 +7,22 @@ namespace HexTecGames.Basics
 {
     public abstract class UIGridObjectSpawnController<T> : SpawnableSpawnController<T> where T : Component, ISpawnable<T>
     {
-        public static Grid<T> uiGrid;
+        public static MultiGrid<T> uiGrid;
 
-        protected abstract int GridWidth
+        public abstract GridSettings GridSettings
         {
             get;
         }
-        protected abstract int GridHeight
-        {
-            get;
-        }
-        protected abstract int CellWidth
-        {
-            get;
-        }
-        protected abstract int CellHeight
-        {
-            get;
-        }
+
+
         protected override void Awake()
         {
             base.Awake();
-            uiGrid = new Grid<T>(GridWidth, GridHeight, CellWidth, CellHeight);
+            uiGrid = new MultiGrid<T>(GridSettings);
         }
 
         public static Vector2 GetGridPosition(Vector2 viewportPosition, T spawnable)
         {
-            Debug.Log(uiGrid == null);
             return uiGrid.GetPosition(viewportPosition, spawnable);
         }
     }
