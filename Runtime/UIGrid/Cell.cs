@@ -42,7 +42,7 @@ namespace HexTecGames.Basics.UIGrid
         public Vector2 CalculateViewportPosition()
         {
             var result = new Vector2(x / (float)grid.rows, y / (float)grid.columns) + grid.offset;
-            //Debug.Log(ToString() + " - " + result);
+            //result *= grid.ScaleMultiplier;
             return result;
         }
 

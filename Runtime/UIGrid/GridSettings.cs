@@ -5,15 +5,16 @@ using UnityEngine;
 
 namespace HexTecGames
 {
-    public enum SizeType { Screen, Custom }
+    public enum SizeType { Canvas, Custom }
 
     [System.Serializable]
     public class GridSettings
     {
         [Header("Grid Size")]
         [SerializeField] private SizeType sizeType = default;
-        [SerializeField][DrawIf(nameof(sizeType), SizeType.Custom)] private int width = 1920;
-        [SerializeField][DrawIf(nameof(sizeType), SizeType.Custom)] private int height = 1080;
+        [SerializeField][DrawIf(nameof(SizeType), SizeType.Canvas)] private Canvas canvas = default;
+        [SerializeField][DrawIf(nameof(SizeType), SizeType.Custom)] private int width = 1920;
+        [SerializeField][DrawIf(nameof(SizeType), SizeType.Custom)] private int height = 1080;
 
         [Header("Cell")]
         public int cellWidth = 160;
@@ -21,13 +22,20 @@ namespace HexTecGames
         [Space]
         public int maxRange = 3;
 
+        public Canvas Canvas
+        {
+            get
+            {
+                return canvas;
+            }
+        }
         public int Width
         {
             get
             {
-                if (sizeType == SizeType.Screen)
+                if (SizeType == SizeType.Canvas)
                 {
-                    return Screen.width;
+                    return (int)canvas.pixelRect.width;
                 }
                 else return width;
             }
@@ -36,21 +44,33 @@ namespace HexTecGames
         {
             get
             {
-                if (sizeType == SizeType.Screen)
+                if (SizeType == SizeType.Canvas)
                 {
-                    return Screen.height;
+                    return (int)canvas.pixelRect.height;
                 }
                 else return height;
             }
         }
 
+        public SizeType SizeType
+        {
+            get
+            {
+                return this.sizeType;
+            }
+
+            set
+            {
+                this.sizeType = value;
+            }
+        }
 
         public GridSettings()
         {
         }
         public GridSettings(int width, int height, int cellWidth, int cellHeight, int maxRange) : this(cellWidth, cellHeight, maxRange)
         {
-            this.sizeType = SizeType.Custom;
+            this.SizeType = SizeType.Custom;
             this.width = width;
             this.height = height;
         }

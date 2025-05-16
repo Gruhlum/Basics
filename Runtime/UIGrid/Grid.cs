@@ -21,19 +21,44 @@ namespace HexTecGames.Basics.UIGrid
 
         public Vector2 offset;
 
-        public Grid(GridSettings gridSettings) : this(gridSettings.Width, gridSettings.Height, gridSettings.cellWidth, gridSettings.cellHeight)
+        private float scaleMultiplier = 1f;
+
+        public float ScaleMultiplier
         {
+            get
+            {
+                return this.scaleMultiplier;
+            }
+            private set
+            {
+                this.scaleMultiplier = value;
+            }
         }
 
+        public Grid(GridSettings gridSettings)
+        {
+            if (gridSettings.SizeType == SizeType.Canvas)
+            {
+                ScaleMultiplier = CalculateScaleMultiplier(gridSettings.Canvas, Camera.main);
+            }
+            GenerateGrid(gridSettings.Width, gridSettings.Height, gridSettings.cellWidth, gridSettings.cellHeight);
+        }
         public Grid(int width, int height, int cellWidth, int cellHeight)
         {
-            //Debug.Log(width + " - " + height + " - " + cellWidth + " - " + cellHeight);
-            rows = width / cellWidth;
+            GenerateGrid(width, height, cellWidth, cellHeight);
+        }
+        private void GenerateGrid(int width, int height, int cellWidth, int cellHeight)
+        {
+            Debug.Log(width + " - " + height + " - " + cellWidth + " - " + cellHeight);
+            rows = Mathf.FloorToInt(width / cellWidth * ScaleMultiplier);
             if (rows % 2 == 0)
             {
                 rows--;
             }
-            columns = height / cellHeight;
+            columns = Mathf.FloorToInt(height / cellHeight * ScaleMultiplier);
+
+            Debug.Log("Rows: " + rows + " - " + columns);
+
             this.cellWidth = cellWidth;
             this.cellHeight = cellHeight;
             this.totalWidth = width;
@@ -50,6 +75,21 @@ namespace HexTecGames.Basics.UIGrid
                     Cells[x, y] = new Cell<T>(this, x, y, cellWidth, cellHeight);
                 }
             }
+        }
+        private float CalculateScaleMultiplier(Canvas canvas, Camera camera)
+        {
+            // Canvas Scaling:
+            // CameraSize * 2 / CanvasHeight
+            if (canvas.renderMode != RenderMode.WorldSpace)
+            {
+                return 1f;
+            }
+
+            float targetScaling = camera.orthographicSize * 2f / canvas.pixelRect.height;
+
+            Debug.Log(targetScaling + " - " + canvas.transform.localScale.x + " - " + (targetScaling / canvas.transform.localScale.x));
+
+            return  targetScaling / canvas.transform.localScale.x;
         }
 
         private Vector2 CalculateOffsetValue()
@@ -69,11 +109,7 @@ namespace HexTecGames.Basics.UIGrid
         }
         public Vector2 GetPosition(Vector2 viewportPosition, T obj)
         {
-            var cell = GetClosestCell(viewportPosition);
-            if (cell == null)
-            {
-
-            }
+            var cell = GetClosestCell(viewportPosition, false);
             cell.SetObject(obj);
 
             return cell.CalculateViewportPosition();
@@ -117,8 +153,8 @@ namespace HexTecGames.Basics.UIGrid
         }
         public Cell<T> GetClosestCell(Vector2 viewportPosition, bool emptyCell = true)
         {
-            float positionX = (Mathf.Lerp(0, rows - 1, viewportPosition.x));
-            float positionY = (Mathf.Lerp(0, columns - 1, viewportPosition.y));
+            float positionX = Mathf.Lerp(0, rows - 1, viewportPosition.x);
+            float positionY = Mathf.Lerp(0, columns - 1, viewportPosition.y);
 
             return GetClosestCell(positionX, positionY, emptyCell);
         }
@@ -187,139 +223,7 @@ namespace HexTecGames.Basics.UIGrid
             return cell;
         }
 
-        //private Cell<T> GetClosestCell(float positionX, float positionY, int maxRange)
-        //{
 
-        //    int roundedX = Mathf.RoundToInt(positionX);
-        //    int roundedY = Mathf.RoundToInt(positionY);
-
-        //    var cell = Cells[roundedX, roundedY];
-
-        //    if (cell.spawnable == null)
-        //    {
-        //        return cell;
-        //    }
-
-        //    int distanceX = 1;
-        //    int distanceY = 1;
-
-        //    for (int range = 0; range < maxRange; range++)
-        //    {
-        //        Vector2Int direction = Vector2Int.up;
-
-        //        for (int i = 0; i < 4; i++)
-        //        {
-        //            Cell<T> target = Cells[roundedX + direction.x * (distanceX + range), roundedY + direction.y * (distanceY + range)];
-        //            if (target.spawnable == null)
-        //            {
-        //                return target;
-        //            }
-        //            direction = RotateDirection(direction, true);
-        //        }
-
-        //        direction = new Vector2Int(1, 1);
-
-        //        for (int i = 0; i < 4; i++)
-        //        {
-        //            for (int j = 0; j < range; j++)
-        //            {
-        //                Cell<T> target = Cells[roundedX + direction.x * (distanceX + range), roundedY + direction.y * (distanceY + range)];
-        //                if (target.spawnable == null)
-        //                {
-        //                    return target;
-        //                }
-        //                direction = RotateDirection(direction, true);
-        //            }
-
-        //        }
-        //    }
-        //    return cell;
-        //}
-
-        //private Cell<T> GetClosestCell(float positionX, float positionY, int maxRange)
-        //{
-        //    // Spiral from target position until an empty cell is found
-        //    // Don't ignore grid bounds
-        //    // If no Cell is empty return position of target position
-
-        //    int roundedX = Mathf.RoundToInt(positionX);
-        //    int roundedY = Mathf.RoundToInt(positionY);
-
-        //    var cell = Cells[roundedX, roundedY];
-        //    var startCell = cell;
-        //    if (cell.spawnable == null)
-        //    {
-        //        return cell;
-        //    }
-        //    Vector2Int startDirection;
-        //    float differenceX = roundedX - positionX;
-        //    float differenceY = roundedY - positionY;
-
-        //    bool clockwise;
-
-        //    if (Mathf.Abs(differenceX) < Mathf.Abs(differenceY))
-        //    {
-        //        if (differenceX > 0)
-        //        {
-        //            startDirection = Vector2Int.right;
-        //        }
-        //        else startDirection = Vector2Int.left;
-
-        //        clockwise = differenceY > 0;
-        //    }
-        //    else
-        //    {
-        //        if (differenceY > 0)
-        //        {
-        //            startDirection = Vector2Int.up;
-        //        }
-        //        else startDirection = Vector2Int.down;
-
-        //        clockwise = differenceX > 0;
-        //    }
-
-        //    for (int range = 0; range < maxRange; range++)
-        //    {
-        //        Vector2Int currentDirection = startDirection;
-        //        // If we are on the last lap we have to make one extra turn to complete a full square
-        //        int totalDirection = range + 1 == maxRange ? 5 : 4;
-        //        Debug.Log(totalDirection);
-        //        for (int direction = 0; direction < totalDirection; direction++)
-        //        {
-        //            int lineLength = 1 + (range * 4 + direction) / 2;
-        //            if (direction + 1 == 5)
-        //            {
-        //                lineLength--;
-        //                Debug.Log(lineLength);
-        //            }
-        //            int increaseX = currentDirection.x;
-        //            int increaseY = currentDirection.y;
-
-        //            for (int line = 0; line < lineLength; line++)
-        //            {
-        //                int targetX = cell.x + increaseX;
-        //                int targetY = cell.y + increaseY;
-
-        //                if (targetX < 0 || targetX >= rows)
-        //                {
-        //                    break;
-        //                }
-        //                if (targetY < 0 || targetY >= columns)
-        //                {
-        //                    break;
-        //                }
-        //                cell = Cells[targetX, targetY];
-        //                if (cell.spawnable == null)
-        //                {
-        //                    return cell;
-        //                }
-        //            }
-        //            currentDirection = RotateDirection(currentDirection, clockwise);
-        //        }
-        //    }
-        //    Debug.Log("Could not find Cell!");
-        //    return startCell;
-        //}
         private Vector2Int RotateDirection(Vector2Int direction, bool clockwise)
         {
             if (clockwise)
@@ -332,34 +236,17 @@ namespace HexTecGames.Basics.UIGrid
             }
         }
 
-        //private List<Cell<T>> GetRequiredCells(int centerX, int centerY, int width, int height)
-        //{
-        //    List<Cell<T>> results = new List<Cell<T>>();
-        //    int requiredCellsX = Mathf.CeilToInt(width / (float)cellWidth);
-
-        //    // We want the object to be centered on the X axis
-        //    if (this.rows % 2 != 0 && requiredCellsX % 2 == 0 || this.rows % 2 == 0 && requiredCellsX % 2 != 0)
-        //    {
-        //        requiredCellsX++;
-        //    }
-        //    int requiredCellsY = Mathf.CeilToInt(height / (float)cellHeight);
-
-        //    int startX = requiredCellsX / 2;
-        //    int endX = requiredCellsX - startX;
-
-        //    int startY = requiredCellsY / 2;
-        //    int endY = requiredCellsY - startY;
-
-
-        //    for (int x = startX; x < endX; x++)
-        //    {
-        //        for (int y = startY; y < endY; y++)
-        //        {
-        //            results.Add(Cells[x + centerX, y + centerY]);
-        //        }
-        //    }
-
-        //    return results;
-        //}
+        public List<Cell<T>> GetCells()
+        {
+            List<Cell<T>> results = new List<Cell<T>>();
+            for (int x = 0; x < Cells.GetLength(0); x++)
+            {
+                for (int y = 0; y < Cells.GetLength(1); y++)
+                {
+                    results.Add(Cells[x, y]);
+                }
+            }
+            return results;
+        }
     }
 }

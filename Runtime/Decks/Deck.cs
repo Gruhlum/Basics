@@ -27,27 +27,11 @@ namespace HexTecGames.Basics
         {
         }
 
-        private DeckItem<T> RollDeckItem()
-        {
-            int totalTickets = currentItems.Max(x => x.amount);
-            int rng = Random.Range(0, totalTickets);
-            foreach (var item in currentItems)
-            {
-                if (rng < item.amount)
-                {
-                    return item;
-                }
-                rng -= item.amount;
-            }
-            Debug.Log("Error: Could not determine a valid deck!");
-            return currentItems[0];
-        }
-
         public bool HasRollsLeft()
         {
             foreach (var item in currentItems)
             {
-                if (item.amount > 0)
+                if (item.Tickets > 0)
                 {
                     return true;
                 }
@@ -65,13 +49,29 @@ namespace HexTecGames.Basics
             {
                 GenerateDeck();
             }
-            DeckItem<T> deck = RollDeckItem();
-            deck.amount--;
-            if (deck.amount <= 0)
+            DeckItem<T> deck = currentItems.Roll();
+            deck.Tickets--;
+            if (deck.Tickets <= 0)
             {
                 currentItems.Remove(deck);
             }
             return deck.item;
-        }       
+        }
+
+
+        private string GetItemsToString(List<DeckItem<T>> items)
+        {
+            List<string> totalItemsStrings = new List<string>();
+            foreach (var item in totalItems)
+            {
+                totalItemsStrings.Add(item.ToString());
+            }
+            return string.Join(", ", totalItemsStrings);
+        }
+
+        public override string ToString()
+        {
+            return $"Total: {GetItemsToString(totalItems)} || Current: {GetItemsToString(currentItems)}";
+        }
     }
 }

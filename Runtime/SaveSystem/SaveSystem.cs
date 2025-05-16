@@ -159,7 +159,7 @@ namespace HexTecGames.Basics
         private static void LoadProfiles()
         {
             loadedProfiles = true;
-            Debug.Log("Loading Profiles");
+            //Debug.Log("Loading Profiles");
             var results = FileManager.GetDirectoryNames(BaseDirectory);
             profiles.Clear();
             if (results == null)

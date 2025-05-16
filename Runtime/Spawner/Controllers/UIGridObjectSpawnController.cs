@@ -9,21 +9,37 @@ namespace HexTecGames.Basics
     {
         public static MultiGrid<T> uiGrid;
 
-        public abstract GridSettings GridSettings
+        public virtual GridSettings GridSettings
         {
-            get;
+            get
+            {
+                return gridSettings;
+            }
+            protected set
+            {
+                gridSettings = value;
+            }
         }
+        [SerializeField] private GridSettings gridSettings = default;
 
+        [Header("Debug")]
+        [SerializeField] private CellDisplayController cellDisplayController = default;
 
         protected override void Awake()
         {
             base.Awake();
             uiGrid = new MultiGrid<T>(GridSettings);
+            if (cellDisplayController != null)
+            {
+                cellDisplayController.DisplayCells(uiGrid.GetCells());
+            }
         }
 
-        public static Vector2 GetGridPosition(Vector2 viewportPosition, T spawnable)
+        public static Vector3 GetGridPosition(Vector3 position, T spawnable)
         {
-            return uiGrid.GetPosition(viewportPosition, spawnable);
+            Vector2 targetViewportPosition = Camera.main.WorldToViewportPoint(position);
+            Vector3 cellViewportPosition = uiGrid.GetPosition(targetViewportPosition, spawnable);
+            return Camera.main.ViewportToWorldPoint(cellViewportPosition);
         }
     }
 }
