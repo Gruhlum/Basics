@@ -9,6 +9,10 @@ namespace HexTecGames.Basics
     {
         public static MultiGrid<T> uiGrid;
 
+
+        private static Vector3 canvasScaling = Vector3.one;
+        [SerializeField] private Canvas parentCanvas = default;
+
         public virtual GridSettings GridSettings
         {
             get
@@ -23,13 +27,16 @@ namespace HexTecGames.Basics
         [SerializeField] private GridSettings gridSettings = default;
 
         [Header("Debug")]
-        [SerializeField] private CellDisplayController cellDisplayController = default;
+        [SerializeField] private bool showGridCells = default;
+        [SerializeField, DrawIf(nameof(showGridCells), true)] private CellDisplayController cellDisplayController = default;
 
         protected override void Awake()
         {
             base.Awake();
             uiGrid = new MultiGrid<T>(GridSettings);
-            if (cellDisplayController != null)
+            canvasScaling = parentCanvas.transform.localScale;
+            
+            if (showGridCells && cellDisplayController != null)
             {
                 cellDisplayController.DisplayCells(uiGrid.GetCells());
             }
@@ -37,9 +44,8 @@ namespace HexTecGames.Basics
 
         public static Vector3 GetGridPosition(Vector3 position, T spawnable)
         {
-            Vector2 targetViewportPosition = Camera.main.WorldToViewportPoint(position);
-            Vector3 cellViewportPosition = uiGrid.GetPosition(targetViewportPosition, spawnable);
-            return Camera.main.ViewportToWorldPoint(cellViewportPosition);
+            //Debug.Log(canvasScaling);
+            return uiGrid.GetPosition(position, spawnable) * canvasScaling;
         }
     }
 }

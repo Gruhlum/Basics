@@ -9,14 +9,14 @@ namespace HexTecGames.Basics.UIGrid
     {
         [SerializeField] private Spawner<CellDisplay> cellDisplaySpawner = default;
 
+        [SerializeField] private Canvas canvas = default;
+
+
         public void DisplayCells<T>(List<Cell<T>> cells) where T : ISpawnable<T>
         {
             foreach (var cell in cells)
             {
-                Vector3 result = cell.CalculateViewportPosition();
-                result.z = -Camera.main.transform.position.z;
-                result = Camera.main.ViewportToWorldPoint(result);
-                cellDisplaySpawner.Spawn().Setup(result, cell.GetSize());
+                cellDisplaySpawner.Spawn().Setup(cell.X, cell.Y, cell.GetPosition() * canvas.transform.localScale, cell.Size);
             }
         }
     }

@@ -8,14 +8,26 @@ namespace HexTecGames.Basics.UIGrid
     public class MultiGrid<T> where T : ISpawnable<T>
     {
         [SerializeField] private GridSettings gridSettings = default;
-
+        [SerializeField] private GridType gridType = default;
         private List<Grid<T>> grids = new List<Grid<T>>();
 
 
         public MultiGrid(GridSettings gridSettings)
         {
             this.gridSettings = gridSettings;
-            grids.Add(new Grid<T>(gridSettings));
+            InstantiateGrid(gridSettings);
+
+        }
+
+        private Grid<T> InstantiateGrid(GridSettings gridSettings)
+        {
+            if (gridType == GridType.Rect)
+            {
+                var grid = new RectGrid<T>(gridSettings);
+                grids.Add(grid);
+                return grid;
+            }
+            else return null;
         }
 
         public List<Cell<T>> GetCells()
@@ -23,22 +35,20 @@ namespace HexTecGames.Basics.UIGrid
             return grids[0].GetCells();
         }
 
-        public Vector2 GetPosition(Vector2 viewportPosition, T obj)
+        public Vector2 GetPosition(Vector2 position, T obj)
         {
             for (int i = 0; i < grids.Count; i++)
             {
-                Cell<T> cell = grids[i].GetClosestCell(viewportPosition);
-                if (cell != null)
+                var result = grids[i].GetPosition(position, obj);
+                if (result.HasValue)
                 {
-                    cell.SetObject(obj);
-                    //Debug.Log(cell);
-                    return cell.CalculateViewportPosition();
+                    return result.Value;
                 }
             }
-            Debug.Log("Adding new grid: " + grids.Count);
-            Grid<T> grid = new Grid<T>(gridSettings);
-            grids.Add(grid);
-            return grid.GetPosition(viewportPosition, obj);
+            Debug.Log("Adding Grid!");
+            Grid<T> grid = InstantiateGrid(gridSettings);
+            var final = grid.GetPosition(position, obj);
+            return final.Value;
         }
     }
 }

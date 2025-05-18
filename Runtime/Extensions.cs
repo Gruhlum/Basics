@@ -41,24 +41,24 @@ public static class Extensions
         return value;
     }
     /// <summary>
-    /// <code>return Mathf.Abs(numb1 - numb2);</code>
+    /// <code> return Mathf.Max(num1, num2) - Mathf.Min(num1, num2);</code>
     /// </summary>
-    /// <param name="numb1"></param>
-    /// <param name="numb2"></param>
+    /// <param name="num1"></param>
+    /// <param name="num2"></param>
     /// <returns>The distance between the 2 values.</returns>
-    public static int GetDistance(this int numb1, int numb2)
+    public static int GetDistance(this int num1, int num2)
     {
-        return Mathf.Abs(numb1 - numb2);
+        return Mathf.Max(num1, num2) - Mathf.Min(num1, num2);
     }
     /// <summary>
-    /// <code>return Mathf.Abs(numb1 - numb2);</code>
+    /// <code> return Mathf.Max(num1, num2) - Mathf.Min(num1, num2);</code>
     /// </summary>
-    /// <param name="numb1"></param>
-    /// <param name="numb2"></param>
+    /// <param name="num1"></param>
+    /// <param name="num2"></param>
     /// <returns>The distance between the 2 values.</returns>
-    public static float GetDistance(this float numb1, float numb2)
+    public static float GetDistance(this float num1, float num2)
     {
-        return Mathf.Abs(numb1 - numb2);
+        return Mathf.Max(num1, num2) - Mathf.Min(num1, num2);
     }
     /// <summary>
     /// Converts a string to a float.

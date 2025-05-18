@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using HexTecGames.Basics.UI;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -9,11 +10,12 @@ namespace HexTecGames.Basics.UIGrid
     public class CellDisplay : MonoBehaviour
     {
         [SerializeField] private Image img = default;
+        [SerializeField] private TMP_Text textGUI = default;
 
-
-        public void Setup(Vector3 position, Vector2 size)
+        public void Setup(int x, int y, Vector3 position, Vector2 size)
         {
             img.color = Utility.GenerateRandomColor(0.8f);
+            textGUI.text = $"{x},{y}";
             img.SetAlpha(0.2f);
             img.GetComponent<RectTransform>().sizeDelta = size;
 

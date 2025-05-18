@@ -8,23 +8,48 @@ namespace HexTecGames.Basics.UIGrid
     [System.Serializable]
     public class Cell<T> where T : ISpawnable<T>
     {
-        public Grid<T> grid;
+        public Coord coord;
 
-        public int x;
-        public int y;
-
-        public int width;
-        public int height;
+        public int X
+        {
+            get
+            {
+                return coord.x;
+            }
+        }
+        public int Y
+        {
+            get
+            {
+                return coord.y;
+            }
+        }
 
         public T spawnable;
 
-        public Cell(Grid<T> grid, int x, int y, int width, int height)
+        public Vector2 Size
         {
-            this.grid = grid;
-            this.x = x;
-            this.y = y;
-            this.width = width;
-            this.height = height;
+            get
+            {
+                return this.size;
+            }
+            private set
+            {
+                this.size = value;
+            }
+        }
+        private Vector2 size;
+
+        public Cell(Coord coord, Vector2 size)
+        {
+            this.coord = coord;
+            this.Size = size;
+        }
+
+        public Vector2 GetPosition()
+        {
+            //Debug.Log(ToString());
+            return ( new Vector2(coord.x * Size.x, coord.y * Size.y));
         }
 
         public void SetObject(T obj)
@@ -39,21 +64,9 @@ namespace HexTecGames.Basics.UIGrid
             spawnable = default;
         }
 
-        public Vector2 CalculateViewportPosition()
-        {
-            var result = new Vector2(x / (float)grid.rows, y / (float)grid.columns) + grid.offset;
-            //result *= grid.ScaleMultiplier;
-            return result;
-        }
-
-        public Vector2 GetSize()
-        {
-            return new Vector2(width, height);
-        }
-
         public override string ToString()
         {
-            return $"Pos: {x}, {y}";
+            return $"Coord: {coord.x}, {coord.y} Pos: {new Vector2(coord.x * Size.x, coord.y * Size.y) * 0.04f}";
         }
     }
 }
