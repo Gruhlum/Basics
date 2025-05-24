@@ -33,9 +33,9 @@ namespace HexTecGames.Basics.UIGrid
         //    ScaleMultiplier = targetScaling / canvas.transform.localScale.x;
         //}
 
-        public Vector2? GetPosition(Vector2 position, T obj)
+        public Vector2? GetPosition(T obj)
         {
-            Cell<T> cell = GetEmptyCell(position);
+            Cell<T> cell = GetEmptyCell();
             if (cell != null)
             {
                 cell.SetObject(obj);
@@ -43,7 +43,7 @@ namespace HexTecGames.Basics.UIGrid
             }
             return null;
         }
-        public abstract Cell<T> GetEmptyCell(Vector2 position);
+        public abstract Cell<T> GetEmptyCell();
         public List<Cell<T>> GetCells()
         {
             List<Cell<T>> results = new List<Cell<T>>();

@@ -6,7 +6,7 @@ using UnityEngine;
 namespace HexTecGames
 {
     [System.Serializable]
-    public class DeckItem<T> : ITicket<DeckItem<T>>
+    public class DeckItem<T> : ITicket
     {
         public T item;
 

@@ -49,7 +49,7 @@ namespace HexTecGames.Basics
             {
                 GenerateDeck();
             }
-            DeckItem<T> deck = currentItems.Roll();
+            DeckItem<T> deck = ITicket.Roll(currentItems);
             deck.Tickets--;
             if (deck.Tickets <= 0)
             {

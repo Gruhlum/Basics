@@ -35,11 +35,11 @@ namespace HexTecGames.Basics.UIGrid
             return grids[0].GetCells();
         }
 
-        public Vector2 GetPosition(Vector2 position, T obj)
+        public Vector2 GetPosition(T obj)
         {
             for (int i = 0; i < grids.Count; i++)
             {
-                var result = grids[i].GetPosition(position, obj);
+                var result = grids[i].GetPosition(obj);
                 if (result.HasValue)
                 {
                     return result.Value;
@@ -47,8 +47,15 @@ namespace HexTecGames.Basics.UIGrid
             }
             Debug.Log("Adding Grid!");
             Grid<T> grid = InstantiateGrid(gridSettings);
-            var final = grid.GetPosition(position, obj);
-            return final.Value;
+            var final = grid.GetPosition(obj);
+            if (final.HasValue)
+            {
+                return final.Value;
+
+            }
+            Debug.Log("SHOULD NOT HAPPEN");
+
+            return Vector2.zero;
         }
     }
 }

@@ -68,6 +68,19 @@ public static class Extensions
         return (float)Convert.ToDouble(text);
     }
 
+    public static void SetSizeDeltaX(this RectTransform rectTransform, float x)
+    {
+        var sizeDelta = rectTransform.sizeDelta;
+        sizeDelta.x = x;
+        rectTransform.sizeDelta = sizeDelta;
+    }
+    public static void SetSizeDeltaY(this RectTransform rectTransform, float y)
+    {
+        var sizeDelta = rectTransform.sizeDelta;
+        sizeDelta.y = y;
+        rectTransform.sizeDelta = sizeDelta;
+    }
+
     #region Layout Components
     public static void CopyData(this HorizontalOrVerticalLayoutGroup reciever, HorizontalOrVerticalLayoutGroup sender)
     {

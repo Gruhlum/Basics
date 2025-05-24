@@ -12,11 +12,17 @@ namespace HexTecGames.Basics.UI
         [Space]
         [SerializeField, SerializeReference] protected List<T> items = new List<T>();
 
-
+        public int TotalItems
+        {
+            get
+            {
+                return items.Count;
+            }
+        }
 
         protected D SpawnDisplay()
         {
-            D display = displaySpawner.Spawn();
+            D display = displaySpawner.Spawn(false);
             return display;
         }
         public virtual void DisplayItems()
@@ -40,10 +46,6 @@ namespace HexTecGames.Basics.UI
             var results = new List<T>();
             results.AddRange(items);
             return results;
-        }
-        public int GetTotalItems()
-        {
-            return items.Count;
         }
         public List<D> GetDisplays()
         {
@@ -86,6 +88,15 @@ namespace HexTecGames.Basics.UI
             {
                 DisplayItems();
             }
+        }
+        public void RemoveItem(int index, bool display = true)
+        {
+            if (index < 0 || index >= items.Count)
+            {
+                return;
+            }
+            T item = items[index];
+            RemoveItem(item, display);
         }
         public virtual void RemoveItem(T item, bool display = true)
         {

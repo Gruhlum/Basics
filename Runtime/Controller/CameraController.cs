@@ -31,17 +31,17 @@ namespace HexTecGames.Basics
                 ignoreInput = true;
                 return;
             }
-            if (MouseController.IsPointerOverUI)
-            {
-                return;
-            }
+            
             if (ignoreInput)
             {
                 ignoreInput = false;
                 return;
             }
             HandlePositionMovement();
-            HandleZoom();
+            if (!MouseController.IsPointerOverUI)
+            {
+                HandleZoom();
+            }
         }
 
         private void HandleZoom()

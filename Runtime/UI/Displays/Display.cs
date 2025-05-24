@@ -40,10 +40,14 @@ namespace HexTecGames.Basics.UI
             OnDeactivated?.Invoke(this as D);
         }
 
-        public virtual void SetItem(T item)
+        public virtual void SetItem(T item, bool activate = true)
         {
             this.Item = item;
             DrawItem(item);
+            if (activate)
+            {
+                gameObject.SetActive(true);
+            }
         }
 
         public virtual void Deactivate()

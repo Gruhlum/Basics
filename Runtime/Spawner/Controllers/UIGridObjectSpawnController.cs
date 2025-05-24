@@ -42,10 +42,10 @@ namespace HexTecGames.Basics
             }
         }
 
-        public static Vector3 GetGridPosition(Vector3 position, T spawnable)
+        public static Vector3 GetGridPosition(T spawnable)
         {
             //Debug.Log(canvasScaling);
-            return uiGrid.GetPosition(position, spawnable) * canvasScaling;
+            return uiGrid.GetPosition(spawnable) * canvasScaling;
         }
     }
 }

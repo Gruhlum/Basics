@@ -30,7 +30,7 @@ namespace HexTecGames.Basics.Profiles
         private void Start()
         {
             DisplayProfiles();
-            if (profileDisplayC.GetTotalItems() == 0)
+            if (profileDisplayC.TotalItems == 0)
             {
                 inputDisplay.Show("Create Profile");
             }

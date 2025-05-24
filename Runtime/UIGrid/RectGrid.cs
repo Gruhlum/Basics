@@ -11,7 +11,6 @@ namespace HexTecGames.Basics.UIGrid
     {
         public Vector2 cellSize;
 
-
         public RectGrid(GridSettings gridSettings) : base(gridSettings)
         {
             GenerateGrid(gridSettings.cellSize, gridSettings.radius);
@@ -19,19 +18,8 @@ namespace HexTecGames.Basics.UIGrid
 
         protected override void GenerateGrid(Vector2 cellSize, int radius)
         {
-            //Debug.Log(width + " - " + height + " - " + cellWidth + " - " + cellHeight);
-
-            //Debug.Log("Rows: " + rows + " - " + columns);
-
             this.cellSize = cellSize;
 
-            //offset = CalculateOffsetValue();
-            //Vector2 offset = new Vector2(cellSize.x * rows, cellSize.y * columns) / 2f;
-
-
-
-            //Vector2Int centerPos = new Vector2Int(Mathf.FloorToInt(rows / 2f), Mathf.FloorToInt(columns / 2f));
-            //Debug.Log($"{nameof(centerPos)} {centerPos}");
             for (int x = -radius; x <= radius; x++)
             {
                 for (int y = -radius; y <= radius; y++)
@@ -46,36 +34,24 @@ namespace HexTecGames.Basics.UIGrid
             }
         }
 
-        //protected Vector2 CalculateOffsetValue()
-        //{
-        //    //float x = cellWidth / 2f / totalCellsX + offsetX / 2f / totalCellsX;
-        //    //float y = cellHeight / 2f / totalCellsY + offsetY / 2f / totalCellsY;
-
-        //    //Debug.Log("leftover: " + (totalWidth - cellWidth * rows) + " - " + (totalHeight - cellHeight * columns));
-
-        //    Vector2 cellSizeOffset = new Vector2(cellWidth / 2f / totalWidth, cellHeight / 2f / totalHeight);
-
-        //    float leftOverX = (totalWidth - cellWidth * rows) / rows / 2f / totalWidth;
-        //    float leftOverY = (totalHeight - cellHeight * columns) / columns / 2f / totalHeight;
-        //    Vector2 gapOffset = new Vector2(leftOverX, leftOverY);
-        //    //Debug.Log(cellSizeOffset + " - " + leftOverOffset);
-        //    return cellSizeOffset + gapOffset;
-        //}
-        public override Cell<T> GetEmptyCell(Vector2 position)
+        public override Cell<T> GetEmptyCell()
         {
-            var coord = GetClosestEmptyCell(position * cellSize);
+            var coord = GetClosestEmptyCell();
 
             if (coord.HasValue && Cells.TryGetValue(coord.Value, out Cell<T> cell) && cell.spawnable == null)
             {
                 return cell;
             }
+            if (Cells.TryGetValue(Coord.zero, out Cell<T> result))
+            {
+                return result;
+            }
             return null;
         }
 
-        public Coord? GetClosestEmptyCell(Vector2 position)
+        public Coord? GetClosestEmptyCell()
         {
-            Coord coord = new Coord(position);
-
+            Coord coord = Coord.zero;
             if (IsEmpty(coord))
             {
                 return coord;
@@ -86,7 +62,7 @@ namespace HexTecGames.Basics.UIGrid
 
             foreach (var neigbour in directNeighbours)
             {
-                if (Cells.TryGetValue(neigbour, out Cell<T> result) && result.spawnable == null)
+                if (IsEmpty(neigbour))
                 {
                     return neigbour;
                 }
@@ -115,7 +91,7 @@ namespace HexTecGames.Basics.UIGrid
                         {
                             continue;
                         }
-                        if (Cells.TryGetValue(neighbour, out Cell<T> cell) && cell.spawnable == null)
+                        if (IsEmpty(neighbour))
                         {
                             return neighbour;
                         }
