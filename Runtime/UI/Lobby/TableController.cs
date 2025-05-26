@@ -230,6 +230,13 @@ namespace HexTecGames.Basics.UI
             return null;
         }
 
+
+        public void SetContentItems(List<HorizontalOrVerticalLayoutGroup> items)
+        {
+            this.contentItems = items;
+            Refresh();
+        }
+
         public override void CalculateLayoutInputHorizontal()
         {
             base.CalculateLayoutInputHorizontal();

@@ -15,6 +15,7 @@ namespace HexTecGames.Basics
         {
             if (items == null || items.Count == 0)
             {
+                Debug.Log("No items to roll!");
                 return default;
             }
 
