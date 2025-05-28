@@ -13,12 +13,24 @@ namespace HexTecGames.Basics.UI
         [SerializeField] private TMP_Text textGUI = default;
         [SerializeField, HideInInspector] private Camera cam = default;
 
-        private List<string> linkTexts;
+        private List<TextData> textDatas;
 
         private int currentIndex = -1;
 
-        public event Action<string> OnLinkHover;
-        public event Action OnHoverStopped;
+        public TMP_Text TextGUI
+        {
+            get
+            {
+                return this.textGUI;
+            }
+            set
+            {
+                this.textGUI = value;
+            }
+        }
+
+        public event Action<LinkListener, TextData> OnLinkHover;
+        public event Action<LinkListener> OnHoverStopped;
 
 
         private void Awake()
@@ -29,24 +41,24 @@ namespace HexTecGames.Basics.UI
         private void Reset()
         {
             cam = Camera.main;
-            textGUI = GetComponent<TMP_Text>();
+            TextGUI = GetComponent<TMP_Text>();
         }
 
-        public void Setup(List<string> linkTexts)
+        public void Setup(List<TextData> textDatas)
         {
-            this.linkTexts = linkTexts;
+            this.textDatas = textDatas;
             enabled = true;
         }
 
         public void OnPointerMove(PointerEventData eventData)
         {
-            if (linkTexts == null)
+            if (textDatas == null)
             {
                 return;
             }
 
             Vector2 mousePosition = eventData.position;
-            int index = TMP_TextUtilities.FindIntersectingLink(textGUI, mousePosition, cam);
+            int index = TMP_TextUtilities.FindIntersectingLink(TextGUI, mousePosition, cam);
 
             if (index == currentIndex)
             {
@@ -57,11 +69,11 @@ namespace HexTecGames.Basics.UI
 
             if (index < 0)
             {
-                OnHoverStopped?.Invoke();
+                OnHoverStopped?.Invoke(this);
                 return;
             }
 
-            OnLinkHover?.Invoke(linkTexts[currentIndex]);
+            OnLinkHover?.Invoke(this, textDatas[currentIndex]);
         }
 
 

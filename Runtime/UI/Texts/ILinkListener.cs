@@ -7,7 +7,12 @@ namespace HexTecGames.Basics.UI
 {
     public interface ILinkListener
     {
-        public event Action<string> OnLinkHover;
-        public event Action OnHoverStopped;
+        public event Action<LinkListener, TextData> OnLinkHover;
+        public event Action<LinkListener> OnHoverStopped;
+
+        public bool HasListener
+        {
+            get;
+        }
     }
 }

@@ -7,8 +7,13 @@ namespace HexTecGames.Basics.UI
 {
     public abstract class BaseTextDisplay<TDisplay, T> : Display<TDisplay, T>, ILinkListener where TDisplay : Display<TDisplay, T>
     {
-        public event Action<string> OnLinkHover;
-        public event Action OnHoverStopped;
+        public abstract bool HasListener
+        {
+            get;
+        }
+
+        public event Action<LinkListener, TextData> OnLinkHover;
+        public event Action<LinkListener> OnHoverStopped;
 
 
         protected virtual void OnDestroy()
@@ -17,13 +22,13 @@ namespace HexTecGames.Basics.UI
             OnHoverStopped = null;
         }
 
-        protected void LinkHover(string obj)
+        protected void LinkHover(LinkListener singleDisplay, TextData obj)
         {
-            OnLinkHover?.Invoke(obj);
+            OnLinkHover?.Invoke(singleDisplay, obj);
         }
-        protected void HoverStopped()
+        protected void HoverStopped(LinkListener singleDisplay)
         {
-            OnHoverStopped?.Invoke();
+            OnHoverStopped?.Invoke(singleDisplay);
         }
     }
 }

@@ -1,12 +1,12 @@
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 
 namespace HexTecGames.Basics.UI
 {
     [System.Serializable]
-    public class FullText
+    public class TextSettings
     {
-        public List<object> textDatas = new List<object>();
     }
 }

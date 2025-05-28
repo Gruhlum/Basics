@@ -23,6 +23,13 @@ namespace HexTecGames.Basics.UI
             }
         }
 
+        public override bool HasListener
+        {
+            get
+            {
+                return Item != null && Item.linkTexts != null && Item.linkTexts.Count > 0 && LinkListener != null;
+            }
+        }
 
         protected void Start()
         {

@@ -12,15 +12,7 @@ namespace HexTecGames.Basics.UI
     {
         protected override void DrawItem(MultiText multiText)
         {
-            foreach (var text in multiText.texts)
-            {
-                SingleTextDisplay display = spawner.Spawn();
-                display.SetItem(text);
-                if (text.linkTexts != null && display.LinkListener != null)
-                {
-                    AddEvents(display);
-                }
-            }
+            CreateSubDisplays(multiText.texts);
         }
     }
 }

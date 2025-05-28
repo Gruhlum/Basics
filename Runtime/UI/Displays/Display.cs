@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 
 namespace HexTecGames.Basics.UI
 {
@@ -34,6 +35,9 @@ namespace HexTecGames.Basics.UI
 
         public event Action<TDisplay> OnDisplayClicked;
         public event Action<TDisplay> OnDeactivated;
+        //public event Action<TDisplay, T> OnItemSetted;
+
+        public UnityEvent<T> OnItemSet;
 
         protected virtual void OnDisable()
         {
@@ -48,6 +52,8 @@ namespace HexTecGames.Basics.UI
             {
                 gameObject.SetActive(true);
             }
+            OnItemSet?.Invoke(item);
+            //OnItemSetted?.Invoke(this as TDisplay, item);
         }
 
         public virtual void Deactivate()

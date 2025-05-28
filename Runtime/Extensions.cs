@@ -193,28 +193,28 @@ public static class Extensions
         }
         return false;
     }
-    public static IEnumerator Fade(this CanvasGroup canvasGroup, float startAlpha, float endAlpha, float speed = 1f)
-    {
-        if (speed <= 0)
-        {
-            yield break;
-        }
-        float timer = 0;
-        while (timer < 1f)
-        {
-            timer += Time.deltaTime * speed;
-            canvasGroup.alpha = Mathf.Lerp(startAlpha, endAlpha, timer);
-            yield return null;
-        }
-    }
-    public static IEnumerator FadeOut(this CanvasGroup canvasGroup, float speed = 1f)
-    {
-        yield return Fade(canvasGroup, canvasGroup.alpha, 0, speed);
-    }
-    public static IEnumerator FadeIn(this CanvasGroup canvasGroup, float speed = 1f)
-    {
-        yield return Fade(canvasGroup, 0, 1, speed);
-    }
+    //public static IEnumerator Fade(this CanvasGroup canvasGroup, float startAlpha, float endAlpha, float speed = 1f)
+    //{
+    //    if (speed <= 0)
+    //    {
+    //        yield break;
+    //    }
+    //    float timer = 0;
+    //    while (timer < 1f)
+    //    {
+    //        timer += Time.deltaTime * speed;
+    //        canvasGroup.alpha = Mathf.Lerp(startAlpha, endAlpha, timer);
+    //        yield return null;
+    //    }
+    //}
+    //public static IEnumerator FadeOut(this CanvasGroup canvasGroup, float speed = 1f)
+    //{
+    //    yield return Fade(canvasGroup, canvasGroup.alpha, 0, speed);
+    //}
+    //public static IEnumerator FadeIn(this CanvasGroup canvasGroup, float speed = 1f)
+    //{
+    //    yield return Fade(canvasGroup, 0, 1, speed);
+    //}
 
 
     #region Lists

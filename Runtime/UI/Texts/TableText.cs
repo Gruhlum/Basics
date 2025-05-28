@@ -11,6 +11,7 @@ namespace HexTecGames.Basics.UI
     {
         public List<MultiText> multiTexts = new List<MultiText>();
 
+
         public TableText(List<MultiText> multiTexts)
         {
             this.multiTexts = multiTexts;
