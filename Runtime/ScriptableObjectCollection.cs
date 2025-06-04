@@ -6,8 +6,14 @@ namespace HexTecGames.Basics
 {
     public abstract class ScriptableObjectCollection<T> : ScriptableObject, IEnumerable<T> where T : ScriptableObject
     {
+        public IList<T> Items
+        {
+            get
+            {
+                return items.AsReadOnly();
+            }
+        }
         [SerializeField] private List<T> items = new List<T>();
-
 
         public T FindItem(string name)
         {

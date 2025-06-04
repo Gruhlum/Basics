@@ -10,6 +10,7 @@ namespace HexTecGames.Basics.UI
     {
         [SerializeField] private TMP_Text textGUI = default;
         [SerializeField] private LinkListener linkListener = default;
+        [SerializeField] private LinkHighlighter linkHighlighter = default;
 
         public LinkListener LinkListener
         {
@@ -51,11 +52,20 @@ namespace HexTecGames.Basics.UI
 
         protected override void DrawItem(SingleText item)
         {
-            textGUI.text = item.text;
+            textGUI.SetText(item.text);
             if (LinkListener != null && item.linkTexts != null)
             {
                 LinkListener.Setup(item.linkTexts);
             }
+            if (false && linkHighlighter != null && gameObject.activeInHierarchy)
+            {
+                StartCoroutine(Delayed());
+            }
+        }
+        private IEnumerator Delayed()
+        {
+            yield return null;
+            linkHighlighter.Setup(textGUI);
         }
     }
 }
