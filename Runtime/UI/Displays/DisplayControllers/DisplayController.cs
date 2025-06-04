@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using UnityEngine;
 
@@ -9,8 +10,16 @@ namespace HexTecGames.Basics.UI
     public abstract class DisplayController<D, T> : DisplayControllerBase<D, T> where D : Display<D, T>
     {
         [SerializeField] protected Spawner<D> displaySpawner = default;
-        [Space]
-        [SerializeField, SerializeReference] protected List<T> items = new List<T>();
+
+        public IList<T> Items
+        {
+            get
+            {
+                return items.AsReadOnly();
+            }
+        }
+
+        [Space] protected List<T> items;
 
         public int TotalItems
         {
@@ -41,24 +50,18 @@ namespace HexTecGames.Basics.UI
             }
             displaySpawner.GetInstances().First().DisplayClicked();
         }
-        public List<T> GetItems()
-        {
-            var results = new List<T>();
-            results.AddRange(items);
-            return results;
-        }
-        public List<D> GetDisplays()
+        public IList<D> GetDisplays()
         {
             return displaySpawner.ToList();
         }
-        public virtual void SetItems(List<T> items, bool display = true)
+        public virtual void SetItems(IList<T> items, bool display = true)
         {
             if (items == null)
             {
                 ClearItems(display);
                 return;
             }
-            this.items = items;
+            this.items = new List<T>(items);
 
             if (display)
             {

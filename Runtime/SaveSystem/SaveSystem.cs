@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Xml.Serialization;
+using UnityEditor;
 using UnityEngine;
 
 namespace HexTecGames.Basics
@@ -192,10 +193,6 @@ namespace HexTecGames.Basics
 
         private static void SaveSettingsToFile()
         {
-            if (settingsData == null)
-            {
-                return;
-            }
             SaveJSON(settingsData, settingsFileName);
         }
         /// <summary>
@@ -329,6 +326,18 @@ namespace HexTecGames.Basics
                 return false;
             }
         }
+
+        [MenuItem("Tools/SaveSystem/Delete All Settings")]
+        public static void DeleteAllSettings()
+        {
+            settingsData = new SettingsData();
+            SaveSettingsToFile();
+        }
+        [MenuItem("Tools/SaveSystem/Delete All Data")]
+        public static void DeleteAllData()
+        {
+            FileManager.DeleteFolder(BaseDirectory);
+        }
         public static void DeleteSettings(string key)
         {
             if (settingsData == null)
@@ -346,6 +355,10 @@ namespace HexTecGames.Basics
                 return new SettingsData();
             }
             else return data;
+        }
+        public static void DeleteFile(string fileName)
+        {
+            DeleteFile(fileName, defaultFolderName);
         }
         public static void DeleteFile(string fileName, string directory)
         {

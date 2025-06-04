@@ -38,11 +38,15 @@ namespace HexTecGames.Basics.UI
         private void CreateRequiredDisplays()
         {
             displaySpawner.DeactivateAll();
-            int activeItems = items.Count;
+            int activeItems = 0;
 
-            foreach (var item in items)
+            if (items != null)
             {
-                SetupDisplay(SpawnDisplay(), item);
+                activeItems = items.Count;
+                foreach (var item in items)
+                {
+                    SetupDisplay(SpawnDisplay(), item);
+                }
             }
 
             int minItems = minimumDisplays;

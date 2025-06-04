@@ -24,15 +24,14 @@ namespace HexTecGames.Basics.UI.Buttons
 
         private void OnValidate()
         {
+            if (Application.isPlaying)
+            {
+                return;
+            }
             if (states != null && states.Count >= 1)
             {
                 LoadState(states[0]);
             }
-        }
-        public void ButtonClicked()
-        {
-            states[stateIndex].clickEvent?.Invoke();
-            NextState();
         }
         public void SetState(int index)
         {
@@ -69,6 +68,13 @@ namespace HexTecGames.Basics.UI.Buttons
             if (textGUI != null)
             {
                 textGUI.text = state.text;
+            }
+            if (Application.isPlaying)
+            {
+                if (state != null)
+                {
+                    state.clickEvent?.Invoke();
+                }
             }
         }
     }

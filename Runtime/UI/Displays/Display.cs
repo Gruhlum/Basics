@@ -35,26 +35,44 @@ namespace HexTecGames.Basics.UI
 
         public event Action<TDisplay> OnDisplayClicked;
         public event Action<TDisplay> OnDeactivated;
-        //public event Action<TDisplay, T> OnItemSetted;
 
-        public UnityEvent<T> OnItemSet;
 
         protected virtual void OnDisable()
         {
             OnDeactivated?.Invoke(this as TDisplay);
         }
 
+        protected virtual void OnDestroy()
+        {
+            RemoveEvents(this.Item);
+        }
+
         public virtual void SetItem(T item, bool activate = true)
         {
+            if (this.Item != null)
+            {
+                RemoveEvents(this.Item);
+            }
+
             this.Item = item;
+
+            if (this.Item != null)
+            {
+                AddEvents(this.Item);
+            }
+
             DrawItem(item);
             if (activate)
             {
                 gameObject.SetActive(true);
             }
-            OnItemSet?.Invoke(item);
-            //OnItemSetted?.Invoke(this as TDisplay, item);
         }
+
+        protected virtual void AddEvents(T item)
+        {
+        }
+        protected virtual void RemoveEvents(T item)
+        { }
 
         public virtual void Deactivate()
         {
