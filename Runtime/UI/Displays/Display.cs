@@ -49,6 +49,14 @@ namespace HexTecGames.Basics.UI
 
         public virtual void SetItem(T item, bool activate = true)
         {
+#if UNITY_EDITOR
+            if (!Application.isPlaying)
+            {
+                this.Item = item;
+                DrawItem(item);
+                return;
+            }
+#endif
             if (this.Item != null)
             {
                 RemoveEvents(this.Item);
@@ -62,6 +70,7 @@ namespace HexTecGames.Basics.UI
             }
 
             DrawItem(item);
+
             if (activate)
             {
                 gameObject.SetActive(true);

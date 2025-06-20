@@ -11,6 +11,8 @@ namespace HexTecGames.Basics.UI
         [SerializeField] private Spawner<SingleTextDisplay> textSpawner = default;
         [SerializeField] private Spawner<MultiTextDisplay> multiTextSpawner = default;
         [SerializeField] private Spawner<TableDisplay> tableSpawner = default;
+        [SerializeField] private Spawner<IconDisplay> iconSpawner = default;
+
         [SerializeField] private TextDataDisplay tooltipDisplay = default;
         
 
@@ -59,6 +61,12 @@ namespace HexTecGames.Basics.UI
                     table.SetItem(tableText);
                     AddEvents(table);
                 }
+                else if (data is IconData iconData)
+                {
+                    IconDisplay display = iconSpawner.Spawn();
+                    display.SetItem(iconData);
+                }
+                else Debug.Log("Invalid type: " + data.GetType());
             }
         }
 

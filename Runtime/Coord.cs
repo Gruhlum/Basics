@@ -52,63 +52,7 @@ namespace HexTecGames.Basics
         {
             return System.HashCode.Combine(x, y);
         }
-        //public static List<Vector3> ToWorldPositions(List<Coord> coords)
-        //{
-        //    List<Vector3> results = new List<Vector3>();
-        //    foreach (var coord in coords)
-        //    {
-        //        results.Add(coord.ToWorldPosition());
-        //    }
-        //    return results;
-        //}
-        //public Vector3 ToWorldPosition()
-        //{
-        //    return new Vector3(x, y, 0);
-        //}
-        //public List<Coord> GetRotatedCoords(List<Coord> coords)
-        //{
-        //    List<Coord> results = new List<Coord>();
-        //    foreach (var coord in coords)
-        //    {
-        //        results.Add(this + coord);
-        //    }
-        //    return results;
-        //}
-        public List<Coord> GetNormalizedCoords(List<Coord> coords)
-        {
-            List<Coord> results = new List<Coord>();
-            foreach (var coord in coords)
-            {
-                results.Add(this + coord);
-            }
-            return results;
-        }
-        public Coord Normalized(Coord center)
-        {
-            return this - center;
-        }
-        public Coord Rotated(Coord center, int rotation)
-        {
-            Coord result = this;
-            result.Rotate(center, rotation);
-            return result;
-        }
-        public Coord NormalizedAndRotated(Coord center, int rotation)
-        {
-            Coord result = Normalized(center);
-            result.Rotate(center, rotation);
-            return result;
-        }
-        public void NormalizeAndRotate(Coord center, int rotation)
-        {
-            Normalize(center);
-            //Rotate(center, rotation);
-        }
-        public void Normalize(Coord center)
-        {
-            x += center.x;
-            y += center.y;
-        }
+        
         public void Rotate(Coord center, int rotation)
         {
             if (rotation <= 0)

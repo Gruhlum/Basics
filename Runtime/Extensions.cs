@@ -68,6 +68,8 @@ public static class Extensions
         return (float)Convert.ToDouble(text);
     }
 
+
+
     public static void SetSizeDeltaX(this RectTransform rectTransform, float x)
     {
         var sizeDelta = rectTransform.sizeDelta;
@@ -410,7 +412,7 @@ public static class Extensions
     {
         return raycaster.DetectUIObject(out obj, EventSystem.current, position);
     }
-    
+
     public static bool DetectUIObject<T>(this GraphicRaycaster raycaster, out T obj, EventSystem eventSys, Vector3 position) where T : Component
     {
         var m_PointerEventData = new PointerEventData(eventSys);
@@ -439,7 +441,7 @@ public static class Extensions
     public static RaycastResult? DetectAnyUIObject(this GraphicRaycaster raycaster, Vector3 position)
     {
         return raycaster.DetectAnyUIObject(EventSystem.current, position);
-    } 
+    }
     public static RaycastResult? DetectAnyUIObject(this GraphicRaycaster raycaster, EventSystem eventSys)
     {
         return raycaster.DetectAnyUIObject(eventSys, Input.mousePosition);

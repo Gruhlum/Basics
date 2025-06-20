@@ -14,17 +14,30 @@ namespace HexTecGames.Basics
         protected List<DeckItem<T>> currentItems = new List<DeckItem<T>>();
 
 
-        public Deck(List<DeckItem<T>> items)
+        public Deck(IList<DeckItem<T>> items)
         {
+            ChangeOdds(items);
+        }
+        public Deck(DeckItem<T> item, params DeckItem<T>[] items)
+        {
+            ChangeOdds(item, items);
+        }
+
+        public void ChangeOdds(DeckItem<T> item, params DeckItem<T>[] items)
+        {
+            List<DeckItem<T>> results = new List<DeckItem<T>>(items) { item };
+            ChangeOdds(results);
+        }
+        public void ChangeOdds(IList<DeckItem<T>> items)
+        {
+            totalItems.Clear();
+
             foreach (var item in items)
             {
                 totalItems.Add(item);
             }
 
             GenerateDeck();
-        }
-        public Deck(params DeckItem<T>[] items) : this(items.ToList())
-        {
         }
 
         public bool HasRollsLeft()
@@ -50,6 +63,11 @@ namespace HexTecGames.Basics
                 GenerateDeck();
             }
             DeckItem<T> deck = ITicket.Roll(currentItems);
+            if (deck == null)
+            {
+                Debug.Log("No Deck available!");
+                return default;
+            }
             deck.Tickets--;
             if (deck.Tickets <= 0)
             {

@@ -20,7 +20,8 @@ namespace HexTecGames.Basics
         /// Either returns a deactivated instance or instantiates a new one.
         /// </summary>
         /// <param name="activate">Sets the gameObject active</param>
-        public virtual T Spawn(bool activate)
+
+        public virtual T Spawn(bool activate = true)
         {
             if (Prefab == null)
             {
@@ -41,23 +42,14 @@ namespace HexTecGames.Basics
 
             return instance;
         }
-        /// <summary>
-        /// Either returns a deactivated object or instantiates a new one.
-        /// </summary>
-        public sealed override T Spawn()
-        {
-            return Spawn(true);
-        }
+
         protected virtual T GetEmptyInstance()
         {
-            if (Instances == null)
+            if (Instances == null || Instances.Count <= 0)
             {
                 return CreateNewInstance();
             }
-            if (Instances.Count <= 0)
-            {
-                return CreateNewInstance();
-            }
+
             foreach (var instance in Instances)
             {
                 if (!instance.gameObject.activeSelf)
@@ -66,6 +58,29 @@ namespace HexTecGames.Basics
                 }
             }
             return CreateNewInstance();
+        }
+
+        public List<T> DeactivateAllAndSpawn(int amount)
+        {
+            List<T> results = new List<T>();
+
+            foreach (var instance in Instances)
+            {
+                if (amount > 0)
+                {
+                    results.Add(instance);
+                    instance.gameObject.SetActive(true);
+                    amount--;
+                }
+                else instance.gameObject.SetActive(false);
+            }
+
+            for (int i = 0; i < amount; i++)
+            {
+                results.Add(CreateNewInstance());
+            }
+
+            return results;
         }
 
         protected T CreateNewInstance()

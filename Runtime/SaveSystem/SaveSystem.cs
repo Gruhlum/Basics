@@ -326,14 +326,17 @@ namespace HexTecGames.Basics
                 return false;
             }
         }
-
+#if UNITY_EDITOR
         [MenuItem("Tools/SaveSystem/Delete All Settings")]
+#endif
         public static void DeleteAllSettings()
         {
             settingsData = new SettingsData();
             SaveSettingsToFile();
         }
+#if UNITY_EDITOR
         [MenuItem("Tools/SaveSystem/Delete All Data")]
+#endif
         public static void DeleteAllData()
         {
             FileManager.DeleteFolder(BaseDirectory);
@@ -414,7 +417,7 @@ namespace HexTecGames.Basics
             try
             {
                 CheckDirectories(directory);
-                Debug.Log($"Saving {obj} as JSON file to: {path}");
+                //Debug.Log($"Saving {obj} as JSON file to: {path}");
                 using (StreamWriter sw = new StreamWriter(File.Open(path, FileMode.Create)))
                 {
                     sw.WriteLine(JsonUtility.ToJson(obj, prettyPrint));

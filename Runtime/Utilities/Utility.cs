@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -36,6 +37,30 @@ namespace HexTecGames
             }
             return result.ToString();
         }
+
+        public static string CovertToDisplayName(string input)
+        {
+            if (input.Length <= 1)
+            {
+                return input.ToUpper();
+            }
+
+            StringBuilder result = new StringBuilder();
+            result.Append(char.ToUpper(input[0]));
+
+            for (int i = 1; i < input.Length; i++)
+            {
+                char c = input[i];
+                if (char.IsUpper(c))
+                {
+                    result.Append($" {c}");
+                }
+                else result.Append(c);
+            }
+
+            return result.ToString();
+        }
+
         public static Color GenerateRandomColor(float intensity)
         {
             int rngColor = Random.Range(0, 3);
@@ -48,6 +73,13 @@ namespace HexTecGames
             float b = rngColor == 2 ? lowValue : Random.Range(highValueMin, someValue);
 
             return new Color(r, g, b, 1);
+        }
+
+        public static T GetRandomEnum<T>() where T : Enum
+        {
+            Array results = Enum.GetValues(typeof(T));
+            int rng = Random.Range(0, results.Length);
+            return (T)results.GetValue(rng);
         }
 
         public static int GenerateRandomNumber(int length)

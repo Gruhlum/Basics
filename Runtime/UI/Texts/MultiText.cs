@@ -10,7 +10,6 @@ namespace HexTecGames.Basics.UI
     {
         public List<SingleText> texts = new List<SingleText>();
 
-
         public MultiText(params string[] texts) : this(texts.ToList())
         {
         }
@@ -27,6 +26,23 @@ namespace HexTecGames.Basics.UI
         }
         public MultiText(params SingleText[] linkTexts) : this(linkTexts.ToList())
         {
+        }
+
+        public override string ToString()
+        {
+            if (texts == null || texts.Count < 0)
+            {
+                return "[Empty MultiText]";
+            }
+
+            List<string> textDescriptions = new List<string>();
+
+            foreach (var text in texts)
+            {
+                textDescriptions.Add(text.ToString());
+            }
+
+            return $"{string.Join(" | ", textDescriptions)}";
         }
     }
 }

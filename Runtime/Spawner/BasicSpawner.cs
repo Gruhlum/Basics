@@ -44,9 +44,7 @@ namespace HexTecGames.Basics
         }
         [SerializeField, Tooltip("Optional parent for the instantiated object")] private Transform parent = default;
 
-        /// <summary>
-        /// Instantiates and returns a new object.
-        /// </summary>
+
         public virtual T Spawn()
         {
             if (prefab == null)
@@ -58,6 +56,10 @@ namespace HexTecGames.Basics
             T behaviour = Object.Instantiate(prefab, parent);
             return behaviour;
         }
+        /// <summary>
+        /// Instantiates and returns a new object.
+        /// </summary>
+
         /// <summary>
         /// Destroys all instances of the same type that are children of the parent.
         /// </summary>

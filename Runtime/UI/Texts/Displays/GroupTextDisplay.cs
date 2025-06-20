@@ -7,10 +7,7 @@ namespace HexTecGames.Basics.UI
     public abstract class GroupTextDisplay<TLowerDisplay, LowerT, TDisplay, T> :
         BaseTextDisplay<TDisplay, T> where TDisplay : Display<TDisplay, T> where TLowerDisplay : BaseTextDisplay<TLowerDisplay, LowerT>
     {
-        [SerializeField] private List<TLowerDisplay> prefabs = default;
-        [SerializeField] private Transform spawnerParent = default;
-
-        protected Spawner<TLowerDisplay> spawner;
+        [SerializeField] protected Spawner<TLowerDisplay> spawner;
 
         public override bool HasListener
         {
@@ -22,26 +19,6 @@ namespace HexTecGames.Basics.UI
         protected bool hasListener;
 
 
-
-        protected void Awake()
-        {
-            if (spawner == null)
-            {
-                InstantiateSpawner();
-            }
-        }
-
-        private void InstantiateSpawner()
-        {
-
-            spawner = new Spawner<TLowerDisplay>();
-            spawner.Parent = spawnerParent;
-        }
-
-        protected void Reset()
-        {
-            spawnerParent = transform;
-        }
         protected override void OnDestroy()
         {
             RemoveAllEvents();
@@ -58,11 +35,6 @@ namespace HexTecGames.Basics.UI
 
         public override void SetItem(T item, bool activate = true)
         {
-            if (spawner == null)
-            {
-                InstantiateSpawner();
-            }
-
             if (this.Item != null)
             {
                 RemoveAllEvents();
@@ -77,8 +49,7 @@ namespace HexTecGames.Basics.UI
             for (int i = 0; i < singleTexts.Count; i++)
             {
                 LowerT text = singleTexts[i];
-                spawner.Prefab = prefabs[i % prefabs.Count];
-                TLowerDisplay display = spawner.Spawn();
+                TLowerDisplay display = SpawnLowerDisplay(i, singleTexts.Count);
                 display.SetItem(text);
                 if (display.HasListener)
                 {
@@ -87,6 +58,11 @@ namespace HexTecGames.Basics.UI
                 }
                 else hasListener = false;
             }
+        }
+
+        protected virtual TLowerDisplay SpawnLowerDisplay(int index, int total)
+        {
+            return spawner.Spawn();
         }
 
         protected void AddEvents(TLowerDisplay display)

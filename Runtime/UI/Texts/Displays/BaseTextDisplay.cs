@@ -16,8 +16,9 @@ namespace HexTecGames.Basics.UI
         public event Action<LinkListener> OnHoverStopped;
 
 
-        protected virtual void OnDestroy()
+        protected override void OnDestroy()
         {
+            base.OnDestroy();
             OnLinkHover = null;
             OnHoverStopped = null;
         }

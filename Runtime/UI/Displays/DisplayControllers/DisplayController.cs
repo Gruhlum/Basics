@@ -19,7 +19,7 @@ namespace HexTecGames.Basics.UI
             }
         }
 
-        [Space] protected List<T> items;
+        [Space] protected List<T> items = new List<T>();
 
         public int TotalItems
         {
@@ -92,22 +92,37 @@ namespace HexTecGames.Basics.UI
                 DisplayItems();
             }
         }
-        public void RemoveItem(int index, bool display = true)
+        public void RemoveItem(int index, bool removeDisplay = true)
         {
             if (index < 0 || index >= items.Count)
             {
                 return;
             }
             T item = items[index];
-            RemoveItem(item, display);
+            RemoveItem(item, removeDisplay);
         }
-        public virtual void RemoveItem(T item, bool display = true)
+        public virtual void RemoveItem(T item, bool removeDisplay = true)
         {
             items.Remove(item);
-            if (display)
+
+            if (!removeDisplay)
             {
-                DisplayItems();
+                return;
             }
+
+            foreach (var display in displaySpawner)
+            {
+                if (display.Item.Equals(item))
+                {
+                    DeactivateDisplay(display);
+                    break;
+                }
+            }
+        }
+
+        protected virtual void DeactivateDisplay(D display)
+        {
+            display.Deactivate();
         }
     }
 }

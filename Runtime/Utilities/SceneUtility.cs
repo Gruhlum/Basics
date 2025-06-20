@@ -17,6 +17,10 @@ namespace HexTecGames
             }
             SceneManager.LoadScene(index);
         }
+        public static void ReloadCurrentScene()
+        {
+            SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+        }
         public static void LoadScene(string name)
         {
             SceneManager.LoadScene(name);

@@ -29,5 +29,14 @@ namespace HexTecGames.Basics.UI
         public SingleText(string text, params string[] linkTexts) : this(text, linkTexts.ToList())
         {
         }
+
+        public override string ToString()
+        {
+            if (linkTexts == null || linkTexts.Count < 0)
+            {
+                return text;
+            }
+            else return $"{text} [Links: {string.Join(", ", linkTexts)}]";
+        }
     }
 }

@@ -32,6 +32,18 @@ namespace HexTecGames.Basics.UI
             }
         }
 
+        public TMP_Text TextGUI
+        {
+            get
+            {
+                return this.textGUI;
+            }
+            private set
+            {
+                this.textGUI = value;
+            }
+        }
+
         protected void Start()
         {
             if (LinkListener != null)
@@ -52,7 +64,7 @@ namespace HexTecGames.Basics.UI
 
         protected override void DrawItem(SingleText item)
         {
-            textGUI.SetText(item.text);
+            TextGUI.SetText(item.text);
             if (LinkListener != null && item.linkTexts != null)
             {
                 LinkListener.Setup(item.linkTexts);
@@ -65,7 +77,7 @@ namespace HexTecGames.Basics.UI
         private IEnumerator Delayed()
         {
             yield return null;
-            linkHighlighter.Setup(textGUI);
+            linkHighlighter.Setup(TextGUI);
         }
     }
 }

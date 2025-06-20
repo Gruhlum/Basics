@@ -25,9 +25,8 @@ namespace HexTecGames.Basics
         {
             T spawnable = base.Spawn(activate);
             spawnable.OnDeactivated += Spawnable_OnDeactivated;
-            return spawnable as T;
+            return spawnable;
         }
-
         public override void DeactivateAll()
         {
             Debug.Log("Cannot Deactivate SpawnableSpawner Items");
