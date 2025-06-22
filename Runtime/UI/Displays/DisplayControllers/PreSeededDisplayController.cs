@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using UnityEditor;
 using UnityEngine;
 
 namespace HexTecGames.Basics.UI
@@ -19,7 +20,7 @@ namespace HexTecGames.Basics.UI
             displays = GetComponentsInChildren<D>().ToList();
         }
 
-        private void OnValidate()
+        protected virtual void OnValidate()
         {
             if (!autoBuildDisplays)
             {
@@ -29,13 +30,19 @@ namespace HexTecGames.Basics.UI
             {
                 return;
             }
+            
             if (RequiresRebuild())
             {
-                GenerateDisplays();
+                EditorApplication.delayCall += () =>
+                {
+                    GenerateDisplays();
+                };
             }
         }
-        private void Awake()
+        protected virtual void Awake()
         {
+            FindDisplays();
+
             if (RequiresRebuild())
             {
                 GenerateDisplays();
@@ -45,6 +52,11 @@ namespace HexTecGames.Basics.UI
             {
                 AddDisplayEvents(display);
             }
+        }
+
+        private void FindDisplays()
+        {
+            displays = displaySpawner.Parent.GetComponentsInChildren<D>().ToList();
         }
 
         private bool RequiresRebuild()
@@ -76,12 +88,12 @@ namespace HexTecGames.Basics.UI
         {
             if (Application.isPlaying)
             {
-                Debug.Log("Can only be called during Edit Mode");
                 return;
             }
 
             displaySpawner.DestroyAll();
             displays = new List<D>();
+
 
             foreach (var item in items)
             {
@@ -89,7 +101,7 @@ namespace HexTecGames.Basics.UI
                 {
                     continue;
                 }
-                var display = displaySpawner.Spawn();
+                D display = PrefabUtility.InstantiatePrefab(displaySpawner.Prefab, displaySpawner.Parent) as D;
                 display.SetItem(item);
                 displays.Add(display);
             }

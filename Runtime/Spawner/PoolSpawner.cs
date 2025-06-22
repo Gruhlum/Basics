@@ -60,7 +60,7 @@ namespace HexTecGames.Basics
             return CreateNewInstance();
         }
 
-        public List<T> DeactivateAllAndSpawn(int amount)
+        public List<T> DeactivateAllAndSpawn(int amount, bool activate = true)
         {
             List<T> results = new List<T>();
 
@@ -69,7 +69,10 @@ namespace HexTecGames.Basics
                 if (amount > 0)
                 {
                     results.Add(instance);
-                    instance.gameObject.SetActive(true);
+                    if (activate)
+                    {
+                        instance.gameObject.SetActive(true);
+                    }
                     amount--;
                 }
                 else instance.gameObject.SetActive(false);

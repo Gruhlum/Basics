@@ -76,7 +76,7 @@ namespace HexTecGames.Basics
                 {
                     if (!Application.isPlaying)
                     {
-                        Object.DestroyImmediate(t.gameObject);                      
+                        Object.DestroyImmediate(t.gameObject);
                     }
                     else Object.Destroy(t.gameObject);
                 }
