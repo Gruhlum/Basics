@@ -7,9 +7,9 @@ using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.UI;
 
-namespace HexTecGames.Basics.UI.Displays
+namespace HexTecGames.Basics.UI
 {
-    public class InputDisplay : MonoBehaviour
+    public class InputWindow : MonoBehaviour
     {
         [SerializeField] protected GameObject inputGO = default;
 

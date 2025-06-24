@@ -149,12 +149,12 @@ namespace HexTecGames.Basics
 
         public int CompareTo(Coord other)
         {
-            int result = other.y.CompareTo(this.y);
+            int result = this.x.CompareTo(other.x);
             if (result != 0)
             {
                 return result;
             }
-            else return this.x.CompareTo(other.x);
+            else return this.y.CompareTo(other.y);
         }
     }
 }

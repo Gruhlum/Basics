@@ -1,4 +1,4 @@
-﻿using HexTecGames.Basics.UI.Displays;
+﻿using HexTecGames.Basics.UI;
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
@@ -9,41 +9,42 @@ namespace HexTecGames.Basics.Profiles
     public class ProfileController : MonoBehaviour
     {
         [SerializeField] private ProfileDisplayController profileDisplayC = default;
-        [SerializeField] private InputDisplay inputDisplay = default;
-        [SerializeField] private ConfirmDisplay deleteConfirm = default;
+        [SerializeField] private InputWindow inputWindow = default;
+        [SerializeField] private ConfirmWindow deleteConfirm = default;
         [SerializeField] private TMP_Text currentProfileNameGUI = default;
 
         private Profile selectedProfile;
 
         private void Awake()
-        {           
-            inputDisplay.OnInputConfirmed += InputDisplay_OnInputConfirmed;
-            deleteConfirm.OnCancelClicked += DeleteConfirm_OnCancelClicked;
-            deleteConfirm.OnConfirmClicked += DeleteConfirm_OnConfirmClicked;
+        {
+            inputWindow.OnInputConfirmed += InputDisplay_OnInputConfirmed;
+            Debug.LogError("Not working correctly!");
+            // Changed events from C# to Unity for ConfirmWindow
         }
         private void OnDestroy()
         {
-            inputDisplay.OnInputConfirmed -= InputDisplay_OnInputConfirmed;
-            deleteConfirm.OnCancelClicked -= DeleteConfirm_OnCancelClicked;
-            deleteConfirm.OnConfirmClicked -= DeleteConfirm_OnConfirmClicked;
+            inputWindow.OnInputConfirmed -= InputDisplay_OnInputConfirmed;
         }
         private void Start()
         {
             DisplayProfiles();
             if (profileDisplayC.TotalItems == 0)
             {
-                inputDisplay.Show("Create Profile");
+                inputWindow.Show("Create Profile");
             }
         }
 
-        private void DeleteConfirm_OnConfirmClicked()
+        public void ConfirmClicked()
         {
             SaveSystem.RemoveProfile(selectedProfile);
             selectedProfile = null;
             UpdateCurrentProfileDisplay();
             DisplayProfiles();
         }
-
+        public void CancelClicked()
+        {
+            selectedProfile = null;
+        }
         private void UpdateCurrentProfileDisplay()
         {
             if (SaveSystem.CurrentProfile == null)
@@ -52,11 +53,6 @@ namespace HexTecGames.Basics.Profiles
             }
             else currentProfileNameGUI.text = SaveSystem.CurrentProfile.Name;
         }
-
-        private void DeleteConfirm_OnCancelClicked()
-        {
-            selectedProfile = null;
-        }    
 
         private void InputDisplay_OnInputConfirmed(string input)
         {
@@ -69,7 +65,7 @@ namespace HexTecGames.Basics.Profiles
                 SaveSystem.RenameProfile(selectedProfile, input);
                 selectedProfile = null;
                 DisplayProfiles();
-            }           
+            }
             UpdateCurrentProfileDisplay();
         }
 
@@ -83,7 +79,7 @@ namespace HexTecGames.Basics.Profiles
         public void RenameProfile(Profile profile)
         {
             selectedProfile = profile;
-            inputDisplay.Show("Rename", profile.Name);          
+            inputWindow.Show("Rename", profile.Name);
         }
         private string GenerateText(string itemName)
         {
@@ -101,7 +97,7 @@ namespace HexTecGames.Basics.Profiles
         }
         public void AddProfileClicked()
         {
-            inputDisplay.Show("Create Profile");
+            inputWindow.Show("Create Profile");
         }
 
         private void AddProfile(string name)
