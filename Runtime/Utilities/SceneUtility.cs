@@ -4,7 +4,7 @@ using UnityEditor;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-namespace HexTecGames
+namespace HexTecGames.Basics
 {
     public static class SceneUtility
     {
