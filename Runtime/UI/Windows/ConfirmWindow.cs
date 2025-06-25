@@ -26,7 +26,8 @@ namespace HexTecGames.Basics.UI
         [SerializeField, HideInInspector] private Button oldConfirmButton = default;
         [SerializeField, HideInInspector] private Button oldCancelButton = default;
 
-
+        private Action confirmAction;
+        private Action cancelAction;
 
         private void OnValidate()
         {
@@ -47,6 +48,12 @@ namespace HexTecGames.Basics.UI
             old = current;
         }
 
+        public void Setup(string text, Action confirmAction, Action cancelAction, string confirmText = "Confirm", string cancelText = "Cancel")
+        {
+            Setup(text, confirmText, cancelText);
+            this.confirmAction = confirmAction;
+            this.cancelAction = cancelAction;
+        }
         public void Setup(string text, string confirmText = "Confirm", string cancelText = "Cancel")
         {
             textGUI.text = text;
@@ -62,11 +69,23 @@ namespace HexTecGames.Basics.UI
 
         private void ConfirmClicked()
         {
+            if (confirmAction != null)
+            {
+                confirmAction.Invoke();
+                confirmAction = null;
+                cancelAction = null;
+            }
             OnConfirmClicked?.Invoke();
             Deactivate();
         }
         private void CancelClicked()
         {
+            if (cancelAction != null)
+            {
+                cancelAction.Invoke();
+                cancelAction = null;
+                confirmAction = null;
+            }
             OnCancelClicked?.Invoke();
             Deactivate();
         }
