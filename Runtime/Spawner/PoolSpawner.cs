@@ -43,6 +43,18 @@ namespace HexTecGames.Basics
             return instance;
         }
 
+        public virtual List<T> Spawn(int amount, bool activate = true)
+        {
+            List<T> results = new List<T>();
+
+            for (int i = 0; i < amount; i++)
+            {
+                results.Add(Spawn(activate));
+            }
+
+            return results;
+        }
+
         protected virtual T GetEmptyInstance()
         {
             if (Instances == null || Instances.Count <= 0)
@@ -60,7 +72,7 @@ namespace HexTecGames.Basics
             return CreateNewInstance();
         }
 
-        public List<T> DeactivateAllAndSpawn(int amount, bool activate = true)
+        public virtual List<T> DeactivateAllAndSpawn(int amount, bool activate = true)
         {
             List<T> results = new List<T>();
 
