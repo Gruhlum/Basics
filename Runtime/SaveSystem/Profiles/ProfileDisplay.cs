@@ -21,9 +21,10 @@ namespace HexTecGames.Basics.Profiles
         public event Action<ProfileDisplay> OnDeleteClicked;
         public event Action<ProfileDisplay> OnRenameClicked;
 
-        private void OnDisable()
+        protected override void OnDisable()
         {
             ShowButtons(false);
+            base.OnDisable();
         }
 
         public void SetHighlighted(bool highlighted)

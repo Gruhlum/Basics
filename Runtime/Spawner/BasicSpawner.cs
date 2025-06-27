@@ -45,6 +45,18 @@ namespace HexTecGames.Basics
         [SerializeField, Tooltip("Optional parent for the instantiated object")] private Transform parent = default;
 
 
+
+        public virtual List<T> Spawn(int amount)
+        {
+            List<T> results = new List<T>(amount);
+
+            for (int i = 0; i < amount; i++)
+            {
+                results.Add(Spawn());
+            }
+
+            return results;
+        }
         public virtual T Spawn()
         {
             if (prefab == null)

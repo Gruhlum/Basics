@@ -1,12 +1,13 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using UnityEngine;
 
 namespace HexTecGames.Basics
 {
     public abstract class ScriptableObjectCollection<T> : ScriptableObject, IEnumerable<T> where T : ScriptableObject
     {
-        public IList<T> Items
+        public ReadOnlyCollection<T> Items
         {
             get
             {

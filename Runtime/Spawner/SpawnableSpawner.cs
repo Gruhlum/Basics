@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 namespace HexTecGames.Basics
@@ -21,7 +22,17 @@ namespace HexTecGames.Basics
         private HashSet<T> activeInstances = new HashSet<T>();
         private Stack<T> deactivatedInstances = new Stack<T>();
 
-        public override T Spawn(bool activate)
+        public override List<T> Spawn(int amount, bool activate = true)
+        {
+            List<T> results = new List<T>(amount);
+
+            for (int i = 0; i < amount; i++)
+            {
+                results.Add(Spawn(activate));
+            }
+            return results;
+        }
+        public override T Spawn(bool activate = true)
         {
             T spawnable = base.Spawn(activate);
             spawnable.OnDeactivated += Spawnable_OnDeactivated;
@@ -29,7 +40,15 @@ namespace HexTecGames.Basics
         }
         public override void DeactivateAll()
         {
-            Debug.Log("Cannot Deactivate SpawnableSpawner Items");
+            List<T> activeItems = activeInstances.ToList();
+
+            for (int i = activeItems.Count - 1; i >= 0; i--)
+            {
+                activeItems[i].OnDeactivated -= Spawnable_OnDeactivated;
+                activeItems[i].gameObject.SetActive(false);
+                deactivatedInstances.Push(activeItems[i]);
+            }
+            activeInstances.Clear();
         }
 
         protected override T GetEmptyInstance()

@@ -21,6 +21,7 @@ namespace HexTecGames.Basics
         /// </summary>
         /// <param name="activate">Sets the gameObject active</param>
 
+
         public virtual T Spawn(bool activate = true)
         {
             if (Prefab == null)
@@ -45,7 +46,7 @@ namespace HexTecGames.Basics
 
         public virtual List<T> Spawn(int amount, bool activate = true)
         {
-            List<T> results = new List<T>();
+            List<T> results = new List<T>(amount);
 
             for (int i = 0; i < amount; i++)
             {
@@ -74,7 +75,7 @@ namespace HexTecGames.Basics
 
         public virtual List<T> DeactivateAllAndSpawn(int amount, bool activate = true)
         {
-            List<T> results = new List<T>();
+            List<T> results = new List<T>(amount);
 
             foreach (var instance in Instances)
             {

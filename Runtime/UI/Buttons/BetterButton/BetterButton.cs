@@ -34,7 +34,8 @@ namespace HexTecGames.Basics.UI.Buttons
         private bool isHovering;
         private bool isPointerDown;
 
-        [SerializeField] private UnityEvent OnClick = default;
+        [SerializeField] private UnityEvent OnLeftClick = default;
+        [SerializeField] private UnityEvent OnRightClick = default;
         [SerializeField] private UnityEvent OnMouseEnter = default;
 
 
@@ -112,7 +113,15 @@ namespace HexTecGames.Basics.UI.Buttons
                     effect.Apply();
                 }
             }
-            OnClick?.Invoke();
+
+            if (eventData.button == PointerEventData.InputButton.Left)
+            {
+                OnLeftClick?.Invoke();
+            }
+            else if (eventData.button == PointerEventData.InputButton.Right)
+            {
+                OnRightClick?.Invoke();
+            }
         }
 
         public override void OnPointerDown(PointerEventData eventData)

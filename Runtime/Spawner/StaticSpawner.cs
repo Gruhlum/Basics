@@ -32,7 +32,7 @@ namespace HexTecGames.Basics
         /// <summary>
         /// <inheritdoc/>
         /// </summary>
-        public override T Spawn(bool activate)
+        public override T Spawn(bool activate = true)
         {
             if (isInit == false)
             {

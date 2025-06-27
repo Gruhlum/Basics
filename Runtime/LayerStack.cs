@@ -10,7 +10,6 @@ namespace HexTecGames
     public class LayerStack<T>
     {
         private int activeElementsIndex = -1;
-        private int activeLayerIndex = -1;
 
         public T ActiveItem
         {
