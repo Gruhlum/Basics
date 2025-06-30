@@ -21,6 +21,15 @@ namespace HexTecGames.Basics.UI
             {
                 return name;
             }
-        }      
+        }
+
+        public string Description
+        {
+            get
+            {
+                return description;
+            }
+        }
+        [SerializeField, TextArea] private string description = default;
     }
 }

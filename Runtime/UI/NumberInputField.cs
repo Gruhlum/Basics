@@ -3,7 +3,6 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using TMPro;
-using UnityEditor.Events;
 using UnityEngine;
 using UnityEngine.Events;
 
@@ -42,12 +41,13 @@ namespace HexTecGames.Basics
             }
         }
 
+#if UNITY_EDITOR
         private void Reset()
         {
             InputField = GetComponent<TMP_InputField>();
-            UnityEventTools.AddPersistentListener(InputField.onValueChanged, InputChanged);
+            UnityEditor.Events.UnityEventTools.AddPersistentListener(InputField.onValueChanged, InputChanged);
         }
-
+#endif
         private void Start()
         {
             lastInput = InputField.text;

@@ -19,7 +19,7 @@ namespace HexTecGames.Basics.UI
         {
             displays = GetComponentsInChildren<D>().ToList();
         }
-
+#if UNITY_EDITOR
         protected virtual void OnValidate()
         {
             if (!autoBuildDisplays)
@@ -39,6 +39,7 @@ namespace HexTecGames.Basics.UI
                 };
             }
         }
+#endif
         protected virtual void Awake()
         {
             FindDisplays();
@@ -90,10 +91,9 @@ namespace HexTecGames.Basics.UI
             {
                 return;
             }
-
+#if UNITY_EDITOR
             displaySpawner.DestroyAll();
             displays = new List<D>();
-
 
             foreach (var item in items)
             {
@@ -105,6 +105,7 @@ namespace HexTecGames.Basics.UI
                 display.SetItem(item);
                 displays.Add(display);
             }
+#endif
         }
 
         public void SelectFirstDisplay()

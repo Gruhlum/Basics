@@ -2,7 +2,6 @@
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
-using UnityEditor.Events;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.UI;
@@ -29,6 +28,7 @@ namespace HexTecGames.Basics.UI
         private Action confirmAction;
         private Action cancelAction;
 
+#if UNITY_EDITOR
         private void OnValidate()
         {
             HandleEventListener(ref oldConfirmButton, confirmButton, ConfirmClicked);
@@ -39,15 +39,15 @@ namespace HexTecGames.Basics.UI
         {
             if (old != null)
             {
-                UnityEventTools.RemovePersistentListener(old.onClick, method);
+                UnityEditor.Events.UnityEventTools.RemovePersistentListener(old.onClick, method);
             }
             if (current != null)
             {
-                UnityEventTools.AddPersistentListener(current.onClick, method);
+                UnityEditor.Events.UnityEventTools.AddPersistentListener(current.onClick, method);
             }
             old = current;
         }
-
+#endif
         public void Setup(string text, Action confirmAction, Action cancelAction, string confirmText = "Confirm", string cancelText = "Cancel")
         {
             Setup(text, confirmText, cancelText);

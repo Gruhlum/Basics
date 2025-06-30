@@ -4,15 +4,19 @@ using UnityEngine;
 
 namespace HexTecGames.Basics.UI
 {
-	public interface IDisplayable
-	{
-		public Sprite Icon
-		{
-			get;
-		}
-		public string Name
-		{
-			get;
-		}
-	}
+    public interface IDisplayable
+    {
+        public Sprite Icon
+        {
+            get;
+        }
+        public string Name
+        {
+            get;
+        }
+        public string Description
+        {
+            get;
+        }
+    }
 }
