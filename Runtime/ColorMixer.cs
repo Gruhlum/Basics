@@ -44,6 +44,22 @@ namespace HexTecGames.Basics
         {
             colorValues.Clear();
         }
+
+        public override string ToString()
+        {
+            if (colorValues == null || colorValues.Count == 0)
+            {
+                return "Empty Mixer";
+            }
+
+            List<string> colorTexts = new List<string>();
+            foreach (var colorValue in colorValues)
+            {
+                colorTexts.Add(colorValue.ToString());
+            }
+            return $"Mixer ({colorValues.Count}) {string.Join(" | ", colorTexts)}";
+        }
+
         private struct ColorValue
         {
             public Color color;
@@ -53,6 +69,11 @@ namespace HexTecGames.Basics
             {
                 this.color = color;
                 this.strength = strength;
+            }
+
+            public override string ToString()
+            {
+                return $"{color} {strength}";
             }
         }
     }

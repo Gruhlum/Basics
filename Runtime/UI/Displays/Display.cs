@@ -6,7 +6,7 @@ using UnityEngine.Events;
 
 namespace HexTecGames.Basics.UI
 {
-    public abstract class Display<TDisplay, T> : MonoBehaviour where TDisplay : Display<TDisplay, T>
+    public abstract class Display<D, T> : MonoBehaviour where D : Display<D, T>
     {
         public T Item
         {
@@ -33,13 +33,13 @@ namespace HexTecGames.Basics.UI
         }
         private bool isHighlighted;
 
-        public event Action<TDisplay> OnDisplayClicked;
-        public event Action<TDisplay> OnDeactivated;
+        public event Action<D> OnDisplayClicked;
+        public event Action<D> OnDeactivated;
 
 
         protected virtual void OnDisable()
         {
-            OnDeactivated?.Invoke(this as TDisplay);
+            OnDeactivated?.Invoke(this as D);
         }
 
         protected virtual void OnDestroy()
@@ -78,8 +78,7 @@ namespace HexTecGames.Basics.UI
         }
 
         protected virtual void AddEvents(T item)
-        {
-        }
+        { }
         protected virtual void RemoveEvents(T item)
         { }
 
@@ -91,7 +90,7 @@ namespace HexTecGames.Basics.UI
         protected abstract void DrawItem(T item);
         public virtual void DisplayClicked()
         {
-            OnDisplayClicked?.Invoke(this as TDisplay);
+            OnDisplayClicked?.Invoke(this as D);
         }
         public virtual void SetHighlight(bool active)
         {

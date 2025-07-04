@@ -205,6 +205,18 @@ namespace HexTecGames.Basics
             Instances.Clear();
         }
 
+        public virtual IEnumerable<T> GetActiveInstances()
+        {
+            List<T> results = new List<T>();
+            foreach (var instance in Instances)
+            {
+                if (instance.gameObject.activeInHierarchy)
+                {
+                    results.Add(instance);
+                }
+            }
+            return results;
+        }
         public HashSet<T> GetInstances()
         {
             return new HashSet<T>(Instances);

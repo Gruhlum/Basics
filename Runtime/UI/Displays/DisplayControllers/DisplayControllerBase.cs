@@ -7,6 +7,8 @@ namespace HexTecGames.Basics.UI
 {
     public abstract class DisplayControllerBase<D, T> : MonoBehaviour where D : Display<D, T>
     {
+        [SerializeField] private bool clearEventsOnDisable = true;
+
         public event Action<D> OnDisplayClicked;
         public event Action<D> OnDisplayDeactivated;
 
@@ -40,7 +42,10 @@ namespace HexTecGames.Basics.UI
         }
         protected virtual void Display_OnDeactivated(D display)
         {
-            RemoveDisplayEvents(display);
+            if (clearEventsOnDisable)
+            {
+                RemoveDisplayEvents(display);
+            }
             OnDisplayDeactivated?.Invoke(display);
         }
     }
