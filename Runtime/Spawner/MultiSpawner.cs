@@ -1,5 +1,3 @@
-using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -57,7 +55,7 @@ namespace HexTecGames.Basics
                     return CreateNewCopy(prefab, set);
                 }
 
-                var result = set.First(x => !x.gameObject.activeSelf);
+                Component result = set.First(x => !x.gameObject.activeSelf);
                 if (result != null)
                 {
                     return result as T;
@@ -81,7 +79,7 @@ namespace HexTecGames.Basics
 
             if (instances.TryGetValue(prefab, out HashSet<Component> set))
             {
-                foreach (var component in set)
+                foreach (Component component in set)
                 {
                     results.Add(component as T);
                 }
@@ -95,7 +93,7 @@ namespace HexTecGames.Basics
 
             if (instances.TryGetValue(prefab, out HashSet<Component> set))
             {
-                foreach (var component in set)
+                foreach (Component component in set)
                 {
                     if (component.gameObject.activeSelf)
                     {
@@ -117,9 +115,9 @@ namespace HexTecGames.Basics
                 return;
             }
 
-            foreach (var set in instances.Values)
+            foreach (HashSet<Component> set in instances.Values)
             {
-                foreach (var component in set)
+                foreach (Component component in set)
                 {
                     component.gameObject.SetActive(false);
                 }
@@ -131,9 +129,9 @@ namespace HexTecGames.Basics
         /// </summary>
         public void DestroyAll()
         {
-            foreach (var set in instances.Values)
+            foreach (HashSet<Component> set in instances.Values)
             {
-                foreach (var component in set)
+                foreach (Component component in set)
                 {
                     UnityEngine.Object.Destroy(component);
                 }

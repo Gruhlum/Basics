@@ -12,10 +12,10 @@ namespace HexTecGames.Basics.Editor
         #region Fields
 
         // Reference to the attribute on the property.
-        DrawIfAttribute drawIf;
+        private DrawIfAttribute drawIf;
 
         // Field that is being compared.
-        SerializedProperty comparedField;
+        private SerializedProperty comparedField;
 
         #endregion
 
@@ -59,7 +59,7 @@ namespace HexTecGames.Basics.Editor
                 case "float":
                     return comparedField.floatValue.Equals((float)drawIf.comparedValue);
                 case "int":
-                    return comparedField.intValue.Equals((int)(drawIf.comparedValue));
+                    return comparedField.intValue.Equals((int)drawIf.comparedValue);
                 default:
                     if (comparedField.isArray)
                     {
@@ -73,7 +73,7 @@ namespace HexTecGames.Basics.Editor
         public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
         {
             // If the condition is met, simply draw the field.
-            if (ShowMe(property) && drawIf.reverse == false || !ShowMe(property) && drawIf.reverse == true)
+            if ((ShowMe(property) && drawIf.reverse == false) || (!ShowMe(property) && drawIf.reverse == true))
             {
                 EditorGUI.PropertyField(position, property);
             } //...check if the disabling type is read only. If it is, draw it disabled

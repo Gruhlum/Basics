@@ -1,12 +1,8 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-
-namespace HexTecGames.Basics
+﻿namespace HexTecGames.Basics
 {
-	public class TestSaveData
-	{
-		public int level;
-		public bool played;
-	}
+    public class TestSaveData
+    {
+        public int level;
+        public bool played;
+    }
 }

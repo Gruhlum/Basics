@@ -1,4 +1,3 @@
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEditor;
@@ -30,7 +29,7 @@ namespace HexTecGames.Basics.UI
             {
                 return;
             }
-            
+
             if (RequiresRebuild())
             {
                 EditorApplication.delayCall += () =>
@@ -49,7 +48,7 @@ namespace HexTecGames.Basics.UI
                 GenerateDisplays();
             }
 
-            foreach (var display in displays)
+            foreach (D display in displays)
             {
                 AddDisplayEvents(display);
             }
@@ -95,7 +94,7 @@ namespace HexTecGames.Basics.UI
             displaySpawner.DestroyAll();
             displays = new List<D>();
 
-            foreach (var item in items)
+            foreach (T item in items)
             {
                 if (item == null)
                 {

@@ -1,7 +1,4 @@
-using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Linq;
 using UnityEngine;
 
@@ -37,7 +34,7 @@ namespace HexTecGames.Basics.UI
         public virtual void DisplayItems()
         {
             displaySpawner.DeactivateAll();
-            foreach (var item in items)
+            foreach (T item in items)
             {
                 SetupDisplay(SpawnDisplay(), item);
             }
@@ -110,7 +107,7 @@ namespace HexTecGames.Basics.UI
                 return;
             }
 
-            foreach (var display in displaySpawner)
+            foreach (D display in displaySpawner)
             {
                 if (display.Item.Equals(item))
                 {

@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-
-namespace HexTecGames.Basics.Profiles
+﻿namespace HexTecGames.Basics.Profiles
 {
     [System.Serializable]
     public class Profile
@@ -31,5 +26,5 @@ namespace HexTecGames.Basics.Profiles
         {
             this.Name = name;
         }
-}
+    }
 }

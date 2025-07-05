@@ -1,15 +1,12 @@
-using System.Collections;
-using System.Collections.Generic;
-using System.IO;
 using UnityEngine;
 
 namespace HexTecGames.Basics
 {
-	/// <summary>
+    /// <summary>
     /// Class that allows you to take and save screenshots from the camera's data.
     /// </summary>
     public class ScreenshotController : MonoBehaviour
-	{
+    {
         [SerializeField] private Camera cam = default;
 
         [SerializeField, TextArea] private string defaultSavePath = Application.dataPath;
@@ -46,7 +43,7 @@ namespace HexTecGames.Basics
             byte[] result = GenerateScreenshot(cam);
             SaveScreenshot(result, path, name);
         }
-       
+
         private byte[] GenerateScreenshot(Camera cam)
         {
             RenderTexture screenTexture = new RenderTexture(cam.pixelWidth, cam.pixelHeight, -1);

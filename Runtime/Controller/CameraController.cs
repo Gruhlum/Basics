@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 namespace HexTecGames.Basics
@@ -31,7 +29,7 @@ namespace HexTecGames.Basics
                 ignoreInput = true;
                 return;
             }
-            
+
             if (ignoreInput)
             {
                 ignoreInput = false;

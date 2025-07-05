@@ -1,20 +1,19 @@
 ﻿using System;
-using System.Linq;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEditor;
-using System.Reflection;
 
 namespace MackySoft.SerializeReferenceExtensions.Editor
 {
-	public static class TypeSearch
-	{
+    public static class TypeSearch
+    {
 
 #if UNITY_2023_2_OR_NEWER
 		static readonly Dictionary<Type, List<Type>> m_TypeCache = new Dictionary<Type, List<Type>>();
 #endif
 
-		public static IEnumerable<Type> GetTypes (Type baseType)
-		{
+        public static IEnumerable<Type> GetTypes(Type baseType)
+        {
 #if UNITY_2023_2_OR_NEWER
 			// NOTE: This is a generics solution for Unity 2023.2 and later.
 			// 2023.2 because SerializeReference supports generic type instances and because the behaviour is stable.
@@ -27,16 +26,16 @@ namespace MackySoft.SerializeReferenceExtensions.Editor
 				return GetTypesUsingTypeCache(baseType);
 			}
 #else
-			return GetTypesUsingTypeCache(baseType);
+            return GetTypesUsingTypeCache(baseType);
 #endif
-		}
+        }
 
-		static IEnumerable<Type> GetTypesUsingTypeCache (Type baseType)
-		{
-			return TypeCache.GetTypesDerivedFrom(baseType)
-				.Append(baseType)
-				.Where(IsValidType);
-		}
+        private static IEnumerable<Type> GetTypesUsingTypeCache(Type baseType)
+        {
+            return TypeCache.GetTypesDerivedFrom(baseType)
+                .Append(baseType)
+                .Where(IsValidType);
+        }
 
 #if UNITY_2023_2_OR_NEWER
 		static IEnumerable<Type> GetTypesWithGeneric (Type baseType)
@@ -128,15 +127,15 @@ namespace MackySoft.SerializeReferenceExtensions.Editor
 		}
 #endif
 
-		static bool IsValidType (Type type)
-		{
-			return
-				(type.IsPublic || type.IsNestedPublic || type.IsNestedPrivate) &&
-				!type.IsAbstract &&
-				!type.IsGenericType &&
-				!typeof(UnityEngine.Object).IsAssignableFrom(type) &&
-				Attribute.IsDefined(type, typeof(SerializableAttribute)) &&
-				!Attribute.IsDefined(type, typeof(HideInTypeMenuAttribute));
-		}
-	}
+        private static bool IsValidType(Type type)
+        {
+            return
+                (type.IsPublic || type.IsNestedPublic || type.IsNestedPrivate) &&
+                !type.IsAbstract &&
+                !type.IsGenericType &&
+                !typeof(UnityEngine.Object).IsAssignableFrom(type) &&
+                Attribute.IsDefined(type, typeof(SerializableAttribute)) &&
+                !Attribute.IsDefined(type, typeof(HideInTypeMenuAttribute));
+        }
+    }
 }

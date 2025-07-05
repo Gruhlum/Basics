@@ -1,13 +1,12 @@
 
 using System;
-using System.Collections;
 using UnityEngine;
 
 namespace HexTecGames.Basics
 {
     [RequireComponent(typeof(SpriteRenderer))]
     public class GhostObject : MonoBehaviour
-	{
+    {
         [SerializeField] private SpriteRenderer sr = default;
 
         public event Action OnMoved;

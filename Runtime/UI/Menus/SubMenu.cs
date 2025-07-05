@@ -1,4 +1,3 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -26,7 +25,7 @@ namespace HexTecGames.Basics.UI
             gameObject.SetActive(active);
             if (additionalGOs != null && additionalGOs.Count > 0)
             {
-                foreach (var go in additionalGOs)
+                foreach (GameObject go in additionalGOs)
                 {
                     go.SetActive(active);
                 }

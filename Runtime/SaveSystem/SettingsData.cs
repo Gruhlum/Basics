@@ -1,7 +1,4 @@
-using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
-using UnityEngine;
 
 namespace HexTecGames.Basics
 {
@@ -31,7 +28,7 @@ namespace HexTecGames.Basics
 
         public void DeleteOption(string key)
         {
-            var result = Values.Find(x => x.Key == key);
+            Setting result = Values.Find(x => x.Key == key);
             if (result != null)
             {
                 Values.Remove(result);

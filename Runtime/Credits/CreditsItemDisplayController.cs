@@ -1,13 +1,11 @@
-using System.Collections;
 using System.Collections.Generic;
 using HexTecGames.Basics.UI;
 using UnityEngine;
-using Random = UnityEngine.Random;
 
 namespace HexTecGames.Basics.Credits
 {
-	public class CreditsItemDisplayController : DisplayController<CreditsItemDisplay, CreditsItem>
-	{
+    public class CreditsItemDisplayController : DisplayController<CreditsItemDisplay, CreditsItem>
+    {
         private void OnEnable()
         {
             ShuffleCredits();

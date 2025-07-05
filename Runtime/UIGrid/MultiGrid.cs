@@ -1,4 +1,3 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -23,7 +22,7 @@ namespace HexTecGames.Basics.UIGrid
         {
             if (gridType == GridType.Rect)
             {
-                var grid = new RectGrid<T>(gridSettings);
+                RectGrid<T> grid = new RectGrid<T>(gridSettings);
                 grids.Add(grid);
                 return grid;
             }
@@ -39,7 +38,7 @@ namespace HexTecGames.Basics.UIGrid
         {
             for (int i = 0; i < grids.Count; i++)
             {
-                var result = grids[i].GetPosition(obj);
+                Vector2? result = grids[i].GetPosition(obj);
                 if (result.HasValue)
                 {
                     return result.Value;
@@ -47,7 +46,7 @@ namespace HexTecGames.Basics.UIGrid
             }
             Debug.Log("Adding Grid!");
             Grid<T> grid = InstantiateGrid(gridSettings);
-            var final = grid.GetPosition(obj);
+            Vector2? final = grid.GetPosition(obj);
             if (final.HasValue)
             {
                 return final.Value;

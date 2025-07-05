@@ -1,4 +1,3 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
@@ -50,7 +49,7 @@ namespace HexTecGames.Basics.UI.Buttons
 
             if (hoverEffects != null)
             {
-                foreach (var effect in hoverEffects)
+                foreach (ButtonEffect effect in hoverEffects)
                 {
                     if (effect != null)
                     {
@@ -60,7 +59,7 @@ namespace HexTecGames.Basics.UI.Buttons
             }
             if (mouseDownEffects != null)
             {
-                foreach (var effect in mouseDownEffects)
+                foreach (ButtonEffect effect in mouseDownEffects)
                 {
                     if (effect != null)
                     {
@@ -85,11 +84,11 @@ namespace HexTecGames.Basics.UI.Buttons
         protected override void OnDisable()
         {
             base.OnDisable();
-            foreach (var effect in hoverEffects)
+            foreach (ButtonEffect effect in hoverEffects)
             {
                 effect.Remove();
             }
-            foreach (var effect in mouseDownEffects)
+            foreach (ButtonEffect effect in mouseDownEffects)
             {
                 effect.Remove();
             }
@@ -102,13 +101,13 @@ namespace HexTecGames.Basics.UI.Buttons
                 return;
             }
             isPointerDown = false;
-            foreach (var effect in mouseDownEffects)
+            foreach (ButtonEffect effect in mouseDownEffects)
             {
                 effect.Remove();
             }
             if (isHovering)
             {
-                foreach (var effect in hoverEffects)
+                foreach (ButtonEffect effect in hoverEffects)
                 {
                     effect.Apply();
                 }
@@ -130,12 +129,12 @@ namespace HexTecGames.Basics.UI.Buttons
             isPointerDown = true;
             if (isHovering)
             {
-                foreach (var effect in hoverEffects)
+                foreach (ButtonEffect effect in hoverEffects)
                 {
                     effect.Remove();
                 }
             }
-            foreach (var effect in mouseDownEffects)
+            foreach (ButtonEffect effect in mouseDownEffects)
             {
                 effect.Apply();
             }
@@ -153,7 +152,7 @@ namespace HexTecGames.Basics.UI.Buttons
             {
                 return;
             }
-            foreach (var effect in hoverEffects)
+            foreach (ButtonEffect effect in hoverEffects)
             {
                 effect.Apply();
             }
@@ -168,7 +167,7 @@ namespace HexTecGames.Basics.UI.Buttons
             }
             base.OnPointerEnter(eventData);
             isHovering = false;
-            foreach (var effect in hoverEffects)
+            foreach (ButtonEffect effect in hoverEffects)
             {
                 effect.Remove();
             }

@@ -1,7 +1,5 @@
-using HexTecGames.HotkeySystem;
 using System;
-using System.Collections;
-using System.Collections.Generic;
+using HexTecGames.HotkeySystem;
 using UnityEngine;
 
 namespace HexTecGames.Basics.UI

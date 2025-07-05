@@ -1,10 +1,7 @@
-using HexTecGames.HotkeySystem;
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
-using UnityEngine.UI;
 
 namespace HexTecGames.Basics.UI.Buttons
 {
@@ -40,7 +37,7 @@ namespace HexTecGames.Basics.UI.Buttons
 
         protected virtual void Awake()
         {
-            foreach (var button in buttons)
+            foreach (RadioButton button in buttons)
             {
                 button.OnClicked += Button_OnClicked;
             }
@@ -59,7 +56,7 @@ namespace HexTecGames.Basics.UI.Buttons
         }
         protected virtual void SelectButton(RadioButton radioBtn, bool notify = true)
         {
-            foreach (var btn in buttons)
+            foreach (RadioButton btn in buttons)
             {
                 btn.SetActive(btn == radioBtn);
             }

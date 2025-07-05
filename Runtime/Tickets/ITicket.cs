@@ -1,4 +1,3 @@
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -7,11 +6,11 @@ namespace HexTecGames.Basics
 {
     public interface ITicket
     {
-        public int Tickets
+        int Tickets
         {
             get;
         }
-        public static T Roll<T>(List<T> items) where T : ITicket
+        static T Roll<T>(List<T> items) where T : ITicket
         {
             if (items == null || items.Count == 0)
             {
@@ -29,7 +28,7 @@ namespace HexTecGames.Basics
 
             int rng = Random.Range(0, totalTickets);
 
-            foreach (var item in items)
+            foreach (T item in items)
             {
                 if (item.Tickets > rng)
                 {

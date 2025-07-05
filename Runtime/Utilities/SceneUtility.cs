@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -27,7 +25,7 @@ namespace HexTecGames.Basics
         }
         public static void QuitGame()
         {
-#if (UNITY_EDITOR)
+#if UNITY_EDITOR
             if (Application.isEditor)
             {
                 EditorApplication.ExitPlaymode();

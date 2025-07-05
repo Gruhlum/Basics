@@ -43,21 +43,21 @@ namespace RedGame.Framework.EditorTools
         private Vector2 _scrollPosition;
         private bool _columnResized;
         private bool _sortingDirty;
-        
+
         public delegate void DrawItem(Rect rect, TData item);
-       
+
         public class ColumnDef
         {
             internal MultiColumnHeaderState.Column column;
             internal DrawItem onDraw;
             internal Comparison<TData> onSort;
-            
+
             public ColumnDef SetMaxWidth(float maxWidth)
             {
                 column.maxWidth = maxWidth;
                 return this;
             }
-            
+
             public ColumnDef SetTooltip(string tooltip)
             {
                 column.headerContent.tooltip = tooltip;
@@ -75,7 +75,7 @@ namespace RedGame.Framework.EditorTools
                 column.allowToggleVisibility = allow;
                 return this;
             }
-            
+
             public ColumnDef SetSorting(Comparison<TData> onSort)
             {
                 this.onSort = onSort;
@@ -85,13 +85,13 @@ namespace RedGame.Framework.EditorTools
         }
 
         private readonly List<ColumnDef> _columnDefs = new List<ColumnDef>();
-        
+
         public void ClearColumns()
         {
             _columnDefs.Clear();
             _columnResized = true;
         }
-        
+
         public ColumnDef AddColumn(string title, int minWidth, DrawItem onDrawItem)
         {
             ColumnDef columnDef = new ColumnDef()
@@ -108,7 +108,7 @@ namespace RedGame.Framework.EditorTools
                 },
                 onDraw = onDrawItem
             };
-            
+
             _columnDefs.Add(columnDef);
             _columnResized = true;
             return columnDef;
@@ -124,27 +124,27 @@ namespace RedGame.Framework.EditorTools
             _multiColumnHeader.ResizeToFit();
             _columnResized = false;
         }
-        
+
         public void DrawTableGUI(TData[] data, float maxHeight = float.MaxValue, float rowHeight = -1)
         {
             if (_multiColumnHeader == null || _columnResized)
                 ReBuild();
-            
+
             float rowWidth = _multiColumnHeaderState.widthOfAllVisibleColumns;
             if (rowHeight < 0)
                 rowHeight = EditorGUIUtility.singleLineHeight;
-            
+
             Rect headerRect = GUILayoutUtility.GetRect(rowWidth, rowHeight);
             _multiColumnHeader!.OnGUI(headerRect, xScroll: 0.0f);
 
             float sumWidth = rowWidth;
-            float sumHeight = rowHeight * data.Length + GUI.skin.horizontalScrollbar.fixedHeight;
+            float sumHeight = (rowHeight * data.Length) + GUI.skin.horizontalScrollbar.fixedHeight;
 
             UpdateSorting(data);
 
             Rect scrollViewPos = GUILayoutUtility.GetRect(0, sumWidth, 0, maxHeight);
             Rect viewRect = new Rect(0, 0, sumWidth, sumHeight);
-            
+
             _scrollPosition = GUI.BeginScrollView(
                 position: scrollViewPos,
                 scrollPosition: _scrollPosition,
@@ -152,7 +152,7 @@ namespace RedGame.Framework.EditorTools
                 alwaysShowHorizontal: false,
                 alwaysShowVertical: false
             );
-            
+
             EditorGUILayout.BeginVertical();
 
             for (int row = 0; row < data.Length; row++)
@@ -160,7 +160,7 @@ namespace RedGame.Framework.EditorTools
                 Rect rowRect = new Rect(0, rowHeight * row, rowWidth, rowHeight);
 
                 EditorGUI.DrawRect(rect: rowRect, color: row % 2 == 0 ? _darkerColor : _lighterColor);
-                
+
                 for (int col = 0; col < _columns.Length; col++)
                 {
                     if (_multiColumnHeader.IsColumnVisible(col))
@@ -183,14 +183,14 @@ namespace RedGame.Framework.EditorTools
                 int sortIndex = _multiColumnHeader.sortedColumnIndex;
                 if (sortIndex >= 0)
                 {
-                    var sortCompare = _columnDefs[sortIndex].onSort;
+                    Comparison<TData> sortCompare = _columnDefs[sortIndex].onSort;
                     bool ascending = _multiColumnHeader.IsSortedAscending(sortIndex);
 
-                    Array.Sort(data, ((a, b) =>
+                    Array.Sort(data, (a, b) =>
                     {
                         int r = sortCompare(a, b);
                         return ascending ? r : -r;
-                    }));
+                    });
                 }
 
                 _sortingDirty = false;

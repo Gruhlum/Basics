@@ -1,6 +1,4 @@
 ﻿using HexTecGames.Basics.UI;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 namespace HexTecGames.Basics.Profiles
@@ -40,7 +38,7 @@ namespace HexTecGames.Basics.Profiles
 
         private void HighlightActiveProfile()
         {
-            foreach (var display in displaySpawner)
+            foreach (ProfileDisplay display in displaySpawner)
             {
                 if (!display.gameObject.activeSelf)
                 {

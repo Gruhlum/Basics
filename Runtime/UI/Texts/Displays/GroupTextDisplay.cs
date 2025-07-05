@@ -1,4 +1,3 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -27,7 +26,7 @@ namespace HexTecGames.Basics.UI
 
         private void RemoveAllEvents()
         {
-            foreach (var text in spawner)
+            foreach (TLowerDisplay text in spawner)
             {
                 RemoveEvents(text);
             }

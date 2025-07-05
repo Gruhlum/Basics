@@ -1,9 +1,9 @@
-﻿using HexTecGames.Basics.Profiles;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Xml.Serialization;
+using HexTecGames.Basics.Profiles;
 using UnityEditor;
 using UnityEngine;
 
@@ -92,7 +92,7 @@ namespace HexTecGames.Basics
                 //SaveSettings(profileKey, null);
                 return;
             }
-            var result = profiles.Find(x => x == profile);
+            Profile result = profiles.Find(x => x == profile);
             if (result == null)
             {
                 Debug.Log("Could not find profile with name " + profile.Name);
@@ -128,7 +128,7 @@ namespace HexTecGames.Basics
             {
                 return;
             }
-            var oldName = profile.Name;
+            string oldName = profile.Name;
             profile.Rename(name);
             Directory.Move(Path.Combine(BaseDirectory, oldName), Path.Combine(BaseDirectory, name));
             //if (CurrentProfile == profile)
@@ -142,7 +142,7 @@ namespace HexTecGames.Basics
             {
                 LoadProfiles();
             }
-            var result = profiles.Find(x => x == profile);
+            Profile result = profiles.Find(x => x == profile);
             if (result == null)
             {
                 Debug.Log("Could not find profile with name " + profile.Name);
@@ -161,7 +161,7 @@ namespace HexTecGames.Basics
         {
             loadedProfiles = true;
             //Debug.Log("Loading Profiles");
-            var results = FileManager.GetDirectoryNames(BaseDirectory);
+            List<string> results = FileManager.GetDirectoryNames(BaseDirectory);
             profiles.Clear();
             if (results == null)
             {
@@ -169,7 +169,7 @@ namespace HexTecGames.Basics
                 AddProfile(defaultProfileName, true);
                 return;
             }
-            foreach (var result in results)
+            foreach (string result in results)
             {
                 if (result == defaultFolderName)
                 {
@@ -203,37 +203,25 @@ namespace HexTecGames.Basics
         /// <param name="value"></param>
         public static void SaveSettings(string key, string value)
         {
-            if (settingsData == null)
-            {
-                settingsData = LoadSettingsData();
-            }
+            settingsData ??= LoadSettingsData();
             settingsData.SetOption(key, value);
             SaveJSON(settingsData, settingsFileName);
         }
         public static void SaveSettings(string key, bool value)
         {
-            if (settingsData == null)
-            {
-                settingsData = LoadSettingsData();
-            }
+            settingsData ??= LoadSettingsData();
             settingsData.SetOption(key, value.ToString());
             SaveJSON(settingsData, settingsFileName);
         }
         public static void SaveSettings(string key, int value)
         {
-            if (settingsData == null)
-            {
-                settingsData = LoadSettingsData();
-            }
+            settingsData ??= LoadSettingsData();
             settingsData.SetOption(key, value.ToString());
             SaveJSON(settingsData, settingsFileName);
         }
         public static void SaveSettings(string key, float value)
         {
-            if (settingsData == null)
-            {
-                settingsData = LoadSettingsData();
-            }
+            settingsData ??= LoadSettingsData();
             settingsData.SetOption(key, value.ToString());
             SaveSettingsToFile();
         }
@@ -244,10 +232,7 @@ namespace HexTecGames.Basics
         /// <returns>A string value, or null if none could be found.</returns>
         private static string LoadSettings(string key)
         {
-            if (settingsData == null)
-            {
-                settingsData = LoadSettingsData();
-            }
+            settingsData ??= LoadSettingsData();
 
             return settingsData.GetOption(key);
         }
@@ -343,10 +328,7 @@ namespace HexTecGames.Basics
         }
         public static void DeleteSettings(string key)
         {
-            if (settingsData == null)
-            {
-                settingsData = LoadSettingsData();
-            }
+            settingsData ??= LoadSettingsData();
             settingsData.DeleteOption(key);
             SaveSettingsToFile();
         }
@@ -474,13 +456,13 @@ namespace HexTecGames.Basics
         /// <returns>The loaded objects, or an empty list of none could be found.</returns>
         public static List<T> LoadJSONAll<T>(string directory) where T : class
         {
-            var results = FindAllFiles(directory);
+            List<string> results = FindAllFiles(directory);
             List<T> levels = new List<T>();
             if (results == null)
             {
                 return levels;
             }
-            foreach (var result in results)
+            foreach (string result in results)
             {
                 levels.Add(LoadJSON<T>(FileManager.GetEndOfPathName(result), directory));
             }
@@ -507,8 +489,8 @@ namespace HexTecGames.Basics
         {
             string path = CreatePath(fileName, directory);
             CheckDirectories(directory);
-            var serializer = new XmlSerializer(obj.GetType());
-            using (var stream = new FileStream(path, FileMode.Create))
+            XmlSerializer serializer = new XmlSerializer(obj.GetType());
+            using (FileStream stream = new FileStream(path, FileMode.Create))
             {
                 serializer.Serialize(stream, obj);
             }
@@ -539,8 +521,8 @@ namespace HexTecGames.Basics
                 Debug.LogWarning(path + " does not exist");
                 return default;
             }
-            var serializer = new XmlSerializer(typeof(T));
-            using (var stream = new FileStream(path, FileMode.Open))
+            XmlSerializer serializer = new XmlSerializer(typeof(T));
+            using (FileStream stream = new FileStream(path, FileMode.Open))
             {
                 return serializer.Deserialize(stream) as T;
             }
@@ -553,13 +535,13 @@ namespace HexTecGames.Basics
         /// <returns>The loaded objects, or an empty list of none could be found.</returns>
         public static List<T> LoadXMLAll<T>(string directory) where T : class
         {
-            var results = FindAllFiles(directory);
+            List<string> results = FindAllFiles(directory);
             List<T> levels = new List<T>();
             if (results == null)
             {
                 return levels;
             }
-            foreach (var result in results)
+            foreach (string result in results)
             {
                 levels.Add(LoadXML<T>(FileManager.GetEndOfPathName(result), directory));
             }

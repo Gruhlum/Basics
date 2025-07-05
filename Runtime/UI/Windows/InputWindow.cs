@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections;
-using System.Collections.Generic;
 using System.Linq;
 using TMPro;
 using UnityEngine;
@@ -36,7 +34,7 @@ namespace HexTecGames.Basics.UI
         public UnityEvent<string> InputConfirmed;
 
 
-        void Update()
+        private void Update()
         {
             if (AllowEnterKey && (Input.GetKeyDown(KeyCode.KeypadEnter) || Input.GetKeyDown(KeyCode.Return)))
             {

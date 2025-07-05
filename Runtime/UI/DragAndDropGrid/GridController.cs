@@ -1,4 +1,3 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -17,7 +16,7 @@ namespace HexTecGames.Basics.UI
             }
             set
             {
-                hoverGrid = value;              
+                hoverGrid = value;
             }
         }
         [SerializeField] private DragAndDropGrid hoverGrid;
@@ -28,7 +27,7 @@ namespace HexTecGames.Basics.UI
         {
             grids = new List<DragAndDropGrid>();
             grids.AddRange(GetComponentsInChildren<DragAndDropGrid>());
-            foreach (var grid in grids)
+            foreach (DragAndDropGrid grid in grids)
             {
                 if (grid.gridController == null)
                 {
@@ -37,7 +36,7 @@ namespace HexTecGames.Basics.UI
             }
         }
         public void GridItemSelected(DragAndDropGrid grid, RectTransform item)
-        {          
+        {
             if (item != null)
             {
                 activeItem = item;
@@ -49,12 +48,12 @@ namespace HexTecGames.Basics.UI
                 if (HoverGrid != null)
                 {
                     activeGrid.SendItem(activeItem, HoverGrid);
-                    HoverGrid.ReceiveItem(activeItem, activeGrid);                    
-                }               
+                    HoverGrid.ReceiveItem(activeItem, activeGrid);
+                }
                 HoverGrid = null;
                 activeGrid = null;
                 activeItem = null;
-            } 
+            }
         }
         private void Update()
         {
@@ -66,7 +65,7 @@ namespace HexTecGames.Basics.UI
             {
                 return;
             }
-            foreach (var grid in grids)
+            foreach (DragAndDropGrid grid in grids)
             {
                 if (grid == activeGrid)
                 {
@@ -91,7 +90,7 @@ namespace HexTecGames.Basics.UI
                     HoverGrid.RemoveItem(activeItem);
                     HoverGrid = null;
                 }
-            }           
+            }
         }
     }
 }

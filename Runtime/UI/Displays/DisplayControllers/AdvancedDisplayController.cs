@@ -1,6 +1,4 @@
 using System;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 namespace HexTecGames.Basics.UI
@@ -43,7 +41,7 @@ namespace HexTecGames.Basics.UI
             if (items != null)
             {
                 activeItems = items.Count;
-                foreach (var item in items)
+                foreach (T item in items)
                 {
                     SetupDisplay(SpawnDisplay(), item);
                 }

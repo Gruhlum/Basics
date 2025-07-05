@@ -1,11 +1,9 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 namespace HexTecGames.Basics
 {
     public static class MouseInput
-	{
+    {
         public enum ButtonType { None, Down, Clicked, Up }
         private static bool CheckButton(int btn, ButtonType type)
         {

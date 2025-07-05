@@ -1,6 +1,4 @@
-using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
 using UnityEngine;
 
 namespace HexTecGames.Basics.UIGrid
@@ -47,7 +45,7 @@ namespace HexTecGames.Basics.UIGrid
         public List<Cell<T>> GetCells()
         {
             List<Cell<T>> results = new List<Cell<T>>();
-            foreach (var cell in Cells.Values)
+            foreach (Cell<T> cell in Cells.Values)
             {
                 results.Add(cell);
             }

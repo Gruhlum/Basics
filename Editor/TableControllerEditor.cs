@@ -1,21 +1,17 @@
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-using UnityEditor;
 using HexTecGames.Basics.UI;
+using UnityEditor;
 using UnityEditor.UI;
-using HexTecGames.Basics;
 
 namespace HexTecGames
 {
     [CustomEditor(typeof(TableController), true)]
     public class TableControllerEditor : HorizontalOrVerticalLayoutGroupEditor
     {
-        SerializedProperty orientation;
-        SerializedProperty fitMode;
-        SerializedProperty contentItems;
-        SerializedProperty useHeader;
-        SerializedProperty header;
+        private SerializedProperty orientation;
+        private SerializedProperty fitMode;
+        private SerializedProperty contentItems;
+        private SerializedProperty useHeader;
+        private SerializedProperty header;
 
         protected override void OnEnable()
         {

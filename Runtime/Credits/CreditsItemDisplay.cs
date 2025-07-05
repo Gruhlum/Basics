@@ -1,10 +1,7 @@
 using HexTecGames.Basics.UI;
 using HexTecGames.Basics.UI.Buttons;
-using System.Collections;
-using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
-using Random = UnityEngine.Random;
 
 namespace HexTecGames.Basics.Credits
 {

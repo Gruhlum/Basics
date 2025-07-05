@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using HexTecGames.Basics.UIGrid;
 using UnityEngine;
 
@@ -35,7 +33,7 @@ namespace HexTecGames.Basics
             base.Awake();
             uiGrid = new MultiGrid<T>(GridSettings);
             canvasScaling = parentCanvas.transform.localScale;
-            
+
             if (showGridCells && cellDisplayController != null)
             {
                 cellDisplayController.DisplayCells(uiGrid.GetCells());

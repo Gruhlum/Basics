@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
@@ -32,7 +30,7 @@ namespace HexTecGames.Basics.UI
             if (Grid != null)
             {
                 grid.ItemClicked(rectT);
-            }           
+            }
         }
     }
 }

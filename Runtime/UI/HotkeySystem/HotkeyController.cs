@@ -1,5 +1,4 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -12,9 +11,9 @@ namespace HexTecGames.HotkeySystem
 
         private void Start()
         {
-            var results = FindObjectsOfType<HotkeyUser>(true);
+            HotkeyUser[] results = FindObjectsOfType<HotkeyUser>(true);
 
-            foreach (var result in results)
+            foreach (HotkeyUser result in results)
             {
                 AddHotkey(result);
             }
@@ -22,7 +21,7 @@ namespace HexTecGames.HotkeySystem
 
         private void Update()
         {
-            foreach (var hotkey in hotkeys)
+            foreach (KeyValuePair<KeyCode, Action> hotkey in hotkeys)
             {
                 if (Input.GetKeyDown(hotkey.Key))
                 {

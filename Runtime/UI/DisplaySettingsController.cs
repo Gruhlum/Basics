@@ -1,5 +1,4 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using TMPro;
@@ -7,8 +6,8 @@ using UnityEngine;
 
 namespace HexTecGames.Basics.UI
 {
-	public class DisplaySettingsController : MonoBehaviour
-	{
+    public class DisplaySettingsController : MonoBehaviour
+    {
         [SerializeField] private TMP_Dropdown resDropDown = default;
         [SerializeField] private TMP_Dropdown modeDropDown = default;
 
@@ -17,7 +16,7 @@ namespace HexTecGames.Basics.UI
         private void Start()
         {
             PopulateResolutionDropDown();
-            var option = modeDropDown.options.Find(x => x.text == Screen.fullScreenMode.ToString());
+            TMP_Dropdown.OptionData option = modeDropDown.options.Find(x => x.text == Screen.fullScreenMode.ToString());
             int index = modeDropDown.options.IndexOf(option);
             if (index >= 0)
             {
@@ -54,7 +53,7 @@ namespace HexTecGames.Basics.UI
 
         public void OnResolutionOptionSelected(int value)
         {
-            var option = resDropDown.options[value];
+            TMP_Dropdown.OptionData option = resDropDown.options[value];
             string optionText = option.text;
             int index = optionText.IndexOf('x');
             int width = Convert.ToInt16(optionText.Substring(0, index));

@@ -1,8 +1,5 @@
-using System;
-using System.Collections;
 using System.Collections.Generic;
 using HexTecGames.Basics.UI;
-using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -26,7 +23,7 @@ namespace HexTecGames
             }
 
             List<HorizontalOrVerticalLayoutGroup> layoutGroups = new List<HorizontalOrVerticalLayoutGroup>();
-            foreach (var display in spawner)
+            foreach (MultiTextDisplay display in spawner)
             {
                 layoutGroups.Add(display.GetComponent<HorizontalOrVerticalLayoutGroup>());
             }

@@ -16,18 +16,18 @@ namespace HexTecGames.Basics.UI
 
         private Vector2 m_NextScrollPosition = Vector2.up;
 
-        void OnEnable()
+        private void OnEnable()
         {
             if (m_ScrollRect)
             {
                 m_ScrollRect.content.GetComponentsInChildren(m_Selectables);
             }
         }
-        void Awake()
+        private void Awake()
         {
             m_ScrollRect = GetComponent<ScrollRect>();
         }
-        void Start()
+        private void Start()
         {
             if (m_ScrollRect)
             {
@@ -35,7 +35,7 @@ namespace HexTecGames.Basics.UI
             }
             ScrollToSelected(true);
         }
-        void Update()
+        private void Update()
         {
             // Scroll via input.
             ScrollToSelected(false);
@@ -50,7 +50,7 @@ namespace HexTecGames.Basics.UI
                 m_NextScrollPosition = m_ScrollRect.normalizedPosition;
             }
         }
-        void InputScroll()
+        private void InputScroll()
         {
             Debug.Log(Input.GetAxis("Vertical"));
             if (m_Selectables.Count > 0)
@@ -62,7 +62,7 @@ namespace HexTecGames.Basics.UI
                 }
             }
         }
-        void ScrollToSelected(bool quickScroll)
+        private void ScrollToSelected(bool quickScroll)
         {
             int selectedIndex = -1;
             Selectable selectedElement = EventSystem.current.currentSelectedGameObject ? EventSystem.current.currentSelectedGameObject.GetComponent<Selectable>() : null;

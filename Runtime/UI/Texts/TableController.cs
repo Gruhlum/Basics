@@ -1,5 +1,3 @@
-using System;
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
@@ -50,7 +48,7 @@ namespace HexTecGames.Basics.UI
             {
                 lastCount = contentItems.Count;
             }
-            
+
             contentItems = FindContentItems();
             if (contentItems != null && lastCount != contentItems.Count)
             {
@@ -71,7 +69,7 @@ namespace HexTecGames.Basics.UI
         {
             drivingTracker.Clear();
             DrivenTransformProperties drivenProperties = Orientation == Orientation.Vertical ? DrivenTransformProperties.SizeDeltaX : DrivenTransformProperties.SizeDeltaY;
-            foreach (var item in contentItems)
+            foreach (HorizontalOrVerticalLayoutGroup item in contentItems)
             {
                 for (int i = 0; i < item.transform.childCount; i++)
                 {
@@ -115,7 +113,7 @@ namespace HexTecGames.Basics.UI
 
             if (leader.TryGetComponent(out HorizontalOrVerticalLayoutGroup leaderGroup))
             {
-                foreach (var item in contentItems)
+                foreach (HorizontalOrVerticalLayoutGroup item in contentItems)
                 {
                     if (item != null && item.TryGetComponent(out HorizontalOrVerticalLayoutGroup contentGroup))
                     {
@@ -183,7 +181,7 @@ namespace HexTecGames.Basics.UI
             {
                 float minSize = 0;
 
-                foreach (var item in allItems)
+                foreach (HorizontalOrVerticalLayoutGroup item in allItems)
                 {
                     float result = 0;
                     if (orientation == Orientation.Vertical)

@@ -1,5 +1,4 @@
 ﻿using System.Collections;
-using System.Collections.Generic;
 using HexTecGames.EaseFunctions;
 using UnityEngine;
 using UnityEngine.Serialization;

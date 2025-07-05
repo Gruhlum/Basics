@@ -1,7 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
-using HexTecGames.Basics;
-using TMPro;
 using UnityEngine;
 
 namespace HexTecGames.Basics.UI
@@ -14,7 +10,7 @@ namespace HexTecGames.Basics.UI
         [SerializeField] private Spawner<IconDisplay> iconSpawner = default;
 
         [SerializeField] private TextDataDisplay tooltipDisplay = default;
-        
+
 
         public override void SetItem(TextData item, bool activate = true)
         {
@@ -22,15 +18,15 @@ namespace HexTecGames.Basics.UI
             {
                 DeactivateAll();
 
-                foreach (var display in textSpawner)
+                foreach (SingleTextDisplay display in textSpawner)
                 {
                     RemoveEvents(display);
                 }
-                foreach (var display in multiTextSpawner)
+                foreach (MultiTextDisplay display in multiTextSpawner)
                 {
                     RemoveEvents(display);
                 }
-                foreach (var table in tableSpawner)
+                foreach (TableDisplay table in tableSpawner)
                 {
                     RemoveEvents(table);
                 }
@@ -41,7 +37,7 @@ namespace HexTecGames.Basics.UI
 
         protected override void DrawItem(TextData fullText)
         {
-            foreach (var data in fullText.datas)
+            foreach (object data in fullText.datas)
             {
                 if (data is SingleText singleText)
                 {

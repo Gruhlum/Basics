@@ -1,6 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using TMPro;
+﻿using TMPro;
 using UnityEngine;
 
 namespace HexTecGames.Basics
@@ -26,7 +24,7 @@ namespace HexTecGames.Basics
                 secTimer = 0;
                 textGUI.text = framesSec.ToString();
                 framesSec = 0;
-            }            
+            }
         }
     }
 }

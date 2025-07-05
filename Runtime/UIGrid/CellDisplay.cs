@@ -1,6 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
-using HexTecGames.Basics.UI;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -24,10 +21,10 @@ namespace HexTecGames.Basics.UIGrid
         }
         //protected override void DrawItem(Cell cell)
         //{
-            
+
         //    
         //    //Debug.Log(result);
-           
+
         //    transform.position = result;
         //}
     }

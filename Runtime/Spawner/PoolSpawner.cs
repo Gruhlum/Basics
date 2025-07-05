@@ -63,7 +63,7 @@ namespace HexTecGames.Basics
                 return CreateNewInstance();
             }
 
-            foreach (var instance in Instances)
+            foreach (T instance in Instances)
             {
                 if (!instance.gameObject.activeSelf)
                 {
@@ -77,7 +77,7 @@ namespace HexTecGames.Basics
         {
             List<T> results = new List<T>(amount);
 
-            foreach (var instance in Instances)
+            foreach (T instance in Instances)
             {
                 if (amount > 0)
                 {
@@ -142,7 +142,7 @@ namespace HexTecGames.Basics
             Instances.UnionWith(set);
             if (setParent)
             {
-                foreach (var item in set)
+                foreach (T item in set)
                 {
                     item.transform.SetParent(Parent);
                 }
@@ -159,7 +159,7 @@ namespace HexTecGames.Basics
                 DestroyAll();
             }
 
-            foreach (var instance in Instances)
+            foreach (T instance in Instances)
             {
                 if (instance != null)
                 {
@@ -183,7 +183,7 @@ namespace HexTecGames.Basics
         {
             List<T> toDestroy = new List<T>();
 
-            foreach (var item in Instances)
+            foreach (T item in Instances)
             {
                 if (!item.gameObject.activeSelf)
                 {
@@ -208,7 +208,7 @@ namespace HexTecGames.Basics
         public virtual IEnumerable<T> GetActiveInstances()
         {
             List<T> results = new List<T>();
-            foreach (var instance in Instances)
+            foreach (T instance in Instances)
             {
                 if (instance.gameObject.activeInHierarchy)
                 {

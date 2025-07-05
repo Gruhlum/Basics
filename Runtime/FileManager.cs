@@ -1,8 +1,6 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.IO;
-using System.Security.AccessControl;
 using UnityEngine;
 
 namespace HexTecGames.Basics
@@ -13,10 +11,7 @@ namespace HexTecGames.Basics
         {
             get
             {
-                if (baseDirectory == null)
-                {
-                    baseDirectory = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), Application.productName);
-                }
+                baseDirectory ??= Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), Application.productName);
                 return baseDirectory;
             }
         }
@@ -35,7 +30,7 @@ namespace HexTecGames.Basics
                 return null;
             }
             List<string> fileNames = new List<string>();
-            foreach (var result in paths)
+            foreach (string result in paths)
             {
                 fileNames.Add(GetEndOfPathName(result));
             }
@@ -80,7 +75,7 @@ namespace HexTecGames.Basics
                 Debug.Log("Directory does not exist: " + path);
                 return null;
             }
-            var results = Directory.GetFiles(path);
+            string[] results = Directory.GetFiles(path);
             return GetPathEndObjects(results);
         }
         public static List<string> GetDirectoryNames(string path)
@@ -98,7 +93,7 @@ namespace HexTecGames.Basics
 
             List<List<string>> results = new List<List<string>>();
 
-            foreach (var filePath in filePaths)
+            foreach (string filePath in filePaths)
             {
                 results.Add(ReadFile(filePath));
             }
@@ -187,7 +182,7 @@ namespace HexTecGames.Basics
 
         public static List<string> ReadFile(string fileName, string subFolderName)
         {
-            var filePath = Path.Combine(BaseDirectory, subFolderName, fileName, ".txt");
+            string filePath = Path.Combine(BaseDirectory, subFolderName, fileName, ".txt");
 
             return ReadFile(filePath);
         }
@@ -203,7 +198,7 @@ namespace HexTecGames.Basics
             //VerifyFile(Path.Combine(filePath, fileName + ".txt"));
             using (StreamWriter sw = new StreamWriter(Path.Combine(filePath, fileName + ".txt")))
             {
-                foreach (var line in text)
+                foreach (string line in text)
                 {
                     sw.WriteLine(line);
                 }

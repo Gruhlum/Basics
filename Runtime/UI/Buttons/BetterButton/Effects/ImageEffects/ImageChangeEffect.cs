@@ -1,7 +1,4 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UI;
 
 namespace HexTecGames.Basics.UI.Buttons
 {
@@ -9,11 +6,11 @@ namespace HexTecGames.Basics.UI.Buttons
     public class ImageChangeEffect : ImageEffect
     {
         [SerializeField] private Sprite sprite = default;
-        
+
         private Sprite oldSprite;
 
 
-        
+
 
         public override void Apply()
         {

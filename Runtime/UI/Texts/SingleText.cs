@@ -1,4 +1,3 @@
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -21,7 +20,7 @@ namespace HexTecGames.Basics.UI
         }
         public SingleText(string text, List<string> linkTexts) : this(text)
         {
-            foreach (var linkText in linkTexts)
+            foreach (string linkText in linkTexts)
             {
                 this.linkTexts.Add(new TextData(linkText));
             }

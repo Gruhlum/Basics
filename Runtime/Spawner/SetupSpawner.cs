@@ -1,6 +1,4 @@
-using System.Collections;
 using System.Collections.Generic;
-using HexTecGames.Basics;
 using UnityEngine;
 
 namespace HexTecGames.Basics
@@ -8,7 +6,7 @@ namespace HexTecGames.Basics
     [System.Serializable]
     public class SetupSpawner<T, D> : Spawner<T> where T : Component, ISetup<D>
     {
-        
+
         public T SpawnAndSetup(D data, bool activate = true)
         {
             T t = Spawn(activate);
@@ -18,7 +16,7 @@ namespace HexTecGames.Basics
 
         public List<T> SpawnAndSetup(IList<D> datas, bool activate = true)
         {
-            var results = new List<T>();
+            List<T> results = new List<T>();
             for (int i = 0; i < datas.Count; i++)
             {
                 results.Add(SpawnAndSetup(datas[i], activate));
@@ -28,7 +26,7 @@ namespace HexTecGames.Basics
 
         public List<T> DeactivateAllAndSpawnAndSetup(IList<D> datas, bool activate = true)
         {
-            var results = DeactivateAllAndSpawn(datas.Count, activate);
+            List<T> results = DeactivateAllAndSpawn(datas.Count, activate);
             for (int i = 0; i < results.Count; i++)
             {
                 results[i].Setup(datas[i]);

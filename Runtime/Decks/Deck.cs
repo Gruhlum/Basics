@@ -1,6 +1,4 @@
-using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
 using UnityEngine;
 
 namespace HexTecGames.Basics
@@ -32,7 +30,7 @@ namespace HexTecGames.Basics
         {
             totalItems.Clear();
 
-            foreach (var item in items)
+            foreach (DeckItem<T> item in items)
             {
                 totalItems.Add(item);
             }
@@ -42,7 +40,7 @@ namespace HexTecGames.Basics
 
         public bool HasRollsLeft()
         {
-            foreach (var item in currentItems)
+            foreach (DeckItem<T> item in currentItems)
             {
                 if (item.Tickets > 0)
                 {
@@ -80,7 +78,7 @@ namespace HexTecGames.Basics
         private string GetItemsToString(List<DeckItem<T>> items)
         {
             List<string> totalItemsStrings = new List<string>();
-            foreach (var item in totalItems)
+            foreach (DeckItem<T> item in totalItems)
             {
                 totalItemsStrings.Add(item.ToString());
             }

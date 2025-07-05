@@ -1,6 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
-using HexTecGames.Basics;
 using TMPro;
 using UnityEngine;
 
@@ -14,7 +11,7 @@ namespace HexTecGames.Basics.UI
         {
             highlightSpawner.DeactivateAll();
 
-            var textInfo = textGUI.GetTextInfo(textGUI.text);
+            TMP_TextInfo textInfo = textGUI.GetTextInfo(textGUI.text);
 
             for (int i = 0; i < textInfo.linkCount; i++)
             {

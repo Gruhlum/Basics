@@ -1,6 +1,4 @@
 using System;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 namespace HexTecGames.Basics
@@ -12,12 +10,12 @@ namespace HexTecGames.Basics
         public int y;
         [HideInInspector] public bool isValid;
 
-        public readonly static Coord zero = new Coord(0, 0);
-        public readonly static Coord up = new Coord(0, 1);
-        public readonly static Coord down = new Coord(0, -1);
-        public readonly static Coord left = new Coord(-1, 0);
-        public readonly static Coord right = new Coord(1, 0);
-        public readonly static Coord one = new Coord(1, 1);
+        public static readonly Coord zero = new Coord(0, 0);
+        public static readonly Coord up = new Coord(0, 1);
+        public static readonly Coord down = new Coord(0, -1);
+        public static readonly Coord left = new Coord(-1, 0);
+        public static readonly Coord right = new Coord(1, 0);
+        public static readonly Coord one = new Coord(1, 1);
 
 
 
@@ -50,9 +48,9 @@ namespace HexTecGames.Basics
         }
         public override int GetHashCode()
         {
-            return System.HashCode.Combine(x, y);
+            return HashCode.Combine(x, y);
         }
-        
+
         public void Rotate(Coord center, int rotation)
         {
             if (rotation <= 0)

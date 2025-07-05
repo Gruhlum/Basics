@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -58,7 +56,7 @@ namespace HexTecGames.Basics
             if (active)
             {
                 ResetTime();
-            }           
+            }
         }
         public void ResetTime()
         {
@@ -80,7 +78,7 @@ namespace HexTecGames.Basics
             if (textGUI != null)
             {
                 textGUI.gameObject.SetActive(true);
-            }           
+            }
             img.fillAmount = CalculatePercent(currentTime);
             return currentTime - startTime > TotalTime;
         }

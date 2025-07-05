@@ -1,4 +1,3 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -28,7 +27,7 @@ namespace HexTecGames.Basics
 
             float totalStrength = 0;
 
-            foreach (var colorValue in colorValues)
+            foreach (ColorValue colorValue in colorValues)
             {
                 r += colorValue.color.r * colorValue.strength;
                 g += colorValue.color.g * colorValue.strength;
@@ -53,7 +52,7 @@ namespace HexTecGames.Basics
             }
 
             List<string> colorTexts = new List<string>();
-            foreach (var colorValue in colorValues)
+            foreach (ColorValue colorValue in colorValues)
             {
                 colorTexts.Add(colorValue.ToString());
             }

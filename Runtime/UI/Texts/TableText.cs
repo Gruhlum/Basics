@@ -1,9 +1,6 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using HexTecGames.Basics.UI;
-using UnityEngine;
 
 namespace HexTecGames.Basics.UI
 {
@@ -28,7 +25,7 @@ namespace HexTecGames.Basics.UI
             }
 
             List<string> textDescriptions = new List<string>();
-            foreach (var text in multiTexts)
+            foreach (MultiText text in multiTexts)
             {
                 textDescriptions.Add(text.ToString());
             }

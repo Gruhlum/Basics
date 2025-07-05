@@ -1,7 +1,5 @@
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
 using UnityEditor;
+using UnityEngine;
 
 namespace HexTecGames.Basics.Editor
 {
@@ -27,15 +25,15 @@ namespace HexTecGames.Basics.Editor
         public override void OnGUI(Rect pos, SerializedProperty prop, GUIContent label)
         {
             label = EditorGUI.BeginProperty(pos, label, prop);
-            var contentRect = EditorGUI.PrefixLabel(pos, GUIUtility.GetControlID(FocusType.Passive), label);
-            var labels = new[] { new GUIContent("X"), new GUIContent("Y") };
-            var properties = new[] { prop.FindPropertyRelative("x"), prop.FindPropertyRelative("y") };
+            Rect contentRect = EditorGUI.PrefixLabel(pos, GUIUtility.GetControlID(FocusType.Passive), label);
+            GUIContent[] labels = new[] { new GUIContent("X"), new GUIContent("Y") };
+            SerializedProperty[] properties = new[] { prop.FindPropertyRelative("x"), prop.FindPropertyRelative("y") };
             EditorUtility.DrawMultiplePropertyFields(contentRect, labels, properties);
-            
+
             EditorGUI.EndProperty();
         }
 
 
-        
+
     }
 }

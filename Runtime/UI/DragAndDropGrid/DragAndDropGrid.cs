@@ -1,5 +1,4 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -107,15 +106,15 @@ namespace HexTecGames.Basics.UI
         {
             if (Application.isPlaying)
             {
-                var children = GetChildren();
+                List<RectTransform> children = GetChildren();
                 if (children != null && children.Count > 0)
                 {
-                    foreach (var child in children)
+                    foreach (RectTransform child in children)
                     {
                         AddItem(child);
                     }
                 }
-            }           
+            }
         }
         protected new void OnValidate()
         {
@@ -159,16 +158,16 @@ namespace HexTecGames.Basics.UI
 
         private List<RectTransform> GetChildren()
         {
-            var results = new List<RectTransform>();
+            List<RectTransform> results = new List<RectTransform>();
             for (int i = 0; i < transform.childCount; i++)
             {
-                var result = transform.GetChild(i);
+                Transform result = transform.GetChild(i);
                 if (emptySpaceSpawner.Any(x => x.gameObject == result.gameObject))
                 {
                     continue;
                 }
                 results.Add(result.GetComponent<RectTransform>());
-            }          
+            }
             return results;
         }
         public void RemoveItem(RectTransform rectT)
@@ -187,7 +186,7 @@ namespace HexTecGames.Basics.UI
         }
         public void AddItems(List<RectTransform> items)
         {
-            foreach (var rectT in items)
+            foreach (RectTransform rectT in items)
             {
                 items.Add(rectT);
                 rectT.SetParent(transform);
@@ -242,7 +241,7 @@ namespace HexTecGames.Basics.UI
                     {
                         return Mathf.Min(itemCount, MaxLength);
                     }
-                    else return Mathf.Max((int)((itemCount) / (float)GetRowCount() + 0.99f), MaxLength);
+                    else return Mathf.Max((int)((itemCount / (float)GetRowCount()) + 0.99f), MaxLength);
                 case Constrain.Row:
                     return (MaxLength - 1 + itemCount) / MaxLength;
                 default:
@@ -261,7 +260,7 @@ namespace HexTecGames.Basics.UI
                     {
                         return Mathf.Min(itemCount, MaxLength);
                     }
-                    else return Mathf.Max((int)((itemCount) / (float)GetColumnCount() + 0.99f), MaxLength);
+                    else return Mathf.Max((int)((itemCount / (float)GetColumnCount()) + 0.99f), MaxLength);
                 default:
                     return 0;
             }
@@ -319,7 +318,7 @@ namespace HexTecGames.Basics.UI
                     + new Vector2(padding.left + padding.right, padding.top + padding.bottom);
         }
         private void SpawnEmptySlots()
-        {          
+        {
             emptySpaceSpawner.DestroyAll();
 
             if (!AddEmptySpace)
@@ -364,7 +363,7 @@ namespace HexTecGames.Basics.UI
             //Debug.Log(topRightCorner + " - " + mousePos + " - " + difference);
             //Vector2 difference = mousePos;
             int index = 0;
-            index += Mathf.Min(GetColumnCount(), (int)((difference.x) / TotalSpacingX));
+            index += Mathf.Min(GetColumnCount(), (int)(difference.x / TotalSpacingX));
             index += Mathf.Min(GetRowCount(), (int)(-difference.y / TotalSpacingY)) * MaxLength;
             //index += (int)(-difference.y / TotalSpacingY) * MaxLength;
             //Debug.Log(topRightCorner + " " + mousePos);
@@ -391,8 +390,8 @@ namespace HexTecGames.Basics.UI
             for (int i = 0; i < GetTotalItems(); i++)
             {
                 RectTransform child = rectChildren[i];
-                SetChildAlongAxis(child, 0, TotalSpacingX * posX + padding.left);
-                SetChildAlongAxis(child, 1, TotalSpacingY * posY + padding.top);
+                SetChildAlongAxis(child, 0, (TotalSpacingX * posX) + padding.left);
+                SetChildAlongAxis(child, 1, (TotalSpacingY * posY) + padding.top);
                 if (Constrain == Constrain.Column)
                 {
                     if (posX > MaxLength - 2)

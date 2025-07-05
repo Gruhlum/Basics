@@ -1,6 +1,5 @@
-﻿using HexTecGames.Basics.UI;
-using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using HexTecGames.Basics.UI;
 using TMPro;
 using UnityEngine;
 
@@ -71,7 +70,7 @@ namespace HexTecGames.Basics.Profiles
 
         private void DisplayProfiles()
         {
-            var results = SaveSystem.GetProfiles();
+            List<Profile> results = SaveSystem.GetProfiles();
             profileDisplayC.SetItems(results);
             UpdateCurrentProfileDisplay();
         }

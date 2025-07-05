@@ -1,14 +1,13 @@
-﻿using System.Collections;
+﻿using System;
 using System.Collections.Generic;
-using UnityEngine;
-using System.Linq;
-using HexTecGames.Basics;
-using System;
-using UnityEngine.UI;
-using System.Text;
 using System.IO;
-using UnityEngine.EventSystems;
+using System.Linq;
+using System.Text;
+using HexTecGames.Basics;
 using TMPro;
+using UnityEngine;
+using UnityEngine.EventSystems;
+using UnityEngine.UI;
 
 public static class Extensions
 {
@@ -72,13 +71,13 @@ public static class Extensions
 
     public static void SetSizeDeltaX(this RectTransform rectTransform, float x)
     {
-        var sizeDelta = rectTransform.sizeDelta;
+        Vector2 sizeDelta = rectTransform.sizeDelta;
         sizeDelta.x = x;
         rectTransform.sizeDelta = sizeDelta;
     }
     public static void SetSizeDeltaY(this RectTransform rectTransform, float y)
     {
-        var sizeDelta = rectTransform.sizeDelta;
+        Vector2 sizeDelta = rectTransform.sizeDelta;
         sizeDelta.y = y;
         rectTransform.sizeDelta = sizeDelta;
     }
@@ -415,8 +414,10 @@ public static class Extensions
 
     public static bool DetectUIObject<T>(this GraphicRaycaster raycaster, out T obj, EventSystem eventSys, Vector3 position) where T : Component
     {
-        var m_PointerEventData = new PointerEventData(eventSys);
-        m_PointerEventData.position = position;
+        PointerEventData m_PointerEventData = new PointerEventData(eventSys)
+        {
+            position = position
+        };
 
         List<RaycastResult> results = new List<RaycastResult>();
 
@@ -448,8 +449,10 @@ public static class Extensions
     }
     public static RaycastResult? DetectAnyUIObject(this GraphicRaycaster raycaster, EventSystem eventSys, Vector3 position)
     {
-        var m_PointerEventData = new PointerEventData(eventSys);
-        m_PointerEventData.position = position;
+        PointerEventData m_PointerEventData = new PointerEventData(eventSys)
+        {
+            position = position
+        };
 
         List<RaycastResult> results = new List<RaycastResult>();
 
@@ -468,8 +471,8 @@ public static class Extensions
 
         float tx = v.x;
         float ty = v.y;
-        v.x = cos * tx - sin * ty;
-        v.y = sin * tx + cos * ty;
+        v.x = (cos * tx) - (sin * ty);
+        v.y = (sin * tx) + (cos * ty);
         return v;
     }
 
@@ -486,8 +489,8 @@ public static class Extensions
 
         float tx = v.x;
         float ty = v.y;
-        v.x = cos * tx - sin * ty;
-        v.y = sin * tx + cos * ty;
+        v.x = (cos * tx) - (sin * ty);
+        v.y = (sin * tx) + (cos * ty);
         return v;
     }
     public static Vector3Int Round(this Vector3 v)
@@ -508,13 +511,13 @@ public static class Extensions
     /// <returns></returns>
     public static bool PointInTriangle2D(this Vector2 p, Vector2 t0, Vector2 t1, Vector2 t3)
     {
-        var s = t0.y * t3.x - t0.x * t3.y + (t3.y - t0.y) * p.x + (t0.x - t3.x) * p.y;
-        var t = t0.x * t1.y - t0.y * t1.x + (t0.y - t1.y) * p.x + (t1.x - t0.x) * p.y;
+        float s = (t0.y * t3.x) - (t0.x * t3.y) + ((t3.y - t0.y) * p.x) + ((t0.x - t3.x) * p.y);
+        float t = (t0.x * t1.y) - (t0.y * t1.x) + ((t0.y - t1.y) * p.x) + ((t1.x - t0.x) * p.y);
 
-        if (s < 0 != t < 0)
+        if ((s < 0) != (t < 0))
             return false;
 
-        var A = -t1.y * t3.x + t0.y * (t3.x - t1.x) + t0.x * (t1.y - t3.y) + t1.x * t3.y;
+        float A = (-t1.y * t3.x) + (t0.y * (t3.x - t1.x)) + (t0.x * (t1.y - t3.y)) + (t1.x * t3.y);
 
         return A < 0 ?
             s <= 0 && s + t >= A :
@@ -550,7 +553,7 @@ public static class Extensions
     public static int WrapIndex(this int index, int change, int length)
     {
         int number = index + change;
-        number = number % length;
+        number %= length;
 
         if (number < 0)
         {
@@ -618,7 +621,7 @@ public static class Extensions
 
     public static void Enqueue<T>(this Queue<T> queue, IEnumerable<T> items)
     {
-        foreach (var item in items)
+        foreach (T item in items)
         {
             queue.Enqueue(item);
         }

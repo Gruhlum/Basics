@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -7,7 +5,7 @@ namespace HexTecGames.Basics.UI.Buttons
 {
     [RequireComponent(typeof(Button))]
     public abstract class BaseButton : MonoBehaviour
-	{
+    {
         [SerializeField] private Button btn = default;
 
         protected virtual void Reset()

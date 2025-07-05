@@ -1,7 +1,5 @@
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using UnityEngine;
 
 namespace HexTecGames.Basics.UI
 {
@@ -15,7 +13,7 @@ namespace HexTecGames.Basics.UI
         }
         public MultiText(List<string> texts)
         {
-            foreach (var text in texts)
+            foreach (string text in texts)
             {
                 this.texts.Add(new SingleText(text));
             }
@@ -37,7 +35,7 @@ namespace HexTecGames.Basics.UI
 
             List<string> textDescriptions = new List<string>();
 
-            foreach (var text in texts)
+            foreach (SingleText text in texts)
             {
                 textDescriptions.Add(text.ToString());
             }

@@ -1,4 +1,3 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -6,7 +5,7 @@ namespace HexTecGames.Basics
 {
     public abstract class SerializableCollection<T, I> : ScriptableObjectCollectionBase<I> where T : Object where I : class
     {
-        [SerializeField] private  List<T> items;
+        [SerializeField] private List<T> items;
 
         protected override List<I> Items
         {
@@ -40,7 +39,7 @@ namespace HexTecGames.Basics
                 }
             }
 
-            foreach (var item in items)
+            foreach (T item in items)
             {
                 Items.Add(item as I);
             }

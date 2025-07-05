@@ -1,5 +1,4 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
@@ -189,10 +188,12 @@ namespace HexTecGames.Basics
         }
 
         //Gets all event system raycast results of current mouse or touch position.
-        static List<RaycastResult> GetEventSystemRaycastResults()
+        private static List<RaycastResult> GetEventSystemRaycastResults()
         {
-            PointerEventData eventData = new PointerEventData(EventSystem.current);
-            eventData.position = Input.mousePosition;
+            PointerEventData eventData = new PointerEventData(EventSystem.current)
+            {
+                position = Input.mousePosition
+            };
             List<RaycastResult> raycastResults = new List<RaycastResult>();
             EventSystem.current.RaycastAll(eventData, raycastResults);
             return raycastResults;

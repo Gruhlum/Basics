@@ -1,6 +1,3 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 namespace HexTecGames.Basics.UIGrid
@@ -49,7 +46,7 @@ namespace HexTecGames.Basics.UIGrid
         public Vector2 GetPosition()
         {
             //Debug.Log(ToString());
-            return ( new Vector2(coord.x * Size.x, coord.y * Size.y));
+            return new Vector2(coord.x * Size.x, coord.y * Size.y);
         }
 
         public void SetObject(T obj)

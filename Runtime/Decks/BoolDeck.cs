@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 namespace HexTecGames.Basics.Decks
@@ -8,10 +6,10 @@ namespace HexTecGames.Basics.Decks
     public class BoolDeck : Deck<bool>
     {
 
-        public BoolDeck(float percent) : this( Mathf.RoundToInt(percent * 100))
+        public BoolDeck(float percent) : this(Mathf.RoundToInt(percent * 100))
         { }
 
-        public BoolDeck(int trueCards) : this (trueCards, 100 - trueCards)
+        public BoolDeck(int trueCards) : this(trueCards, 100 - trueCards)
         { }
 
         public BoolDeck(int trueCards, int falseCards) : base(new DeckItem<bool>(true, trueCards), new DeckItem<bool>(false, falseCards))

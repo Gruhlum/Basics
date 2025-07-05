@@ -1,7 +1,5 @@
-﻿using HexTecGames.Basics.UI;
-using System;
-using System.Collections;
-using System.Collections.Generic;
+﻿using System;
+using HexTecGames.Basics.UI;
 using TMPro;
 using UnityEngine;
 using UnityEngine.EventSystems;

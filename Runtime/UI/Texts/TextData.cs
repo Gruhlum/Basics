@@ -1,7 +1,5 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
-using UnityEngine;
 
 namespace HexTecGames.Basics.UI
 {
@@ -17,7 +15,7 @@ namespace HexTecGames.Basics.UI
 
         public TextData(params string[] texts)
         {
-            foreach (var text in texts)
+            foreach (string text in texts)
             {
                 datas.Add(new SingleText(text));
             }
@@ -36,7 +34,7 @@ namespace HexTecGames.Basics.UI
         public override string ToString()
         {
             List<string> allTexts = new List<string>();
-            foreach (var item in datas)
+            foreach (object item in datas)
             {
                 allTexts.Add(item.ToString());
             }

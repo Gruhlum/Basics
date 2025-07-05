@@ -1,11 +1,9 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 namespace HexTecGames.Basics
 {
-	public class AdvancedCursor : Cursor
-	{       
+    public class AdvancedCursor : Cursor
+    {
         public static bool ForceCursorHide
         {
             get

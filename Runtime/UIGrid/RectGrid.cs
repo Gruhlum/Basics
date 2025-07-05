@@ -1,5 +1,3 @@
-using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -36,7 +34,7 @@ namespace HexTecGames.Basics.UIGrid
 
         public override Cell<T> GetEmptyCell()
         {
-            var coord = GetClosestEmptyCell();
+            Coord? coord = GetClosestEmptyCell();
 
             if (coord.HasValue && Cells.TryGetValue(coord.Value, out Cell<T> cell) && cell.spawnable == null)
             {
@@ -58,9 +56,9 @@ namespace HexTecGames.Basics.UIGrid
             }
             List<List<Coord>> coordsToCheck = new List<List<Coord>>();
 
-            var directNeighbours = GetNeighbours(coord);
+            List<Coord> directNeighbours = GetNeighbours(coord);
 
-            foreach (var neigbour in directNeighbours)
+            foreach (Coord neigbour in directNeighbours)
             {
                 if (IsEmpty(neigbour))
                 {
@@ -68,7 +66,7 @@ namespace HexTecGames.Basics.UIGrid
                 }
                 else
                 {
-                    var newList = new List<Coord>() { neigbour };
+                    List<Coord> newList = new List<Coord>() { neigbour };
                     coordsToCheck.Add(newList);
                 }
             }
@@ -85,7 +83,7 @@ namespace HexTecGames.Basics.UIGrid
                     }
                     List<Coord> neighbours = GetNeighbours(coordsToCheck[i]);
                     coordsToCheck[i].Clear();
-                    foreach (var neighbour in neighbours)
+                    foreach (Coord neighbour in neighbours)
                     {
                         if (checkedCells.Contains(neighbour))
                         {
@@ -114,7 +112,7 @@ namespace HexTecGames.Basics.UIGrid
         {
             List<Coord> results = new List<Coord>();
 
-            foreach (var cell in cellsToCheck)
+            foreach (Coord cell in cellsToCheck)
             {
                 results.AddRange(GetNeighbours(cell));
             }
