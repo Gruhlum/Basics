@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -67,7 +68,19 @@ public static class Extensions
         return (float)Convert.ToDouble(text);
     }
 
-
+    /// <summary>
+    /// Rounds a float to an int. 6.7f has a 30% chance to return 6 and a 70% chance to return 7.
+    /// </summary>
+    public static int ChanceRounding(this float value)
+    {
+        int result = Mathf.FloorToInt(value);
+        float remainder = value - result;
+        if (UnityEngine.Random.Range(0f, 1f) < remainder)
+        {
+            result++;
+        }
+        return result;
+    }
 
     public static void SetSizeDeltaX(this RectTransform rectTransform, float x)
     {
@@ -184,6 +197,24 @@ public static class Extensions
     {
         color.a = alpha;
         return color;
+    }
+    public static Color Combine(this IEnumerable<Color> colors)
+    {
+        if (colors == null || colors.Count() <= 0)
+        {
+            return default;
+        }
+
+        Color result = default;
+
+        foreach (var color in colors)
+        {
+            result += color;
+        }
+
+        result /= colors.Count();
+
+        return result;
     }
     #endregion
     public static bool IsSameColor(this Color32 c1, Color32 c2)

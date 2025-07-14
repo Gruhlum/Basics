@@ -2,12 +2,13 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace HexTecGames
+namespace HexTecGames.Basics
 {
     [System.Serializable]
     public class LayerStack<T>
     {
         private int activeElementsIndex = -1;
+        private int activeLayer;
 
         public T ActiveItem
         {
@@ -23,6 +24,7 @@ namespace HexTecGames
         private T activeItem;
 
 
+
         private Dictionary<int, List<T>> items = new Dictionary<int, List<T>>();
 
         public event Action<T> OnActiveItemChanged;
@@ -32,9 +34,18 @@ namespace HexTecGames
         {
         }
 
-        public void Clear()
+        public void ClearLayer(int layer)
+        {
+            if (items.Remove(layer))
+            {
+                FindActiveLayer();
+                UpdateActiveItem();
+            }
+        }
+        public void ClearAll()
         {
             items.Clear();
+            UpdateActiveItem();
         }
         /// <summary>
         /// Adds an item to the stack.
@@ -47,7 +58,14 @@ namespace HexTecGames
             {
                 itemList.Add(item);
             }
-            else items.Add(index, new List<T>() { item });
+            else
+            {
+                items.Add(index, new List<T>() { item });
+                if (activeLayer < index)
+                {
+                    activeLayer = index;
+                }
+            }
             UpdateActiveItem();
         }
         public void Remove(T item, int index)
@@ -58,10 +76,29 @@ namespace HexTecGames
                 if (itemList.Count <= 0)
                 {
                     items.Remove(index);
+                    FindActiveLayer();
                 }
             }
             UpdateActiveItem();
         }
+        private void FindActiveLayer()
+        {
+            int? highestKey = default;
+
+            foreach (var item in items)
+            {
+                if (item.Value.Count <= 0)
+                {
+                    continue;
+                }
+                if (!highestKey.HasValue || item.Key > highestKey)
+                {
+                    highestKey = item.Key;
+                }
+            }
+            activeLayer = highestKey.Value;
+        }
+
         private void UpdateActiveItem()
         {
             T result = FindActiveItem();
@@ -87,21 +124,24 @@ namespace HexTecGames
             {
                 return default;
             }
-            int highestKey = items.Keys.Max();
 
-            if (!items.TryGetValue(highestKey, out List<T> itemList))
+            if (!items.TryGetValue(activeLayer, out List<T> results))
             {
                 return default;
             }
 
-            if (itemList.Count <= 0)
+            if (results.Count <= 0)
             {
                 return default;
             }
 
             activeElementsIndex = GetActiveItemIndex();
 
-            return itemList[activeElementsIndex];
+            return GetActiveItem(results);
+        }
+        protected virtual T GetActiveItem(List<T> results)
+        {
+            return results[activeElementsIndex];
         }
 
         private int GetActiveItemIndex()

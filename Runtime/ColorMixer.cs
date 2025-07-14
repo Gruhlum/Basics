@@ -20,24 +20,16 @@ namespace HexTecGames.Basics
 
         public Color Mix()
         {
-            float r = 0;
-            float g = 0;
-            float b = 0;
-            float a = 0;
-
+            Color result = Color.clear;
             float totalStrength = 0;
 
             foreach (ColorValue colorValue in colorValues)
             {
-                r += colorValue.color.r * colorValue.strength;
-                g += colorValue.color.g * colorValue.strength;
-                b += colorValue.color.b * colorValue.strength;
-                a += colorValue.color.a * colorValue.strength;
-
+                result += colorValue.color * colorValue.strength;
                 totalStrength += colorValue.strength;
             }
 
-            return new Color(r / totalStrength, g / totalStrength, b / totalStrength, a / totalStrength);
+            return result / totalStrength;
         }
         public void Reset()
         {
