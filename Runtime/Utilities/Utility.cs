@@ -59,6 +59,10 @@ namespace HexTecGames
             return result.ToString();
         }
 
+        public static Color GenerateRandomColor()
+        {
+            return GenerateRandomColor(Random.Range(0f, 1f));
+        }
         public static Color GenerateRandomColor(float intensity)
         {
             int rngColor = Random.Range(0, 3);
