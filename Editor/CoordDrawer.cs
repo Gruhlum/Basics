@@ -22,12 +22,12 @@ namespace HexTecGames.Basics.Editor
 
 
 
-        public override void OnGUI(Rect pos, SerializedProperty prop, GUIContent label)
+        public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
         {
-            label = EditorGUI.BeginProperty(pos, label, prop);
-            Rect contentRect = EditorGUI.PrefixLabel(pos, GUIUtility.GetControlID(FocusType.Passive), label);
+            label = EditorGUI.BeginProperty(position, label, property);
+            Rect contentRect = EditorGUI.PrefixLabel(position, GUIUtility.GetControlID(FocusType.Passive), label);
             GUIContent[] labels = new[] { new GUIContent("X"), new GUIContent("Y") };
-            SerializedProperty[] properties = new[] { prop.FindPropertyRelative("x"), prop.FindPropertyRelative("y") };
+            SerializedProperty[] properties = new[] { property.FindPropertyRelative("x"), property.FindPropertyRelative("y") };
             EditorUtility.DrawMultiplePropertyFields(contentRect, labels, properties);
 
             EditorGUI.EndProperty();

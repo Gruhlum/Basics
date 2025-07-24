@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace HexTecGames.Basics.UI
+namespace HexTecGames.Basics.UI.DragAndDropGrid
 {
     public class GridController : MonoBehaviour
     {

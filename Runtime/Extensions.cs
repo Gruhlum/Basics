@@ -81,7 +81,34 @@ public static class Extensions
         }
         return result;
     }
-
+    public static float Apply(this MathMode mode, float input, float value)
+    {
+        switch (mode)
+        {
+            case MathMode.Multiply:
+                return input *= value;
+            case MathMode.Add:
+                return input += value;
+            case MathMode.Set:
+                return value;
+            default:
+                return 0;
+        }
+    }
+    public static char GetChar(this MathMode mode)
+    {
+        switch (mode)
+        {
+            case MathMode.Multiply:
+                return '*';
+            case MathMode.Add:
+                return '+';
+            case MathMode.Set:
+                return '=';
+            default:
+                return 'E';
+        }
+    }
     public static void SetSizeDeltaX(this RectTransform rectTransform, float x)
     {
         Vector2 sizeDelta = rectTransform.sizeDelta;
@@ -379,6 +406,15 @@ public static class Extensions
     }
     #endregion
 
+    public static void Add<T>(this SortedList<int, List<T>> list, int order, T item)
+    {
+        if (list.TryGetValue(order, out List<T> result))
+        {
+            result.Add(item);
+        }
+        else list.Add(order, new List<T>() { item });
+    }
+
     /// <summary>
     /// Tries to find the closest Component. Order is Transform -> Parent -> Children
     /// </summary>
@@ -524,6 +560,18 @@ public static class Extensions
         v.y = (sin * tx) + (cos * ty);
         return v;
     }
+    public static float InverseLerpUnclamped(this Vector3 input, Vector3 start, Vector3 end)
+    {
+        float totalDistance = Vector3.Distance(start, end);
+        float currentDistance = Vector3.Distance(input, start);
+        return currentDistance / totalDistance;
+    }
+    public static float InverseLerp(this Vector3 input, Vector3 start, Vector3 end)
+    {
+        float totalDistance = Vector3.Distance(start, end);
+        float currentDistance = Vector3.Distance(input, end);
+        return Mathf.Clamp01(currentDistance / totalDistance);
+    }
     public static Vector3Int Round(this Vector3 v)
     {
         return new Vector3Int(Mathf.RoundToInt(v.x), Mathf.RoundToInt(v.y), Mathf.RoundToInt(v.z));
@@ -603,7 +651,7 @@ public static class Extensions
         builder.Append(input.Substring(0, 1).ToUpper());
         if (input.Length > 1)
         {
-            builder.Append(input.Substring(1, input.Length - 1));
+            builder.Append(input.Substring(1));
         }
         return builder.ToString();
     }

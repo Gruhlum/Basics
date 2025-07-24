@@ -1,7 +1,7 @@
 using UnityEngine;
 using UnityEngine.EventSystems;
 
-namespace HexTecGames.Basics.UI
+namespace HexTecGames.Basics.UI.DragAndDropGrid
 {
     public class DragAndDropItem : MonoBehaviour, IPointerDownHandler
     {

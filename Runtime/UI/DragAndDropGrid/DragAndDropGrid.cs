@@ -4,7 +4,7 @@ using System.Linq;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace HexTecGames.Basics.UI
+namespace HexTecGames.Basics.UI.DragAndDropGrid
 {
     public enum Constrain { Column, Row };
     public enum ControlMode { Calculations, Buttons }

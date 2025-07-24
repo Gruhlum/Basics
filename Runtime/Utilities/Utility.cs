@@ -101,5 +101,10 @@ namespace HexTecGames
             }
             return stringBuilder.ToString();
         }
+
+        public static bool Coinflip()
+        {
+            return Random.Range(0, 2) == 0;
+        }
     }
 }
