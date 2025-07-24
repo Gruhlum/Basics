@@ -33,22 +33,19 @@ namespace HexTecGames.Basics.Editor
             EditorGUILayout.LabelField("Total Folders:", folderPaths.Count.ToString());
             EditorGUILayout.LabelField("Has Changes:", hasChangesPaths.Count.ToString());
 
-            if (folderPaths.Count <= 0 || hasChangesPaths.Count <= 0)
+            if (GUILayout.Button("Check", GUILayout.Height(30)))
             {
-                if (GUILayout.Button("Check", GUILayout.Height(30)))
-                {
-                    GetSubFolders();
-                }
+                GetSubFolders();
             }
-            else
+
+            if (folderPaths.Count > 0 && hasChangesPaths.Count > 0)
             {
                 if (GUILayout.Button("Start", GUILayout.Height(30)))
                 {
-                    string result  = Run();
+                    string result = Run();
                     EditorGUILayout.HelpBox(result, MessageType.Info);
                 }
             }
-            
         }
 
         private static void GetSubFolders()
