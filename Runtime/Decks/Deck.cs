@@ -56,22 +56,23 @@ namespace HexTecGames.Basics
 
         public T GetNext()
         {
-            if (currentItems.Count == 0)
+            if (currentItems.Count <= 0)
             {
                 GenerateDeck();
             }
-            DeckItem<T> deck = ITicket.Roll(currentItems);
-            if (deck == null)
+            DeckItem<T> deckItem = ITicket.Roll(currentItems);
+            if (deckItem == null)
             {
-                Debug.Log("No Deck available!");
+                Debug.Log("No Item available!");
                 return default;
             }
-            deck.Tickets--;
-            if (deck.Tickets <= 0)
+            deckItem.Tickets--;
+            if (deckItem.Tickets <= 0)
             {
-                currentItems.Remove(deck);
+                currentItems.Remove(deckItem);
+                Debug.Log("Removing: " + deckItem.item.ToString());
             }
-            return deck.item;
+            return deckItem.item;
         }
 
 
