@@ -466,6 +466,26 @@ public static class Extensions
         return null;
     }
 
+    public static List<T> GetComponentsInChildrenOnly<T>(this Transform transform, bool includeInactive = false) where T : Component
+    {
+        List<T> results = new List<T>();
+
+        for (int i = 0; i < transform.childCount; i++)
+        {
+            Transform child = transform.GetChild(i);
+            if (!includeInactive && !child.gameObject.activeSelf)
+            {
+                continue;
+            }
+            T result = child.GetComponent<T>();
+            if (result != null)
+            {
+                results.Add(result);
+            }
+        }
+        return results;
+    }
+
     public static bool DetectUIObject<T>(this GraphicRaycaster raycaster, out T obj) where T : Component
     {
         return raycaster.DetectUIObject(out obj, EventSystem.current, Input.mousePosition);
