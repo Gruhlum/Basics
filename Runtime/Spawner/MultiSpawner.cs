@@ -35,7 +35,7 @@ namespace HexTecGames.Basics
         /// </summary>
         /// <param name="prefab">Prefab to instantiate.</param>
         /// <returns></returns>
-        public T Spawn<T>(T prefab) where T : Component
+        public T Spawn<T>(T prefab, bool activate = true) where T : Component
         {
             if (prefab == null)
             {
@@ -43,7 +43,10 @@ namespace HexTecGames.Basics
             }
 
             T instance = GetEmptyInstance(prefab);
-            instance.gameObject.SetActive(true);
+            if (activate)
+            {
+                instance.gameObject.SetActive(true);
+            }
             return instance;
         }
         private T GetEmptyInstance<T>(T prefab) where T : Component
@@ -52,21 +55,35 @@ namespace HexTecGames.Basics
             {
                 if (set.Count == 0)
                 {
+                    Debug.Log(set.Count + " - " + prefab);
                     return CreateNewCopy(prefab, set);
                 }
 
-                Component result = set.First(x => !x.gameObject.activeSelf);
+                Component result = set.FirstOrDefault(x => !x.gameObject.activeSelf);
                 if (result != null)
                 {
                     return result as T;
                 }
                 else return CreateNewCopy(prefab, set);
             }
-            else return CreateNewCopy(prefab, new HashSet<Component>());
+            else
+            {
+                set = CreateHashSet(prefab);
+                return CreateNewCopy(prefab, set);
+            }
+
         }
+
+        private HashSet<Component> CreateHashSet<T>(T prefab) where T : Component
+        {
+            HashSet<Component> newSet = new HashSet<Component>();
+            instances.Add(prefab, newSet);
+            return newSet;
+        }
+
         private T CreateNewCopy<T>(T prefab, HashSet<Component> set) where T : Component
         {
-            T instance = UnityEngine.Object.Instantiate(prefab, Parent);
+            T instance = Object.Instantiate(prefab, Parent);
             set.Add(instance);
             return instance;
         }
