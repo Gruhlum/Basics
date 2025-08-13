@@ -31,7 +31,7 @@ namespace HexTecGames.Basics.UI
             {
                 return slider.maxValue;
             }
-            private set
+            set
             {
                 slider.maxValue = value;
             }
@@ -149,7 +149,15 @@ namespace HexTecGames.Basics.UI
         {
             SetValueInstantly(TargetValue + value);
         }
-        public void SetValue(float value)
+        public void SetValue(float value, bool instantly = false)
+        {
+            if (instantly)
+            {
+                SetValueInstantly(value);
+            }
+            else SetValue(value);
+        }
+        private void SetValue(float value)
         {
             if (animationCoroutine != null)
             {
@@ -166,7 +174,22 @@ namespace HexTecGames.Basics.UI
 
             animationCoroutine = StartCoroutine(Animate());
         }
-
+        private void SetValueInstantly(float value)
+        {
+            if (animationCoroutine != null) StopCoroutine(animationCoroutine);
+            if (overflow == OverflowType.Repeat)
+            {
+                if (value > MaxValue)
+                {
+                    TotalRepeats = Mathf.FloorToInt(value / MaxValue);
+                    value %= MaxValue;
+                }
+            }
+            else value = Mathf.Min(MaxValue, value);
+            totalValue = value;
+            SliderValue = value;
+            TargetValue = value;
+        }
         public float GetPercentProgress(float value)
         {
             return value / MaxValue;
@@ -193,22 +216,7 @@ namespace HexTecGames.Basics.UI
             }
         }
 
-        public void SetValueInstantly(float value)
-        {
-            if (animationCoroutine != null) StopCoroutine(animationCoroutine);
-            if (overflow == OverflowType.Repeat)
-            {
-                if (value > MaxValue)
-                {
-                    TotalRepeats = Mathf.FloorToInt(value / MaxValue);
-                    value %= MaxValue;
-                }
-            }
-            else value = Mathf.Min(MaxValue, value);
-            totalValue = value;
-            SliderValue = value;
-            TargetValue = value;
-        }
+
 
         private IEnumerator Animate()
         {
