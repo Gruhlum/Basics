@@ -8,21 +8,21 @@ namespace HexTecGames.Basics.UI.Tests
 {
     public class ProgressBarTester : AdvancedBehaviour
     {
-        [SerializeField] private BetterProgressBar betterProgressBar = default;
+        [SerializeField] private ProgressBarAnimator progressBarAnimator = default;
 
         private void Update()
         {
             if (Input.GetKeyDown(KeyCode.Q))
             {
-                betterProgressBar.AddValue(2200);
+                progressBarAnimator.AddValue(50);
             }
             if (Input.GetKeyDown(KeyCode.W))
             {
-                betterProgressBar.AddValue(50);
+                progressBarAnimator.AddValue(100);
             }
             if (Input.GetKeyDown(KeyCode.E))
             {
-                betterProgressBar.AddValue(300);
+                progressBarAnimator.AddValue(150);
             }
         }
     }

@@ -166,8 +166,8 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents:
     - targetCorrespondingSourceObject: {fileID: 1082160640983468658, guid: bb15e394e5abb38499466a9c734a1613, type: 3}
-      insertIndex: 1
-      addedObject: {fileID: 2037875775591548415}
+      insertIndex: -1
+      addedObject: {fileID: 1816632029626831606}
   m_SourcePrefab: {fileID: 100100000, guid: bb15e394e5abb38499466a9c734a1613, type: 3}
 --- !u!114 &2647701921592666393 stripped
 MonoBehaviour:
@@ -185,7 +185,7 @@ GameObject:
   m_CorrespondingSourceObject: {fileID: 1082160640983468658, guid: bb15e394e5abb38499466a9c734a1613, type: 3}
   m_PrefabInstance: {fileID: 2366301184410572353}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &2037875775591548415
+--- !u!114 &1816632029626831606
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -194,8 +194,18 @@ MonoBehaviour:
   m_GameObject: {fileID: 3445905988599307315}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 046bd1137f3bec14fae306f7083b89ea, type: 3}
+  m_Script: {fileID: 11500000, guid: 99a18521a23b6f2498fc849a7fc9bcb9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   slider: {fileID: 2647701921592666393}
-  speed: 10
+  sliderEasing:
+    easingType: 0
+    functionType: 0
+  animationEasing:
+    easingType: 0
+    functionType: 0
+  animationSpeed: 5
+  overflow: 0
+  waitTimeOnOverflow: 0.1
+  flatIncreasePerLevel: 10
+  expoIncreasePerLevel: 0.1
