@@ -18,8 +18,7 @@ namespace HexTecGames.Basics
         }
         [SerializeField, SerializeReference] private List<T> items = new List<T>();
 
-
-
+        public int TotalItems => items.Count;
 
         //public T FindItem(string name)
         //{
