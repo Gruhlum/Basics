@@ -48,17 +48,32 @@ namespace HexTecGames.Basics.UI
             slider.maxValue = maxTime;
         }
 
+        public void ResetTimer()
+        {
+            targetTime = 0;
+            RawTime = 0;
+        }
+        public void SetTime(float time)
+        {
+            targetTime = time;
+            RawTime = time;
+            this.enabled = false;
+        }
         public void AddTime(float time)
         {
-            startTime = RawTime;
             targetTime += time;
             stepLength = time;
+            startTime = RawTime;
             stepTimer = 0;
             this.enabled = true;
         }
 
         private void Update()
         {
+            if (RawTime >= slider.maxValue)
+            {
+                return;
+            }
             stepTimer += Time.deltaTime;
             RawTime = Mathf.Lerp(startTime, targetTime, animationEasing.GetValue(stepTimer / stepLength));
         }

@@ -161,7 +161,7 @@ namespace HexTecGames.Basics.UI
             float percentChange = (targetValue - startValue) / MaxValue;
             float duration = 1f / animationSpeed * Mathf.Abs(percentChange);
             float timer = 0;
-            Debug.Log($"{nameof(startValue)} {startValue} + {nameof(targetValue)} {targetValue}");
+            //Debug.Log($"{nameof(startValue)} {startValue} + {nameof(targetValue)} {targetValue}");
             while (timer < duration)
             {
                 timer += Time.deltaTime;
