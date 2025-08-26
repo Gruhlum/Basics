@@ -141,7 +141,6 @@ namespace HexTecGames.Basics.UI
                 animatedRepeats++;
                 yield return new WaitForSeconds(waitTimeOnOverflow);
                 RawSliderValue = 0;
-                Debug.Log("here!");
                 if (overflow == OverflowType.Increase)
                 {
                     MaxValue = CalculateRequiredPoints(animatedRepeats);

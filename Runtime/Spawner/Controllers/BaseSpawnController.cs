@@ -14,7 +14,18 @@ namespace HexTecGames.Basics
 
         protected virtual void Awake()
         {
+            Spawner.RemoveEmptyElements();
+            if (OnObjectRequested != null && OnObjectRequested.GetInvocationList().Length > 0)
+            {
+                Debug.LogWarning("Event already has a listener. Probably multiple SpawnControllers in the scene!");
+                return;
+            }
             OnObjectRequested += SpawnController_OnObjectRequested;
+        }
+
+        private void OnDestroy()
+        {
+            Spawner.DestroyAll();
         }
 
         private T SpawnController_OnObjectRequested()
@@ -22,7 +33,7 @@ namespace HexTecGames.Basics
             return Spawner.Spawn();
         }
 
-        public static T SpawnObject()
+        public static T Spawn()
         {
             return OnObjectRequested?.Invoke();
         }

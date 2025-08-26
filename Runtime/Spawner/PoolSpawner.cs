@@ -173,11 +173,13 @@ namespace HexTecGames.Basics
         /// </summary>
         public void RemoveEmptyElements()
         {
+            Debug.Log(Instances.Count);
             Instances.RemoveWhere(x => x == null);
+            Debug.Log(Instances.Count);
         }
 
         /// <summary>
-        /// Destroys any inactive instances;
+        /// Destroys any inactive instances.
         /// </summary>
         public void DestroyUnused()
         {

@@ -10,11 +10,12 @@ namespace HexTecGames.Basics.UI
     [RequireComponent(typeof(Slider))]
     public class SliderAnimator : AdvancedBehaviour
     {
-        [SerializeField] protected Slider slider = default;
+        [InspectorOrder(0, "References")][SerializeField] protected Slider slider = default;
 
-        [SerializeField] private EaseFunction sliderEasing = default;
-        [SerializeField] private EaseFunction animationEasing = default;
-        [SerializeField] private float animationSpeed = 5f;
+        [Space][SerializeField] protected EaseFunction sliderEasing = default;
+        [SerializeField] protected EaseFunction animationEasing = default;
+        [SerializeField] protected float animationSpeed = 5f;
+        [SerializeField] private bool fixedDuration = default;
 
         public float MinValue
         {
@@ -59,8 +60,7 @@ namespace HexTecGames.Basics.UI
             protected set
             {
                 rawSliderValue = value;
-                float percent = value / MaxValue;
-                float progress = sliderEasing.GetValue(percent);
+                float progress = sliderEasing.GetValue(value / MaxValue);
                 SliderValue = progress * MaxValue;
                 //slider.SetValueWithoutNotify(value);
             }
@@ -156,11 +156,21 @@ namespace HexTecGames.Basics.UI
             animationCoroutine = null;
         }
 
-        protected IEnumerator AnimateFilling(float startValue, float targetValue)
+        protected virtual IEnumerator AnimateFilling(float startValue, float targetValue)
         {
-            float percentChange = (targetValue - startValue) / MaxValue;
-            float duration = 1f / animationSpeed * Mathf.Abs(percentChange);
+            float duration;
             float timer = 0;
+            if (fixedDuration)
+            {
+                duration = 1 / animationSpeed;
+            }
+            else
+            {
+                float percentChange = (targetValue - startValue) / MaxValue;
+                duration = 1f / animationSpeed * Mathf.Abs(percentChange);
+                
+            }
+
             //Debug.Log($"{nameof(startValue)} {startValue} + {nameof(targetValue)} {targetValue}");
             while (timer < duration)
             {

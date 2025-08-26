@@ -4,20 +4,21 @@ using HexTecGames.Basics;
 using UnityEngine;
 
 namespace HexTecGames.Basics.UI.Sliders.Tests
-{    
-    public class SliderTester : AdvancedBehaviour
+{
+    public class HealthbarTester : AdvancedBehaviour
     {
-        [SerializeField] private SliderAnimator sliderAnimator = default;
+        [SerializeField] private HealthbarAnimator healthbar = default;
+
 
         private void Update()
         {
             if (Input.GetKeyDown(KeyCode.A))
             {
-                sliderAnimator.AddValue(-50);
+                healthbar.AddValue(-20);
             }
             if (Input.GetKeyDown(KeyCode.S))
             {
-                sliderAnimator.AddValue(50);
+                healthbar.AddValue(50);
             }
         }
     }

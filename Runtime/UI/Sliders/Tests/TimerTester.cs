@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using HexTecGames.Basics;
 using UnityEngine;
 
-namespace HexTecGames.Basics.UI.Sliderss
+namespace HexTecGames.Basics.UI.Sliders.Tests
 {    
     public class TimerTester : AdvancedBehaviour
     {
