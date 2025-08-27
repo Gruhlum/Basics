@@ -1,10 +1,11 @@
 using System;
 using System.Collections.Generic;
+using HexTecGames.Basics;
 using UnityEngine;
 
 namespace HexTecGames.HotkeySystem
 {
-    public class HotkeyController : MonoBehaviour
+    public class HotkeyController : AdvancedBehaviour
     {
         private Dictionary<KeyCode, Action> hotkeys = new Dictionary<KeyCode, Action>();
         private int numberHotkeyCount;

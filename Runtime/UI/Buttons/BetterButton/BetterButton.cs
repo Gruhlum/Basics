@@ -13,14 +13,6 @@ namespace HexTecGames.Basics.UI.Buttons
 		 * - change text
 		 * - change color
 		 * - change sprite
-		 * 
-		 * 
-		 * 
-		 * 
-		 * 
-		 * 
-		 * 
-		 * 
 		 */
 
 
