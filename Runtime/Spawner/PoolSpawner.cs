@@ -173,9 +173,7 @@ namespace HexTecGames.Basics
         /// </summary>
         public void RemoveEmptyElements()
         {
-            Debug.Log(Instances.Count);
             Instances.RemoveWhere(x => x == null);
-            Debug.Log(Instances.Count);
         }
 
         /// <summary>
@@ -203,6 +201,7 @@ namespace HexTecGames.Basics
         /// </summary>
         public override void DestroyAll()
         {
+            Debug.Log("DESTROY ALL!");
             base.DestroyAll();
             Instances.Clear();
         }

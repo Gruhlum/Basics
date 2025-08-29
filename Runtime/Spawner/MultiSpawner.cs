@@ -150,9 +150,10 @@ namespace HexTecGames.Basics
             {
                 foreach (Component component in set)
                 {
-                    UnityEngine.Object.Destroy(component);
+                    Object.Destroy(component);
                 }
             }
+            instances.Clear();
         }
     }
 }

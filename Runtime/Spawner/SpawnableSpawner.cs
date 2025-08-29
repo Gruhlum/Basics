@@ -54,7 +54,11 @@ namespace HexTecGames.Basics
         {
             return activeInstances;
         }
-
+        public override void DestroyAll()
+        {
+            deactivatedInstances.Clear();
+            base.DestroyAll();
+        }
         protected override T GetEmptyInstance()
         {
             if (deactivatedInstances.Count > 0)
