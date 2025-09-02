@@ -12,5 +12,10 @@ namespace HexTecGames.Basics
             }
         }
         [SerializeField] private Spawner<T> spawner = default;
+
+        //public void PrintInstanceCount()
+        //{
+        //    Debug.Log(Spawner.TotalInstances());
+        //}
     }
 }

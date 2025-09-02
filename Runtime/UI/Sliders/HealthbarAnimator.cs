@@ -34,6 +34,14 @@ namespace HexTecGames.Basics.UI.Sliders
             }
         }
 
+        protected override void SetValueInstantly(float value)
+        {
+            base.SetValueInstantly(value);
+            float progress = sliderEasing.GetValue(value / MaxValue);
+            backgroundFill.fillAmount = progress;
+            foregroundFill.fillAmount = progress;
+        }
+
         protected override void SetValue(float value)
         {
             float progress = sliderEasing.GetValue(value / MaxValue);
@@ -49,34 +57,8 @@ namespace HexTecGames.Basics.UI.Sliders
                 foregroundFill.fillAmount = progress;
                 backgroundFill.fillAmount = 0;
                 centerFill.color = damageColor;
-                //RawSliderValue = TargetValue;
             }
-           
-            //SetTargetValue(value);
-            //if (animationCoroutine == null)
-            //{
-            //    animationCoroutine = StartCoroutine(Animate());
-            //}
             base.SetValue(value);
         }
-
-        //protected override IEnumerator AnimateFilling(float startValue, float targetValue)
-        //{
-        //    float percentChange = (TargetValue - startValue) / MaxValue;
-        //    float duration = 1f / animationSpeed * Mathf.Abs(percentChange);
-        //    float timer = 0;
-
-        //    //Debug.Log($"{nameof(startValue)} {startValue} + {nameof(targetValue)} {targetValue}");
-        //    while (timer < duration)
-        //    {
-        //        timer += Time.deltaTime;
-        //        float progress = Mathf.Clamp01(timer / duration);
-        //        float easedProgress = animationEasing.GetValue(progress);
-        //        //Debug.Log($"{nameof(progress)} {progress} + {nameof(easedProgress)} {easedProgress}");
-        //        RawSliderValue = Mathf.LerpUnclamped(startValue, TargetValue, easedProgress);
-        //        yield return null;
-        //    }
-        //    RawSliderValue = TargetValue;
-        //}
     }
 }

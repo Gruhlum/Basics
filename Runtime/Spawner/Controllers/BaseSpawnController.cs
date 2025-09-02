@@ -25,6 +25,7 @@ namespace HexTecGames.Basics
 
         private void OnDestroy()
         {
+            OnObjectRequested -= SpawnController_OnObjectRequested;
             Spawner.DestroyAll();
         }
 

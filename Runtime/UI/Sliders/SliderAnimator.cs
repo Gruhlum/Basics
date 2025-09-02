@@ -62,7 +62,6 @@ namespace HexTecGames.Basics.UI
                 rawSliderValue = value;
                 float progress = sliderEasing.GetValue(value / MaxValue);
                 SliderValue = progress * MaxValue;
-                //slider.SetValueWithoutNotify(value);
             }
         }
         private float rawSliderValue;
@@ -133,7 +132,7 @@ namespace HexTecGames.Basics.UI
         }
         protected virtual void SetTargetValueInstantly(float value)
         {
-            SliderValue = value;
+            RawSliderValue = value;
             TargetValue = value;
         }
         protected virtual void SetValueInstantly(float value)
@@ -168,7 +167,6 @@ namespace HexTecGames.Basics.UI
             {
                 float percentChange = (targetValue - startValue) / MaxValue;
                 duration = 1f / animationSpeed * Mathf.Abs(percentChange);
-                
             }
 
             //Debug.Log($"{nameof(startValue)} {startValue} + {nameof(targetValue)} {targetValue}");

@@ -201,7 +201,7 @@ namespace HexTecGames.Basics
         /// </summary>
         public override void DestroyAll()
         {
-            Debug.Log("DESTROY ALL!");
+            //Debug.Log("DESTROY ALL!");
             base.DestroyAll();
             Instances.Clear();
         }
