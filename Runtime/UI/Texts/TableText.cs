@@ -9,6 +9,11 @@ namespace HexTecGames.Basics.UI
     {
         public List<MultiText> multiTexts = new List<MultiText>();
 
+
+        public TableText() { }
+        public TableText(params string[] texts) : this(new MultiText(texts))
+        {
+        }
         public TableText(List<MultiText> multiTexts)
         {
             this.multiTexts = multiTexts;
