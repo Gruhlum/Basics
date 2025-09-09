@@ -43,6 +43,13 @@ namespace HexTecGames.Basics
             }
 
             T instance = GetEmptyInstance(prefab);
+
+            if (instance == null)
+            {
+                Debug.Log("Should not happen! " + (instance is null));
+                return null;
+            }
+
             if (activate)
             {
                 instance.gameObject.SetActive(true);
@@ -146,6 +153,7 @@ namespace HexTecGames.Basics
         /// </summary>
         public void DestroyAll()
         {
+            Debug.Log("Destroy All!");
             foreach (HashSet<Component> set in instances.Values)
             {
                 foreach (Component component in set)

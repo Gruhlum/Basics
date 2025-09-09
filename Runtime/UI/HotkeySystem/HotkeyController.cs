@@ -33,11 +33,11 @@ namespace HexTecGames.HotkeySystem
 
         public void AddNextNumberHotkey(Action action)
         {
-            if (numberHotkeyCount >= SimpleHotkeys.alphaKeycodes.Length)
+            if (numberHotkeyCount >= SimpleHotkeys.alphaKeyCodes.Length)
             {
                 return;
             }
-            AddHotkey(SimpleHotkeys.alphaKeycodes[numberHotkeyCount], action);
+            AddHotkey(SimpleHotkeys.alphaKeyCodes[numberHotkeyCount], action);
             numberHotkeyCount++;
         }
 
