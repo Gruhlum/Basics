@@ -22,6 +22,11 @@ namespace HexTecGames.Basics
         /// <param name="activate">Sets the gameObject active</param>
 
 
+        public virtual T Spawn (T prefab, bool activate = true)
+        {
+            this.Prefab = prefab;
+            return Spawn(activate);
+        }
         public virtual T Spawn(bool activate = true)
         {
             if (Prefab == null)

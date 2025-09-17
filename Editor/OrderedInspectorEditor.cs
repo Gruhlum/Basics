@@ -14,6 +14,10 @@ namespace HexTecGames.Basics.Editor
 
         private void OnEnable()
         {
+            if (target == null)
+            {
+                return;
+            }
             groupedProperties = new Dictionary<string, List<SerializedPropertyWrapper>>();
             var iterator = serializedObject.GetIterator();
             iterator.NextVisible(true); // Skip script reference

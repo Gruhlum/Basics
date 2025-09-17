@@ -66,6 +66,14 @@ namespace HexTecGames.Basics
                     return CreateNewCopy(prefab, set);
                 }
 
+                foreach (var item in set)
+                {
+                    if (item == null)
+                    {
+                        Debug.Log("HEEEE " + set.Count);
+                    }
+                }
+
                 Component result = set.FirstOrDefault(x => !x.gameObject.activeSelf);
                 if (result != null)
                 {
@@ -78,7 +86,6 @@ namespace HexTecGames.Basics
                 set = CreateHashSet(prefab);
                 return CreateNewCopy(prefab, set);
             }
-
         }
 
         private HashSet<Component> CreateHashSet<T>(T prefab) where T : Component
@@ -95,6 +102,20 @@ namespace HexTecGames.Basics
             return instance;
         }
 
+        public int GetTotalInstances()
+        {
+            if (instances == null)
+            {
+                return 0;
+            }
+
+            int total = 0;
+            foreach (var instance in instances)
+            {
+                total += instance.Value.Count;
+            }
+            return total;
+        }
 
         /// <returns>All instances.</returns>
         public List<T> GetAllInstances<T>(T prefab) where T : Component
@@ -153,7 +174,6 @@ namespace HexTecGames.Basics
         /// </summary>
         public void DestroyAll()
         {
-            Debug.Log("Destroy All!");
             foreach (HashSet<Component> set in instances.Values)
             {
                 foreach (Component component in set)
@@ -163,5 +183,6 @@ namespace HexTecGames.Basics
             }
             instances.Clear();
         }
+
     }
 }

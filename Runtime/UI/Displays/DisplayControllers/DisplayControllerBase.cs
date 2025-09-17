@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace HexTecGames.Basics.UI
 {
-    public abstract class DisplayControllerBase<D, T> : MonoBehaviour where D : Display<D, T>
+    public abstract class DisplayControllerBase<D, T> : AdvancedBehaviour where D : Display<D, T>
     {
         [SerializeField] private bool clearEventsOnDisable = true;
 

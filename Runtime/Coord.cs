@@ -53,25 +53,21 @@ namespace HexTecGames.Basics
 
         public void Rotate(Coord center, int rotation)
         {
-            if (rotation <= 0)
-            {
-                return;
-            }
             this -= center;
 
-            // (0,  1) -> ( 1,  0)
-            // (1,  0) -> ( 0, -1)
-            // (0, -1) -> (-1,  0)
-            // (-1, 0) -> ( 0,  1)
-
-            this = new Coord(x * rotation, y * rotation);
-
-            int c = -(this.x + this.y);
-
-            for (int i = 0; i < rotation; i++)
+            if (rotation > 0)
             {
-                this = new Coord(this.y, this.y + c);
-                c = -(this.x + this.y);
+                for (int i = 0; i < rotation; i++)
+                {
+                    this = new Coord(this.y, -this.x); // 90° clockwise
+                }
+            }
+            else if (rotation < 0)
+            {
+                for (int i = 0; i < -rotation; i++)
+                {
+                    this = new Coord(-this.y, this.x); // 90° counter-clockwise
+                }
             }
 
             this += center;
