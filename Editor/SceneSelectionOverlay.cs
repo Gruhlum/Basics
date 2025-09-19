@@ -13,7 +13,6 @@ namespace HexTecGames.Basics.Editor
     [Overlay(typeof(SceneView), "Scene Selection")]
     public class SceneSelectionOverlay : ToolbarOverlay
     {
-
         SceneSelectionOverlay() : base(SceneDropDown.ID)
         {
         }

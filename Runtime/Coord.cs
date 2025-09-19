@@ -51,6 +51,12 @@ namespace HexTecGames.Basics
             return HashCode.Combine(x, y);
         }
 
+        public Coord Normalize(Coord center, int rotation)
+        {
+            Coord normalized = center + this;
+            normalized.Rotate(center, rotation);
+            return normalized;
+        }
         public void Rotate(Coord center, int rotation)
         {
             this -= center;
