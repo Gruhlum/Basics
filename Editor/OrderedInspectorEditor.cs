@@ -3,6 +3,7 @@ using UnityEngine;
 using System.Collections.Generic;
 using System.Reflection;
 using System.Linq;
+using System;
 
 
 namespace HexTecGames.Basics.Editor
@@ -44,6 +45,11 @@ namespace HexTecGames.Basics.Editor
 
         public override void OnInspectorGUI()
         {
+            if (target == null)
+            {
+                return;
+            }
+
             serializedObject.Update();
 
             foreach (var kvp in groupedProperties)
@@ -59,7 +65,14 @@ namespace HexTecGames.Basics.Editor
 
                 foreach (var wrapper in properties)
                 {
-                    EditorGUILayout.PropertyField(wrapper.Property, true);
+                    try
+                    {
+                        EditorGUILayout.PropertyField(wrapper.Property, true);
+                    }
+                    catch (Exception ex)
+                    {
+                        Debug.LogError($"Error drawing property {wrapper.Property.name}: {ex}");
+                    }
                 }
             }
 
