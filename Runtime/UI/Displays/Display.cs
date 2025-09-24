@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace HexTecGames.Basics.UI
 {
-    public abstract class Display<D, T> : MonoBehaviour where D : Display<D, T>
+    public abstract class Display<D, T> : AdvancedBehaviour where D : Display<D, T>
     {
         public T Item
         {
@@ -32,7 +32,6 @@ namespace HexTecGames.Basics.UI
 
         public event Action<D> OnDisplayClicked;
         public event Action<D> OnDeactivated;
-
 
         protected virtual void OnDisable()
         {
