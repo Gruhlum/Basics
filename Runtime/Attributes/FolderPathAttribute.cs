@@ -1,3 +1,6 @@
 using UnityEngine;
 
-public class FolderPathAttribute : PropertyAttribute { }
+namespace HexTecGames.Basics
+{
+    public class FolderPathAttribute : PropertyAttribute { }
+}
