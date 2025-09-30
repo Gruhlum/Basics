@@ -70,6 +70,7 @@ namespace HexTecGames.Basics.Editor
                 var attr = method.GetCustomAttribute<InspectorButtonAttribute>();
                 if (attr == null) continue;
 
+
                 bool showButton = attr.Mode switch
                 {
                     ButtonMode.Always => true,
@@ -79,9 +80,13 @@ namespace HexTecGames.Basics.Editor
                 };
 
                 var parameters = method.GetParameters();
-                if (parameters.Length != 1) continue;
 
-                var paramType = parameters[0].ParameterType;
+                Type paramType;
+                if (parameters.Count() == 0)
+                {
+                    paramType = default;
+                }
+                else paramType = parameters[0].ParameterType;
                 var methodKey = method.Name;
 
                 if (!methodInputs.ContainsKey(methodKey))
@@ -95,16 +100,25 @@ namespace HexTecGames.Basics.Editor
 
                 if (showButton)
                 {
-                    EditorGUILayout.BeginHorizontal();
-
-
-                    if (GUILayout.Button(ObjectNames.NicifyVariableName(method.Name), GUILayout.Width(EditorGUIUtility.labelWidth)))
+                    if (parameters.Count() > 0)
                     {
-                        method.Invoke(target, new[] { methodInputs[methodKey] });
-                    }
-                    methodInputs[methodKey] = DrawInputField(methodInputs[methodKey], paramType);
+                        EditorGUILayout.BeginHorizontal();
 
-                    EditorGUILayout.EndHorizontal();
+                        if (GUILayout.Button(ObjectNames.NicifyVariableName(method.Name), GUILayout.Width(EditorGUIUtility.labelWidth)))
+                        {
+                            method.Invoke(target, new[] { methodInputs[methodKey] });
+                        }
+                        methodInputs[methodKey] = DrawInputField(methodInputs[methodKey], paramType);
+
+                        EditorGUILayout.EndHorizontal();
+                    }
+                    else
+                    {
+                        if (GUILayout.Button(ObjectNames.NicifyVariableName(method.Name)))
+                        {
+                            method.Invoke(target, null);
+                        }
+                    }
                 }
             }
         }
@@ -128,6 +142,10 @@ namespace HexTecGames.Basics.Editor
                     {
                         EditorGUILayout.PropertyField(wrapper.Property, true);
                     }
+                    catch (ExitGUIException)
+                    {
+                        throw; // Let Unity handle it
+                    }
                     catch (Exception ex)
                     {
                         Debug.LogError($"Error drawing property {wrapper.Property.name}: {ex}");
@@ -138,6 +156,7 @@ namespace HexTecGames.Basics.Editor
 
         private object GetDefaultValue(Type type)
         {
+            if (type == null) return null;
             if (type == typeof(int)) return 0;
             if (type == typeof(float)) return 0f;
             if (type == typeof(string)) return "";

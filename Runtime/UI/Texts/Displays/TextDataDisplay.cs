@@ -4,13 +4,12 @@ namespace HexTecGames.Basics.UI
 {
     public class TextDataDisplay : Display<TextDataDisplay, TextData>
     {
+        [SerializeField] private TextDataDisplay tooltipDisplay = default;
+        [Space]
         [SerializeField] private Spawner<SingleTextDisplay> textSpawner = default;
         [SerializeField] private Spawner<MultiTextDisplay> multiTextSpawner = default;
         [SerializeField] private Spawner<TableDisplay> tableSpawner = default;
         [SerializeField] private Spawner<IconDisplay> iconSpawner = default;
-
-        [SerializeField] private TextDataDisplay tooltipDisplay = default;
-
 
         public override void SetItem(TextData item, bool activate = true)
         {

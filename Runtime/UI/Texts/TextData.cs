@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Text;
 
 namespace HexTecGames.Basics.UI
 {
@@ -27,9 +28,25 @@ namespace HexTecGames.Basics.UI
 
         public void Add(object obj)
         {
-            datas.Add(obj);
+            if (obj is TextData textData)
+            {
+                datas.AddRange(textData.datas);
+            }
+            else if (obj is string text)
+            {
+                datas.Add(new SingleText(text));
+            }
+            else datas.Add(obj);
         }
-
+        public string ToSimpleString()
+        {
+            StringBuilder stringBuilder = new StringBuilder();
+            foreach (var data in datas)
+            {
+                stringBuilder.Append(data.ToString());
+            }
+            return stringBuilder.ToString();
+        }
 
         public override string ToString()
         {

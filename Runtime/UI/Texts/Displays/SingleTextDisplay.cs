@@ -67,15 +67,15 @@ namespace HexTecGames.Basics.UI
             {
                 LinkListener.Setup(item.linkTexts);
             }
-            if (false && linkHighlighter != null && gameObject.activeInHierarchy)
-            {
-                StartCoroutine(Delayed());
-            }
+            //if (false && linkHighlighter != null && gameObject.activeInHierarchy)
+            //{
+            //    StartCoroutine(Delayed());
+            //}
         }
-        private IEnumerator Delayed()
-        {
-            yield return null;
-            linkHighlighter.Setup(TextGUI);
-        }
+        //private IEnumerator Delayed()
+        //{
+        //    yield return null;
+        //    linkHighlighter.Setup(TextGUI);
+        //}
     }
 }

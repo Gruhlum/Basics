@@ -44,7 +44,7 @@ namespace HexTecGames.Basics
 
             T instance = GetEmptyInstance(prefab);
 
-            if (instance == null)
+            if (instance == null || instance.gameObject == null)
             {
                 Debug.Log("Should not happen! " + (instance is null));
                 return null;
