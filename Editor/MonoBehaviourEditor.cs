@@ -9,7 +9,7 @@ using Object = UnityEngine.Object;
 
 namespace HexTecGames.Basics.Editor
 {
-    [CustomEditor(typeof(MonoBehaviour), true)]
+    [CustomEditor(typeof(AdvancedBehaviour), true)]
     public class MonoBehaviourEditor : UnityEditor.Editor
     {
         private Dictionary<string, List<SerializedPropertyWrapper>> groupedProperties;
@@ -54,12 +54,98 @@ namespace HexTecGames.Basics.Editor
 
             serializedObject.Update();
 
-            DisplayHeaders();
+            DisplayProperties();
             DisplayInspectorButtons();
 
             serializedObject.ApplyModifiedProperties();
         }
+        private void DisplayProperties()
+        {
+            var targetType = target.GetType();
 
+            foreach (var kvp in groupedProperties)
+            {
+                string header = kvp.Key;
+                var properties = kvp.Value;
+
+                if (header != "__NO_HEADER__")
+                {
+                    EditorGUILayout.Space();
+                    EditorGUILayout.LabelField(header, EditorStyles.boldLabel);
+                }
+
+                foreach (var wrapper in properties)
+                {
+                    var property = wrapper.Property;
+                    var fieldInfo = targetType.GetField(property.name, BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
+
+                    bool skip = false;
+                    bool readOnly = false;
+
+                    // Handle DrawIf
+                    var drawIf = fieldInfo?.GetCustomAttribute<DrawIfAttribute>();
+                    if (drawIf != null)
+                    {
+                        bool shouldDraw = EvaluateDrawIf(drawIf, target);
+                        if (!shouldDraw && drawIf.disablingType == DrawIfAttribute.DisablingType.DontDraw)
+                            skip = true;
+                        else if (!shouldDraw && drawIf.disablingType == DrawIfAttribute.DisablingType.ReadOnly)
+                            readOnly = true;
+                    }
+
+                    // Handle DrawIfScene
+                    var drawIfScene = fieldInfo?.GetCustomAttribute<DrawIfSceneAttribute>();
+                    if (drawIfScene != null && !drawIfScene.Show(target))
+                    {
+                        skip = true;
+                    }
+
+                    if (skip) continue;
+                    if (readOnly) GUI.enabled = false;
+
+                    try
+                    {
+                        EditorGUILayout.PropertyField(property, true);
+                    }
+                    catch (ExitGUIException)
+                    {
+                        throw;
+                    }
+                    catch (Exception ex)
+                    {
+                        Debug.LogError($"Error drawing property {property.name}: {ex}");
+                    }
+
+                    if (readOnly) GUI.enabled = true;
+                }
+            }
+        }
+        private bool EvaluateDrawIf(DrawIfAttribute attr, Object target)
+        {
+            var type = target.GetType();
+            var field = type.GetField(attr.comparedPropertyName, BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
+            var prop = type.GetProperty(attr.comparedPropertyName, BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
+
+            object value = field?.GetValue(target) ?? prop?.GetValue(target);
+            if (value == null) return true;
+
+            bool result = value.Equals(attr.comparedValue);
+            return attr.reverse ? !result : result;
+        }
+        private object GetDefaultValue(Type type)
+        {
+            if (type == null) return null;
+            if (type == typeof(int)) return 0;
+            if (type == typeof(float)) return 0f;
+            if (type == typeof(string)) return "";
+            if (type == typeof(Vector2)) return Vector2.zero;
+            if (type == typeof(Vector3)) return Vector3.zero;
+            if (type == typeof(bool)) return false;
+            if (type == typeof(Color)) return Color.white;
+            if (typeof(Object).IsAssignableFrom(type)) return null;
+            if (type.IsEnum) return Enum.GetValues(type).GetValue(0);
+            return null;
+        }
         private void DisplayInspectorButtons()
         {
             var targetType = target.GetType();
@@ -121,52 +207,6 @@ namespace HexTecGames.Basics.Editor
                     }
                 }
             }
-        }
-
-        private void DisplayHeaders()
-        {
-            foreach (var kvp in groupedProperties)
-            {
-                string header = kvp.Key;
-                var properties = kvp.Value;
-
-                if (header != "__NO_HEADER__")
-                {
-                    EditorGUILayout.Space();
-                    EditorGUILayout.LabelField(header, EditorStyles.boldLabel);
-                }
-
-                foreach (var wrapper in properties)
-                {
-                    try
-                    {
-                        EditorGUILayout.PropertyField(wrapper.Property, true);
-                    }
-                    catch (ExitGUIException)
-                    {
-                        throw; // Let Unity handle it
-                    }
-                    catch (Exception ex)
-                    {
-                        Debug.LogError($"Error drawing property {wrapper.Property.name}: {ex}");
-                    }
-                }
-            }
-        }
-
-        private object GetDefaultValue(Type type)
-        {
-            if (type == null) return null;
-            if (type == typeof(int)) return 0;
-            if (type == typeof(float)) return 0f;
-            if (type == typeof(string)) return "";
-            if (type == typeof(Vector2)) return Vector2.zero;
-            if (type == typeof(Vector3)) return Vector3.zero;
-            if (type == typeof(bool)) return false;
-            if (type == typeof(Color)) return Color.white;
-            if (typeof(Object).IsAssignableFrom(type)) return null;
-            if (type.IsEnum) return Enum.GetValues(type).GetValue(0);
-            return null;
         }
 
         private object DrawInputField(object currentValue, Type type)

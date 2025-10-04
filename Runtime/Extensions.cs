@@ -404,6 +404,74 @@ public static class Extensions
         index = list.NextIndex(index);
         return list[index];
     }
+
+    /// <summary>
+    /// Retrieves an item from the list based on the specified <see cref="ReplayOrder"/> strategy.
+    /// Supports random selection, ordered iteration, and non-repeating random selection.
+    /// </summary>
+    /// <typeparam name="T">The type of elements in the list.</typeparam>
+    /// <param name="list">The source list to retrieve an item from.</param>
+    /// <param name="lastItem">The previously selected item, used for non-repeating and ordered logic.</param>
+    /// <param name="replayOrder">The strategy used to determine which item to retrieve.</param>
+    /// <returns>
+    /// A selected item from the list based on the replay strategy, or <c>default(T)</c> if the list is null or empty.
+    /// </returns>
+    public static T SelectByReplayOrder<T>(this IList<T> list, T lastItem, ReplayOrder replayOrder)
+    {
+        if (list == null || list.Count == 0)
+        {
+            return default;
+        }
+
+        // Fallback to Order if NonRepeating is ambiguous with only 2 clips
+        if (list.Count == 2 && replayOrder == ReplayOrder.NonRepeating)
+        {
+            replayOrder = ReplayOrder.Order;
+        }
+
+        switch (replayOrder)
+        {
+            case ReplayOrder.Random:
+                return list[UnityEngine.Random.Range(0, list.Count)];
+
+            case ReplayOrder.NonRepeating:
+                if (list.Count == 1)
+                {
+                    return list[0];
+                }
+
+                // Build list of valid indexes excluding lastClip
+                List<int> validIndexes = new();
+                for (int i = 0; i < list.Count; i++)
+                {
+                    if (!Equals(list[i], lastItem))
+                    {
+                        validIndexes.Add(i);
+                    }
+                }
+
+                if (validIndexes.Count == 0)
+                {
+                    return list[0]; // fallback if somehow all clips match lastClip
+                }
+
+                int index = validIndexes[UnityEngine.Random.Range(0, validIndexes.Count)];
+                return list[index];
+
+            case ReplayOrder.Order:
+                if (list.Count == 1)
+                {
+                    return list[0];
+                }
+
+                int lastIndex = lastItem != null ? list.IndexOf(lastItem) : -1;
+                int nextIndex = (lastIndex + 1) % list.Count;
+                return list[nextIndex];
+
+            default:
+                return default;
+        }
+    }
     #endregion
 
     public static void Add<T>(this SortedList<int, List<T>> list, int order, T item)
