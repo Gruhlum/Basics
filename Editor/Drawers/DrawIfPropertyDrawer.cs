@@ -1,4 +1,6 @@
-﻿using System.Reflection;
+﻿using System.Collections;
+using System.Linq;
+using System.Reflection;
 using UnityEditor;
 using UnityEngine;
 
@@ -55,6 +57,46 @@ namespace HexTecGames.Basics.Editor
             DrawProperty(property, position, label);
         }
 
+        private object GetDeclaringObject(SerializedProperty property)
+        {
+            var path = property.propertyPath.Replace(".Array.data[", "[");
+            object obj = property.serializedObject.targetObject;
+            var elements = path.Split('.');
+
+            // Walk down to the declaring object (second-to-last element)
+            foreach (var element in elements.Take(elements.Length - 1))
+            {
+                if (element.Contains("["))
+                {
+                    var name = element.Substring(0, element.IndexOf("["));
+                    var index = int.Parse(element.Substring(element.IndexOf("[")).Replace("[", "").Replace("]", ""));
+                    obj = GetValue(obj, name, index);
+                }
+                else
+                {
+                    obj = GetValue(obj, element);
+                }
+            }
+
+            return obj;
+        }
+
+        private object GetValue(object source, string name, int index = -1)
+        {
+            if (source == null) return null;
+
+            var type = source.GetType();
+            var field = type.GetField(name, BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
+            if (field == null) return null;
+
+            var value = field.GetValue(source);
+            if (index >= 0 && value is IList list)
+            {
+                return list[index];
+            }
+
+            return value;
+        }
 
         private void DrawProperty(SerializedProperty property, Rect position, GUIContent label)
         {
@@ -99,23 +141,32 @@ namespace HexTecGames.Basics.Editor
 
         private bool ShouldDraw(SerializedProperty property)
         {
-            drawIf = attribute as DrawIfAttribute;
-            var target = property.serializedObject.targetObject;
+            if (drawIf == null)
+            {
+                drawIf = attribute as DrawIfAttribute;
+                if (drawIf == null)
+                {
+                    Debug.LogError("DrawIfDrawer: Attribute is not of type DrawIfAttribute.");
+                    return true;
+                }
+            }
+
+            var target = GetDeclaringObject(property);
             var targetType = target.GetType();
 
             FieldInfo field = null;
             PropertyInfo prop = null;
 
-            // Walk up the inheritance chain to find the field or property
+            // Walk up inheritance chain to find the field or property
             while (targetType != null)
             {
                 field = targetType.GetField(drawIf.comparedPropertyName,
-                    BindingFlags.Instance | BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic);
+                    BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
 
                 if (field != null) break;
 
                 prop = targetType.GetProperty(drawIf.comparedPropertyName,
-                    BindingFlags.Instance | BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic);
+                    BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
 
                 if (prop != null) break;
 
@@ -124,13 +175,13 @@ namespace HexTecGames.Basics.Editor
 
             if (field == null && prop == null)
             {
-                Debug.LogError($"DrawIf: Could not find field or property '{drawIf.comparedPropertyName}' on {property.serializedObject.targetObject.GetType().Name} or its base types.");
+                Debug.LogError($"DrawIf: Could not find field or property '{drawIf.comparedPropertyName}' on {target.GetType().Name} or its base types.");
                 return true;
             }
 
             object value = field != null
-                ? field.GetValue(field.IsStatic ? null : target)
-                : prop.GetValue(prop.GetGetMethod(true).IsStatic ? null : target);
+                ? field.GetValue(target)
+                : prop.GetValue(target);
 
             bool result = value?.Equals(drawIf.comparedValue) ?? false;
             return drawIf.reverse ? !result : result;
