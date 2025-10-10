@@ -22,6 +22,14 @@ namespace HexTecGames.Basics
         private static List<Profile> profiles = new List<Profile>();
         private static bool loadedProfiles;
 
+        public static string DataDirectory
+        {
+            get
+            {
+                return Path.Combine(ProfilePath, defaultFolderName);
+            }
+        }
+
         public static Profile CurrentProfile
         {
             get

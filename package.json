@@ -1,10 +1,11 @@
 {
   "name": "com.hextecgames.basics",
-  "version": "4.2.13",
+  "version": "4.2.14",
   "displayName": "Basics",
   "description": "Collection of useful scripts and functions.\n- SaveSystem: Load and save data as JSON or XML files.\n- Spawners: Utilize object pooling to instantiate prefabs.\n- Displays: Display texts and values and use a DisplayController to control them.\n- And more!",
   "dependencies": {
-    "com.unity.textmeshpro": "3.0.0"
+    "com.unity.textmeshpro": "3.0.0",
+    "com.hextecgames.easefunctions": "1.0.0"
   },
   "author": {
     "name": "HexTecGames",
