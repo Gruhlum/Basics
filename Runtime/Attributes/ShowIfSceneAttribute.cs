@@ -22,6 +22,7 @@ namespace HexTecGames.Basics
 
         public bool Show(Object targetObject)
         {
+#if UNITY_EDITOR
             if (ShowType == ShowType.All)
             {
                 return true;
@@ -34,6 +35,7 @@ namespace HexTecGames.Basics
             {
                 return true;
             }
+#endif
             return false;
         }
     }

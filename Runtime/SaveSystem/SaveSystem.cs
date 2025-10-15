@@ -555,5 +555,15 @@ namespace HexTecGames.Basics
             }
             return levels;
         }
+
+        public static bool FileExists(string fileName)
+        {
+            return FileExists(fileName, defaultFolderName);
+        }
+        public static bool FileExists(string fileName, string directory)
+        {
+            string path = Path.Combine(ProfilePath, directory, fileName);
+            return File.Exists(path);
+        }
     }
 }

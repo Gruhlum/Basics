@@ -1,18 +1,18 @@
 {
-    "name": "MackySoft.SerializeReferenceExtensions.Example.GetStarted",
+    "name": "HexTecGames.Basics.EditorShared",
     "rootNamespace": "",
     "references": [
-        "GUID:49b49c76ee64f6b41bf28ef951cb0e50"
+        "GUID:343deaaf83e0cee4ca978e7df0b80d21"
     ],
-    "includePlatforms": [],
+    "includePlatforms": [
+        "Editor"
+    ],
     "excludePlatforms": [],
     "allowUnsafeCode": false,
     "overrideReferences": false,
     "precompiledReferences": [],
     "autoReferenced": true,
-    "defineConstraints": [
-        "UNITY_2019_3_OR_NEWER"
-    ],
+    "defineConstraints": [],
     "versionDefines": [],
     "noEngineReferences": false
 }

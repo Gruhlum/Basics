@@ -1,9 +1,6 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using HexTecGames.Basics;
-using HexTecGames.Basics.UI;
-using HexTecGames.EaseFunctions;
 using UnityEngine;
 using UnityEngine.UI;
 

@@ -11,7 +11,7 @@ namespace HexTecGames.Basics.UIGrid
 
         public void Setup(int x, int y, Vector3 position, Vector2 size)
         {
-            img.color = Utility.GenerateRandomColor(0.8f);
+            img.color = RandomUtility.GenerateRandomColor(0.8f);
             textGUI.text = $"{x},{y}";
             img.SetAlpha(0.2f);
             img.GetComponent<RectTransform>().sizeDelta = size;
