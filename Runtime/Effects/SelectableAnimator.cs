@@ -12,8 +12,9 @@ namespace HexTecGames.Basics
         [SerializeField] private EaseFunction easeFunction = new EaseFunction(EasingType.EaseInOut, FunctionType.Quad);
         [SerializeField] private float speed = 10f;
 
-        [SerializeField] private Vector3 startSize = Vector3.one;
-        [SerializeField] private Vector3 endSize = new Vector3(1.05f, 1.05f, 1.05f);
+        [LinkedVector][SerializeField] private Vector3 startSize = Vector3.one;
+        [LinkedVector][SerializeField] private Vector3 endSize = new Vector3(1.05f, 1.05f, 1.05f);
+        [LinkedVector][SerializeField] private int endSi2ze;
 
         private float progress;
         private Coroutine scaleRoutine;
