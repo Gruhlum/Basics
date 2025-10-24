@@ -77,25 +77,40 @@ namespace HexTecGames.Basics.Editor
                     obj = GetValue(obj, element);
                 }
             }
-
             return obj;
         }
 
-        private object GetValue(object source, string name, int index = -1)
+        private object GetValue(object source, string name)
         {
             if (source == null) return null;
 
             var type = source.GetType();
             var field = type.GetField(name, BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
-            if (field == null) return null;
-
-            var value = field.GetValue(source);
-            if (index >= 0 && value is IList list)
+            if (field == null)
             {
-                return list[index];
+                // Traverse base types
+                while (type != null)
+                {
+                    field = type.GetField(name, BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
+                    if (field != null) break;
+                    type = type.BaseType;
+                }
             }
 
-            return value;
+            return field?.GetValue(source);
+        }
+
+        private object GetValue(object source, string name, int index)
+        {
+            var enumerable = GetValue(source, name) as IEnumerable;
+            if (enumerable == null) return null;
+
+            var enumerator = enumerable.GetEnumerator();
+            for (int i = 0; i <= index; i++)
+            {
+                if (!enumerator.MoveNext()) return null;
+            }
+            return enumerator.Current;
         }
 
         private void DrawProperty(SerializedProperty property, Rect position, GUIContent label)
@@ -152,6 +167,11 @@ namespace HexTecGames.Basics.Editor
             }
 
             var target = GetDeclaringObject(property);
+            if (target == null)
+            {
+                Debug.Log("Target is null! " + property.ToString());
+                return false;
+            }
             var targetType = target.GetType();
 
             FieldInfo field = null;
