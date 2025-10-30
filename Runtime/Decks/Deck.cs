@@ -8,7 +8,7 @@ namespace HexTecGames.Basics
     [System.Serializable]
     public class Deck<T>
     {
-        protected List<DeckItem<T>> totalItems = new List<DeckItem<T>>();
+        protected readonly List<DeckItem<T>> totalItems = new List<DeckItem<T>>();
         protected List<DeckItem<T>> currentItems = new List<DeckItem<T>>();
 
 
@@ -51,7 +51,11 @@ namespace HexTecGames.Basics
         }
         protected void GenerateDeck()
         {
-            currentItems = new List<DeckItem<T>>(totalItems);
+            currentItems = new List<DeckItem<T>>(totalItems.Count);
+            foreach (var item in totalItems)
+            {
+                currentItems.Add(new DeckItem<T>(item));
+            }
         }
 
         public T GetNext()
@@ -70,11 +74,20 @@ namespace HexTecGames.Basics
             if (deckItem.Tickets <= 0)
             {
                 currentItems.Remove(deckItem);
-                Debug.Log("Removing: " + deckItem.item.ToString());
+                //Debug.Log("Removing: " + deckItem.item.ToString());
             }
             return deckItem.item;
         }
 
+        public int GetRemainingTickets(T t)
+        {
+            var result = currentItems.Find(x => x.item.Equals(t));
+            if (result == null)
+            {
+                return 0;
+            }
+            return result.Tickets;
+        }
 
         private string GetItemsToString(List<DeckItem<T>> items)
         {

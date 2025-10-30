@@ -22,6 +22,11 @@ namespace HexTecGames.Basics.UI
         {
         }
 
+        public void Add(MultiText multiText)
+        {
+            multiTexts.Add(multiText);
+        }
+
         public override string ToString()
         {
             if (multiTexts == null || multiTexts.Count < 0)

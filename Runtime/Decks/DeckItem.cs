@@ -23,9 +23,11 @@ namespace HexTecGames
         public DeckItem(T item, int amount)
         {
             this.item = item;
-            this.Tickets = amount;
+            this.tickets = amount;
         }
-
+        public DeckItem(DeckItem<T> deckItem) : this(deckItem.item, deckItem.Tickets)
+        {
+        }
         public override string ToString()
         {
             return $"{item}: {Tickets}";
