@@ -9,20 +9,26 @@ namespace HexTecGames.Basics
 {
     public class SelectableAnimator : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
     {
+        [SerializeField] private Transform target = default;
         [SerializeField] private EaseFunction easeFunction = new EaseFunction(EasingType.EaseInOut, FunctionType.Quad);
         [SerializeField] private float speed = 10f;
 
         [LinkedVector][SerializeField] private Vector3 startSize = Vector3.one;
         [LinkedVector][SerializeField] private Vector3 endSize = new Vector3(1.05f, 1.05f, 1.05f);
-        [LinkedVector][SerializeField] private int endSi2ze;
 
         private float progress;
         private Coroutine scaleRoutine;
 
+
+        private void Reset()
+        {
+            target = transform;
+        }
+
         private void OnDisable()
         {
             progress = 0;
-            transform.localScale = startSize;
+            target.localScale = startSize;
         }
 
         private IEnumerator AnimateScale(bool hover)
@@ -34,7 +40,7 @@ namespace HexTecGames.Basics
             {
                 time += Time.deltaTime * speed * direction;
                 time = Mathf.Clamp01(time);
-                transform.localScale = Vector3.Lerp(startSize, endSize, easeFunction.GetValue(time));
+                target.localScale = Vector3.Lerp(startSize, endSize, easeFunction.GetValue(time));
                 progress = time;
                 yield return null;
             }
