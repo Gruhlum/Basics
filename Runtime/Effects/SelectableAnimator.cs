@@ -22,19 +22,20 @@ namespace HexTecGames.Basics
         private void OnDisable()
         {
             progress = 0;
+            transform.localScale = startSize;
         }
 
         private IEnumerator AnimateScale(bool hover)
         {
-            float t = progress;
+            float time = progress;
             float direction = hover ? 1f : -1f;
 
-            while ((hover && t < 1f) || (!hover && t > 0f))
+            while ((hover && time < 1f) || (!hover && time > 0f))
             {
-                t += Time.deltaTime * speed * direction;
-                t = Mathf.Clamp01(t);
-                transform.localScale = Vector3.Lerp(startSize, endSize, easeFunction.GetValue(t));
-                progress = t;
+                time += Time.deltaTime * speed * direction;
+                time = Mathf.Clamp01(time);
+                transform.localScale = Vector3.Lerp(startSize, endSize, easeFunction.GetValue(time));
+                progress = time;
                 yield return null;
             }
 
