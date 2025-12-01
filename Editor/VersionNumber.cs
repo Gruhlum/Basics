@@ -30,10 +30,6 @@ namespace HexTecGames.Basics.Editor
             int.TryParse(versionParts[2], out Minor);
         }
 
-        //public static string GetCurrentVersion()
-        //{
-        //    return PlayerSettings.bundleVersion;
-        //}
         //private static VersionNumber CreateVersionNumber()
         //{
         //    string result = GetCurrentVersion();
@@ -47,22 +43,26 @@ namespace HexTecGames.Basics.Editor
         //{
         //    PlayerSettings.bundleVersion = versionNumber.ToString();
         //}
-        //public static string GetVersionNumber(UpdateType updateType)
-        //{
-        //    VersionNumber number = CreateVersionNumber();
-        //    number.ApplyIncrease(updateType);
-        //    return number.ToString();
-        //}
+        public static VersionNumber GetVersionNumber()
+        {
+            return new VersionNumber(PlayerSettings.bundleVersion);
+        }
+        public static VersionNumber GetVersionNumber(UpdateType updateType)
+        {
+            VersionNumber number = new VersionNumber(PlayerSettings.bundleVersion);
+            number.IncreaseVersion(updateType);
+            return number;
+        }
         //public static void IncreaseVersion(UpdateType updateType)
         //{
         //    VersionNumber number = CreateVersionNumber();
         //    number.ApplyIncrease(updateType);
         //    number.SaveToBuild();
         //}
-        //private void SaveToBuild()
-        //{
-        //    PlayerSettings.bundleVersion = this.ToString();
-        //}
+        public static void SetBuildVersionNumber(VersionNumber versionNumber)
+        {
+            PlayerSettings.bundleVersion = versionNumber.ToString();
+        }
 
         public VersionNumber GetIncreasedVersion(UpdateType updateType)
         {
