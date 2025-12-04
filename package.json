@@ -12,5 +12,12 @@
     "email": "HexTecGames0@gmail.com"
   },
   "hideInEditor": false,
-  "unity": "2022.3"
+  "unity": "2022.3",
+  "samples": [
+    {
+      "displayName": "Prefabs",
+      "description": "Collection of useful Prefabs",
+      "path": "Samples~/Prefabs"
+    }
+  ]
 }
