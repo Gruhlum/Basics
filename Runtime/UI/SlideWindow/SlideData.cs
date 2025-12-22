@@ -8,6 +8,7 @@ namespace HexTecGames.Basics.UI
     public class SlideData : ScriptableObject
     {
         public Sprite screenshot = default;
-        [TextArea] public string text = default;
+        [TextArea] public string title = default;
+        [TextArea] public string description = default;
     }
 }

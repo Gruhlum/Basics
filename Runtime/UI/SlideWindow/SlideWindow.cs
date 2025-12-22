@@ -11,7 +11,8 @@ namespace HexTecGames.Basics.UI
     public class SlideWindow : AdvancedBehaviour
     {
         [SerializeField] private Image img = default;
-        [SerializeField] private TMP_Text textGUI = default;
+        [SerializeField] private TMP_Text titleGUI = default;
+        [SerializeField] private TMP_Text descriptionGUI = default;
         [SerializeField] private List<KeyCode> advanceKeyCodes = default;
 
         [SerializeField] private List<SlideData> pages = default;
@@ -81,7 +82,8 @@ namespace HexTecGames.Basics.UI
         private void ShowPage(SlideData page)
         {
             img.sprite = page.screenshot;
-            textGUI.text = page.text;
+            titleGUI.text = page.title;
+            descriptionGUI.text = page.description;
         }
     }
 }
