@@ -6,9 +6,24 @@ namespace HexTecGames.Basics.Credits
 {
     public class CreditsItemDisplayController : DisplayController<CreditsItemDisplay, CreditsItem>
     {
+        [SerializeField] private List<CreditsItem> itemsToDisplay = default;
+
+        private bool initialized;
+
+
+        private void Start()
+        {
+            SetItems(itemsToDisplay);
+            ShuffleCredits();
+            initialized = true;
+        }
+
         private void OnEnable()
         {
-            ShuffleCredits();
+            if (initialized)
+            {
+                ShuffleCredits();
+            }
         }
         private void ShuffleCredits()
         {
