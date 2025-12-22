@@ -8,13 +8,13 @@ using System.Linq;
 
 namespace HexTecGames.Basics.UI
 {
-    public class TutorialWindow : AdvancedBehaviour
+    public class SlideWindow : AdvancedBehaviour
     {
         [SerializeField] private Image img = default;
         [SerializeField] private TMP_Text textGUI = default;
         [SerializeField] private List<KeyCode> advanceKeyCodes = default;
 
-        [SerializeField] private List<TutorialPage> pages = default;
+        [SerializeField] private List<SlideData> pages = default;
         [SerializeField] private Spawner<PageDot> pageDotSpawner = default;
 
         [Space]
@@ -78,7 +78,7 @@ namespace HexTecGames.Basics.UI
             ShowPage(pages[currentPageIndex]);
         }
 
-        private void ShowPage(TutorialPage page)
+        private void ShowPage(SlideData page)
         {
             img.sprite = page.screenshot;
             textGUI.text = page.text;

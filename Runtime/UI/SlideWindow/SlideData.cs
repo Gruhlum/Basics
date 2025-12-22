@@ -4,8 +4,8 @@ using UnityEngine;
 
 namespace HexTecGames.Basics.UI
 {
-    [CreateAssetMenu(menuName = "HexTecGames/Sandbox/TutorialPage")]
-    public class TutorialPage : ScriptableObject
+    [CreateAssetMenu(menuName = "HexTecGames/Basics/UI/SlideData")]
+    public class SlideData : ScriptableObject
     {
         public Sprite screenshot = default;
         [TextArea] public string text = default;
