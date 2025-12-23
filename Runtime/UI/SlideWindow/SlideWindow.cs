@@ -5,6 +5,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 using System.Linq;
+using UnityEngine.Events;
 
 namespace HexTecGames.Basics.UI
 {
@@ -24,12 +25,16 @@ namespace HexTecGames.Basics.UI
         private List<PageDot> pageDots;
         private int currentPageIndex = 0;
 
+        public UnityEvent OnNextSlide;
+        public UnityEvent OnStarted;
+        public UnityEvent OnEnded;
+
 
         private void Awake()
         {
             if (playOnAwake)
             {
-                InitializeTutorial();
+                StartSlide();
             }
         }
 
@@ -45,13 +50,14 @@ namespace HexTecGames.Basics.UI
             }
         }
 
-        private void InitializeTutorial()
+        public void StartSlide()
         {
             pageDots = pageDotSpawner.Spawn(pages.Count);
             currentPageIndex = 0;
             UpdatePageDots();
             ShowPage(pages[0]);
             gameObject.SetActive(true);
+            OnStarted?.Invoke();
         }
 
         private void UpdatePageDots()
@@ -64,6 +70,7 @@ namespace HexTecGames.Basics.UI
 
         public void FinishTutorial()
         {
+            OnEnded?.Invoke();
             gameObject.SetActive(false);
         }
 
@@ -77,6 +84,7 @@ namespace HexTecGames.Basics.UI
             }
             UpdatePageDots();
             ShowPage(pages[currentPageIndex]);
+            OnNextSlide?.Invoke();
         }
 
         private void ShowPage(SlideData page)
