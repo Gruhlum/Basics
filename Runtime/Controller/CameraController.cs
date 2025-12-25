@@ -36,7 +36,7 @@ namespace HexTecGames.Basics
                 return;
             }
             HandlePositionMovement();
-            if (!MouseController.IsPointerOverUI)
+            if (!MouseController.PointerOverUI)
             {
                 HandleZoom();
             }

@@ -1,7 +1,9 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.EventSystems;
+using UnityEngine.UI;
 
 namespace HexTecGames.Basics
 {
@@ -25,6 +27,7 @@ namespace HexTecGames.Basics
             }
         }
         private GameObject pointerUIElement;
+
 
         public GameObject HoverGO
         {
@@ -65,7 +68,7 @@ namespace HexTecGames.Basics
         }
         private int btnNumber = -1;
 
-        public static bool IsPointerOverUI
+        public static bool PointerOverUI
         {
             get
             {
@@ -83,17 +86,38 @@ namespace HexTecGames.Basics
         }
         private static bool pointerOverUI = default;
 
-        public static event Action<bool> OnPointerOverUIChanged;
-
-        private void Reset()
+        public static bool PointerOverSelectable
         {
+            get
+            {
+                return pointerOverSelectable;
+            }
+            private set
+            {
+                if (pointerOverSelectable == value)
+                {
+                    return;
+                }
+                pointerOverSelectable = value;
+                OnPointerOverSelectableChanged?.Invoke(pointerOverSelectable);
+            }
+        }
+        private static bool pointerOverSelectable;
+
+
+        public static event Action<bool> OnPointerOverUIChanged;
+        public static event Action<bool> OnPointerOverSelectableChanged;
+
+        protected override void Reset()
+        {
+            base.Reset();
             mainCam = Camera.main;
         }
 
         private void Update()
         {
             HoverGO = DetectGameObject();
-            IsPointerOverUI = DetectPointerOverUI();
+            DetectUI();
 
             for (int i = 0; i < 2; i++)
             {
@@ -163,27 +187,46 @@ namespace HexTecGames.Basics
             }
             return null;
         }
+
         /// <summary>
         /// Checks if the mouse is hovering over an UI Element
         /// </summary>
-        private bool DetectPointerOverUI()
+        private void DetectUI()
         {
-            return IsPointerOverUIElement(GetEventSystemRaycastResults());
+            var raycastResults = GetEventSystemRaycastResults();
+            PointerOverUI = IsPointerOverUIElement(raycastResults);
+            PointerOverSelectable = IsPointerOverSelectable(raycastResults);
         }
-
         private bool IsPointerOverUIElement(List<RaycastResult> eventSystemRaycastResults)
         {
             for (int index = 0; index < eventSystemRaycastResults.Count; index++)
             {
                 RaycastResult raycastResult = eventSystemRaycastResults[index];
+
                 if (raycastResult.gameObject.layer == uiLayer)
                 {
                     PointerUIElement = raycastResult.gameObject;
                     return true;
                 }
-                //else Debug.Log(uiLayer + " - " + raycastResult.sortingLayer);
             }
             PointerUIElement = null;
+            return false;
+        }
+        private bool IsPointerOverSelectable(List<RaycastResult> eventSystemRaycastResults)
+        {
+            for (int index = 0; index < eventSystemRaycastResults.Count; index++)
+            {
+                RaycastResult raycastResult = eventSystemRaycastResults[index];
+
+                if (raycastResult.gameObject.layer != uiLayer)
+                {
+                    continue;
+                }
+                if (raycastResult.gameObject.TryGetComponent(out Selectable selectable) && selectable.interactable)
+                {
+                    return true;
+                }
+            }
             return false;
         }
 

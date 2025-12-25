@@ -30,12 +30,20 @@ namespace HexTecGames.Basics.UI
         private void Awake()
         {
             SetSprite(defaultCursor);
-            
+        }
+        private void OnEnable()
+        {
+            MouseController.OnPointerOverSelectableChanged += MouseController_OnPointerOverSelectableChanged;
+        }
+
+        private void OnDisable()
+        {
+            MouseController.OnPointerOverSelectableChanged -= MouseController_OnPointerOverSelectableChanged;
         }
 
         private void Update()
         {
-            if (!MouseController.IsPointerOverUI)
+            if (!MouseController.PointerOverSelectable)
             {
                 return;
             }
@@ -48,18 +56,9 @@ namespace HexTecGames.Basics.UI
                 SetSprite(hoverCursor);
             }
         }
-
-        private void OnEnable()
+        private void MouseController_OnPointerOverSelectableChanged(bool overSelectable)
         {
-            MouseController.OnPointerOverUIChanged += MouseController_OnPointerOverUIChanged;
-        }
-        private void OnDisable()
-        {
-            MouseController.OnPointerOverUIChanged -= MouseController_OnPointerOverUIChanged;
-        }
-        private void MouseController_OnPointerOverUIChanged(bool overUI)
-        {
-            if (overUI)
+            if (overSelectable)
             {
                 SetSprite(hoverCursor);
             }
