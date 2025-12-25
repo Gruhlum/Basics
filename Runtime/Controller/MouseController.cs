@@ -8,7 +8,7 @@ namespace HexTecGames.Basics
     /// <summary>
     /// Contains information about any objects that are under the mouse button.
     /// </summary>
-    public class MouseController : MonoBehaviour
+    public class MouseController : AdvancedBehaviour
     {
         [SerializeField] private Camera mainCam = default;
         [SerializeField] private int uiLayer = 5;

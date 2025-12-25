@@ -18,7 +18,7 @@ namespace HexTecGames.Basics.Credits
             roleGUI.text = item.role;
             if (linkButton != null)
             {
-                linkButton.URL = item.itchURL;
+                linkButton.URL = item.linkURL;
             }
             name = $"CreditsDisplay ({item.name})";
         }

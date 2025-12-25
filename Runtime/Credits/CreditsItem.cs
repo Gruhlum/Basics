@@ -6,6 +6,8 @@ namespace HexTecGames.Basics.Credits
     public class CreditsItem : ScriptableObject
     {
         public string role;
-        public string itchURL;
+        [Tooltip("Optional")] 
+        public string linkURL;
+
     }
 }
