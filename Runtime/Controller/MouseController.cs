@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
@@ -8,102 +7,51 @@ using UnityEngine.UI;
 namespace HexTecGames.Basics
 {
     /// <summary>
-    /// Contains information about any objects that are under the mouse button.
+    /// Centralized mouse controller that detects:
+    /// - The GameObject currently hovered in the world (2D)
+    /// - The UI element under the pointer
+    /// - Whether the pointer is over a Selectable UI element
+    /// - Mouse button states (Down, Held, Up)
     /// </summary>
     public class MouseController : AdvancedBehaviour
     {
+        [Header("References")]
         [SerializeField] private Camera mainCam = default;
+
+        [Header("Settings")]
         [SerializeField] private int uiLayer = 5;
 
-        public GameObject PointerUIElement
-        {
-            get
-            {
-                return pointerUIElement;
-            }
-            private set
-            {
-                pointerUIElement = value;
-            }
-        }
-        private GameObject pointerUIElement;
+        public GameObject PointerUIElement { get; private set; }
 
+        public GameObject HoverGameObject { get; private set; }
 
-        public GameObject HoverGO
-        {
-            get
-            {
-                return hoverGO;
-            }
-            private set
-            {
-                hoverGO = value;
-            }
-        }
-        private GameObject hoverGO = default;
+        public ButtonType ButtonType { get; private set; } = ButtonType.None;
 
-        public ButtonType BtnType
-        {
-            get
-            {
-                return btnType;
-            }
-            private set
-            {
-                btnType = value;
-            }
-        }
-        private ButtonType btnType = default;
-
-        public int BtnNumber
-        {
-            get
-            {
-                return btnNumber;
-            }
-            private set
-            {
-                btnNumber = value;
-            }
-        }
-        private int btnNumber = -1;
+        public int ButtonNumber { get; private set; } = -1;
 
         public static bool PointerOverUI
         {
-            get
+            get => pointerOverUI;
+            private set
             {
-                return pointerOverUI;
-            }
-            set
-            {
-                if (pointerOverUI == value)
-                {
-                    return;
-                }
+                if (pointerOverUI == value) return;
                 pointerOverUI = value;
-                OnPointerOverUIChanged?.Invoke(pointerOverUI);
+                OnPointerOverUIChanged?.Invoke(value);
             }
         }
-        private static bool pointerOverUI = default;
+        private static bool pointerOverUI;
 
         public static bool PointerOverSelectable
         {
-            get
-            {
-                return pointerOverSelectable;
-            }
+            get => pointerOverSelectable;
             private set
             {
-                if (pointerOverSelectable == value)
-                {
-                    return;
-                }
+                if (pointerOverSelectable == value) return;
                 pointerOverSelectable = value;
-                OnPointerOverSelectableChanged?.Invoke(pointerOverSelectable);
+                OnPointerOverSelectableChanged?.Invoke(value);
             }
         }
         private static bool pointerOverSelectable;
-
 
         public static event Action<bool> OnPointerOverUIChanged;
         public static event Action<bool> OnPointerOverSelectableChanged;
@@ -116,130 +64,106 @@ namespace HexTecGames.Basics
 
         private void Update()
         {
-            HoverGO = DetectGameObject();
+            HoverGameObject = DetectWorldObject();
             DetectUI();
 
-            for (int i = 0; i < 2; i++)
-            {
-                ButtonType type = CheckButton(i);
-                if (type != ButtonType.None)
-                {
-                    BtnType = type;
-                    BtnNumber = i;
-                    return;
-                }
-            }
-            BtnType = ButtonType.None;
-            btnNumber = -1;
+            DetectMouseButtons();
         }
 
         /// <summary>
-        /// Checks if a specific button state has been active this frame.
+        /// Returns true if the given button type and index occurred this frame.
         /// </summary>
-        /// <param name="type">The state of the button (Clicked, Down, Up).</param>
-        /// <param name="index">Index of the mouse button (0 = left, 1 = right).</param>
         public bool IsButtonActive(ButtonType type, int index)
         {
-            if (BtnType == type && BtnNumber == index)
-            {
+            return (ButtonType == type && ButtonNumber == index);
+        }
+
+        /// <summary>
+        /// Attempts to get a component from the hovered world object.
+        /// </summary>
+        public bool TryGetHoverObject<T>(out T component) where T : Component
+        {
+            if (HoverGameObject != null && HoverGameObject.TryGetComponent(out component))
                 return true;
-            }
+
+            component = null;
             return false;
         }
 
-        private ButtonType CheckButton(int btn)
-        {
-            if (Input.GetMouseButtonDown(btn))
-            {
-                return ButtonType.Held;
-            }
-            if (Input.GetMouseButton(btn))
-            {
-                return ButtonType.Down;
-            }
-            if (Input.GetMouseButtonUp(btn))
-            {
-                return ButtonType.Up;
-            }
-            return ButtonType.None;
-        }
-        public bool TryGetHoverObject<T>(out T t) where T : Component
-        {
-            if (HoverGO == null)
-            {
-                t = null;
-                return false;
-            }
-            if (HoverGO.TryGetComponent(out t))
-            {
-                return true;
-            }
-            t = null;
-            return false;
-        }
-        private GameObject DetectGameObject()
+        private GameObject DetectWorldObject()
         {
             Vector2 worldPos = mainCam.GetMousePosition();
             RaycastHit2D hit = Physics2D.Raycast(worldPos, Vector2.zero);
-            if (hit.collider != null)
-            {
-                return hit.collider.gameObject;
-            }
-            return null;
+            return hit.collider ? hit.collider.gameObject : null;
         }
 
         /// <summary>
-        /// Checks if the mouse is hovering over an UI Element
+        /// Detects UI elements under the pointer and updates PointerOverUI and PointerOverSelectable.
         /// </summary>
         private void DetectUI()
         {
-            var raycastResults = GetEventSystemRaycastResults();
-            PointerOverUI = IsPointerOverUIElement(raycastResults);
-            PointerOverSelectable = IsPointerOverSelectable(raycastResults);
-        }
-        private bool IsPointerOverUIElement(List<RaycastResult> eventSystemRaycastResults)
-        {
-            for (int index = 0; index < eventSystemRaycastResults.Count; index++)
-            {
-                RaycastResult raycastResult = eventSystemRaycastResults[index];
+            var results = GetEventSystemRaycastResults();
 
-                if (raycastResult.gameObject.layer == uiLayer)
+            if (results.Count == 0)
+            {
+                PointerUIElement = null;
+                PointerOverUI = false;
+                PointerOverSelectable = false;
+                return;
+            }
+
+            var top = results[0];
+
+            PointerOverUI = top.gameObject.layer == uiLayer;
+            PointerUIElement = PointerOverUI ? top.gameObject : null;
+
+            PointerOverSelectable = PointerOverUI && IsSelectable(top.gameObject);
+        }
+
+        private bool IsSelectable(GameObject go)
+        {
+            var selectable = go.GetComponentInParent<Selectable>();
+            return selectable != null && selectable.interactable;
+        }
+
+        private void DetectMouseButtons()
+        {
+            ButtonType = ButtonType.None;
+            ButtonNumber = -1;
+
+            for (int i = 0; i < 2; i++)
+            {
+                if (Input.GetMouseButtonDown(i))
                 {
-                    PointerUIElement = raycastResult.gameObject;
-                    return true;
+                    ButtonType = ButtonType.Held;
+                    ButtonNumber = i;
+                    return;
+                }
+                if (Input.GetMouseButton(i))
+                {
+                    ButtonType = ButtonType.Down;
+                    ButtonNumber = i;
+                    return;
+                }
+                if (Input.GetMouseButtonUp(i))
+                {
+                    ButtonType = ButtonType.Up;
+                    ButtonNumber = i;
+                    return;
                 }
             }
-            PointerUIElement = null;
-            return false;
-        }
-        private bool IsPointerOverSelectable(List<RaycastResult> eventSystemRaycastResults)
-        {
-            for (int index = 0; index < eventSystemRaycastResults.Count; index++)
-            {
-                RaycastResult raycastResult = eventSystemRaycastResults[index];
-
-                if (raycastResult.gameObject.layer != uiLayer)
-                {
-                    continue;
-                }
-                if (raycastResult.gameObject.TryGetComponent(out Selectable selectable) && selectable.interactable)
-                {
-                    return true;
-                }
-            }
-            return false;
         }
 
-        //Gets all event system raycast results of current mouse or touch position.
         private static List<RaycastResult> GetEventSystemRaycastResults()
         {
-            PointerEventData eventData = new PointerEventData(EventSystem.current)
+            var eventData = new PointerEventData(EventSystem.current)
             {
                 position = Input.mousePosition
             };
-            List<RaycastResult> raycastResults = new List<RaycastResult>();
-            EventSystem.current.RaycastAll(eventData, raycastResults);
-            return raycastResults;
+
+            var results = new List<RaycastResult>();
+            EventSystem.current.RaycastAll(eventData, results);
+            return results;
         }
     }
 }

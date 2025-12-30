@@ -7,29 +7,31 @@ using TMPro;
 
 namespace HexTecGames.Basics.UI
 {
-    public class CursorDe : AdvancedBehaviour
+    public class CursorSpriteController : AdvancedBehaviour
     {
         [SerializeField] private CursorSpriteData defaultCursor = default;
         [SerializeField] private CursorSpriteData hoverCursor = default;
         [SerializeField] private CursorSpriteData clickCursor = default;
         [Space]
-        [SerializeField] private MouseController mouseController = default;
-        [Space]
         [SerializeField] private CursorMode cursorMode = default;
 
+        private CursorSpriteData currentCursor;
 
-        //protected override void Reset()
-        //{
-        //    base.Reset();
-        //    if (FindObjectOfType<MouseController>() == null)
-        //    {
-        //        Debug.LogWarning("No MouseController found in the scene!");
-        //    }
-        //}
+
+        protected override void Reset()
+        {
+            base.Reset();
+            if (FindObjectOfType<MouseController>(true) == null)
+            {
+                Debug.Log("Added MouseController");
+                GameObject mouseController = new GameObject("MouseController", typeof(MouseController));
+                mouseController.transform.SetParent(null);
+            }
+        }
 
         private void Awake()
         {
-            SetSprite(defaultCursor);
+            ApplyCursor(defaultCursor);
         }
         private void OnEnable()
         {
@@ -49,28 +51,30 @@ namespace HexTecGames.Basics.UI
             }
             if (Input.GetMouseButtonDown(0))
             {
-                SetSprite(clickCursor);
+                ApplyCursor(clickCursor);
             }
             if (Input.GetMouseButtonUp(0))
             {
-                SetSprite(hoverCursor);
+                ApplyCursor(hoverCursor);
             }
         }
         private void MouseController_OnPointerOverSelectableChanged(bool overSelectable)
         {
-            if (overSelectable)
-            {
-                SetSprite(hoverCursor);
-            }
-            else SetSprite(defaultCursor);
+            ApplyCursor(overSelectable ? hoverCursor : defaultCursor);
         }
 
-        public void SetSprite(Texture2D texture)
+        private void ApplyCursor(CursorSpriteData data)
         {
-            Cursor.SetCursor(texture, Vector2.zero, cursorMode);
-        }
-        public void SetSprite(CursorSpriteData data)
-        {
+            if (data == null || data.Texture == null)
+            {
+                return;
+            }
+
+            if (currentCursor == data)
+            {
+                return;
+            }
+            currentCursor = data;
             Cursor.SetCursor(data.Texture, data.Offset, cursorMode);
         }
     }
