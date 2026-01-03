@@ -29,6 +29,8 @@ namespace HexTecGames.Basics.UI
         public UnityEvent OnEnded;
         public UnityEvent OnNextSlide;
 
+        private bool allowInputs;
+
 
         private void Awake()
         {
@@ -36,6 +38,18 @@ namespace HexTecGames.Basics.UI
             {
                 StartSlide();
             }
+        }
+
+        private void OnEnable()
+        {
+            StartCoroutine(DisableInputsTemporarily());
+        }
+
+        private IEnumerator DisableInputsTemporarily()
+        {
+            allowInputs = false;
+            yield return new WaitForSeconds(0.05f);
+            allowInputs = true;
         }
 
         private void Update()
