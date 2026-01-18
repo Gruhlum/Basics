@@ -9,7 +9,11 @@ namespace HexTecGames.Basics.UI
 
         public void Awake()
         {
+#if DEMO
+            versionGUI.text = Application.version + "_D";
+#else
             versionGUI.text = Application.version;
+#endif
         }
     }
 }
