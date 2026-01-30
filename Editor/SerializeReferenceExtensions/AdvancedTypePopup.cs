@@ -77,7 +77,7 @@ namespace MackySoft.SerializeReferenceExtensions.Editor
                 }
             }
 
-            // Add type items.
+            // Add type items
             foreach (Type type in typeArray)
             {
                 string[] splittedTypePath = TypeMenuUtility.GetSplittedTypePath(type);
@@ -88,7 +88,7 @@ namespace MackySoft.SerializeReferenceExtensions.Editor
 
                 AdvancedDropdownItem parent = root;
 
-                // Add namespace items.
+                // Add namespace items
                 if (!isSingleNamespace)
                 {
                     for (int k = 0; (splittedTypePath.Length - 1) > k; k++)
@@ -110,7 +110,7 @@ namespace MackySoft.SerializeReferenceExtensions.Editor
                     }
                 }
 
-                // Add type item.
+                // Add type item
                 AdvancedTypePopupItem item = new AdvancedTypePopupItem(type, ObjectNames.NicifyVariableName(splittedTypePath[splittedTypePath.Length - 1]))
                 {
                     id = itemCount++
