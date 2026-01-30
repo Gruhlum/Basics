@@ -1,96 +1,99 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Xml.Serialization;
 using UnityEngine;
 
 namespace HexTecGames.Basics
 {
-    public class FileManager
+    /// <summary>
+    /// Provides utility methods for file and directory operations, including
+    /// reading, writing, serialization, and Unity-specific asset loading.
+    /// </summary>
+    public static class FileManager
     {
+        private static string baseDirectory;
+
+        /// <summary>
+        /// Gets the base directory inside the user's Documents folder,
+        /// named after the current Unity product.
+        /// </summary>
         public static string BaseDirectory
         {
             get
             {
-                baseDirectory ??= Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), Application.productName);
+                baseDirectory ??= Path.Combine(
+                    Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments),
+                    Application.productName);
                 return baseDirectory;
             }
         }
-        private static string baseDirectory;
 
-        public static void CreateDirectory(string path)
-        {
-            if (!Directory.Exists(path))
-                Directory.CreateDirectory(path);
-        }
-
-        public static List<string> GetPathEndObjects(string[] paths)
-        {
-            if (paths == null)
-            {
-                return null;
-            }
-            List<string> fileNames = new List<string>();
-            foreach (string result in paths)
-            {
-                fileNames.Add(GetEndOfPathName(result));
-            }
-            return fileNames;
-        }
-        public static string GetEndOfPathName(string path)
-        {
-            int startIndex = path.LastIndexOf(@"\") + 1;
-            int length = path.Length - startIndex;
-            return path.Substring(startIndex, length);
-        }
-
-        public static void DeleteFile(string path)
-        {
-            if (!File.Exists(path))
-            {
-                Debug.Log("Trying to delete file, but not found: " + path);
-                return;
-            }
-            Debug.Log("Deleting file: " + path);
-            File.Delete(path);
-        }
-        public static void DeleteFolder(string folderName, string path)
-        {
-            string finalPath = Path.Combine(path, folderName);
-            if (!Directory.Exists(finalPath))
-            {
-                Debug.Log("Trying to delete folder, but not found: " + finalPath);
-                return;
-            }
-            Debug.Log("Deleting folder: " + finalPath);
-            Directory.Delete(finalPath, true);
-        }
-        public static void DeleteFolder(string folderName)
-        {
-            DeleteFolder(folderName, BaseDirectory);
-        }
-        public static List<string> GetFileNames(string path)
+        /// <summary>
+        /// Deletes a folder and all its contents if it exists.
+        /// </summary>
+        public static void DeleteFolder(string path)
         {
             if (!Directory.Exists(path))
             {
-                Debug.Log("Directory does not exist: " + path);
-                return null;
+                Debug.Log($"Trying to delete folder, but not found: {path}");
+                return;
             }
-            string[] results = Directory.GetFiles(path);
-            return GetPathEndObjects(results);
+
+            Debug.Log($"Deleting folder: {path}");
+            Directory.Delete(path, true);
         }
+
+        /// <summary>
+        /// Returns a list of directory names inside the given path.
+        /// </summary>
         public static List<string> GetDirectoryNames(string path)
         {
             if (!Directory.Exists(path))
             {
-                Debug.LogWarning("Directory does not exist: " + path);
+                Debug.LogWarning($"Directory does not exist: {path}");
                 return null;
             }
+
             return GetPathEndObjects(Directory.GetDirectories(path));
         }
+
+
+        /// <summary>
+        /// Deletes a file if it exists.
+        /// </summary>
+        public static void DeleteFile(string path)
+        {
+            if (!File.Exists(path))
+            {
+                Debug.Log($"Trying to delete file, but not found: {path}");
+                return;
+            }
+
+            Debug.Log($"Deleting file: {path}");
+            File.Delete(path);
+        }
+
+        /// <summary>
+        /// Returns a list of file names inside the given directory.
+        /// </summary>
+        public static List<string> GetFileNames(string path)
+        {
+            if (!Directory.Exists(path))
+            {
+                Debug.Log($"Directory does not exist: {path}");
+                return null;
+            }
+
+            return GetPathEndObjects(Directory.GetFiles(path));
+        }
+
+        /// <summary>
+        /// Reads all files in a directory and returns their contents as lists of strings.
+        /// </summary>
         public static List<List<string>> ReadAllFiles(string path)
         {
             string[] filePaths = Directory.GetFiles(path);
-
             List<List<string>> results = new List<List<string>>();
 
             foreach (string filePath in filePaths)
@@ -100,109 +103,270 @@ namespace HexTecGames.Basics
 
             return results;
         }
+
         /// <summary>
-        /// Generates a unique file name.
+        /// Reads a file and returns its lines as a list of strings.
         /// </summary>
-        /// <param name="path">the original path of the file.</param>
-        /// <returns>returns the original path unless it is not unique, in which case a underscore and number suffix is added.</returns>
+        public static List<string> ReadFile(string path)
+        {
+            if (!File.Exists(path))
+            {
+                Debug.LogWarning($"File does not exist: {path}");
+                return null;
+            }
+
+            List<string> text = new List<string>();
+
+            using StreamReader sr = new StreamReader(path);
+            string line;
+            while ((line = sr.ReadLine()) != null)
+            {
+                text.Add(line);
+            }
+
+            return text;
+        }
+
+        /// <summary>
+        /// Reads a file inside a directory by name.
+        /// </summary>
+        public static List<string> ReadFile(string directoryPath, string fileName)
+        {
+            return ReadFile(Path.Combine(directoryPath, fileName));
+        }
+        /// <summary>
+        /// Writes a list of strings to a text file.
+        /// </summary>
+        public static void WriteToFile(string path, string fileName, List<string> text)
+        {
+            Directory.CreateDirectory(path);
+
+            using StreamWriter sw = new StreamWriter(Path.Combine(path, fileName + ".txt"));
+            foreach (string line in text)
+            {
+                sw.WriteLine(line);
+            }
+        }
+        /// <summary>
+        /// Writes raw bytes to a file.
+        /// </summary>
+        public static void WriteBytes(byte[] data, string path, string name, string fileEnding)
+        {
+            File.WriteAllBytes(Path.Combine(path, name + fileEnding), data);
+        }
+        /// <summary>
+        /// Checks whether a file exists in a directory.
+        /// </summary>
+        public static bool FileExists(string directory, string fileName)
+        {
+            return File.Exists(Path.Combine(directory, fileName));
+        }
+
+
+        /// <summary>
+        /// Extracts the final segment (file or folder name) from a path.
+        /// </summary>
+        public static string GetEndOfPathName(string path)
+        {
+            int startIndex = path.LastIndexOf("\\", StringComparison.Ordinal) + 1;
+            return path.Substring(startIndex, path.Length - startIndex);
+        }
+        /// <summary>
+        /// Converts an array of paths into a list of file or folder names.
+        /// </summary>
+        public static List<string> GetPathEndObjects(string[] paths)
+        {
+            if (paths == null)
+            {
+                return null;
+            }
+
+            List<string> fileNames = new List<string>();
+            foreach (string result in paths)
+            {
+                fileNames.Add(GetEndOfPathName(result));
+            }
+
+            return fileNames;
+        }
+        /// <summary>
+        /// Returns all file names inside a directory.
+        /// </summary>
+        public static List<string> FindAllFiles(string directoryPath)
+        {
+            return GetFileNames(directoryPath);
+        }
+        /// <summary>
+        /// Generates a unique file name by appending an incrementing suffix.
+        /// </summary>
         public static string GenerateUniqueFileName(string path)
         {
             if (!File.Exists(path))
             {
                 return path;
             }
+
             string fileName = Path.GetFileNameWithoutExtension(path);
             if (string.IsNullOrEmpty(fileName))
             {
-                Debug.Log("Could not find file name: " + path);
+                Debug.Log($"Could not find file name: {path}");
                 return path;
             }
+
             int count = 1;
             string newPath;
+
             do
             {
                 count++;
                 newPath = path.Replace(fileName, $"{fileName}_{count}");
             }
             while (File.Exists(newPath));
+
             return newPath;
         }
-        //public static string GetUniqueFileName(string path, string name)
-        //{
-        //    string fullPath = Path.Combine(path, name);
-        //    if (!Directory.Exists(fullPath))
-        //    {
-        //        return name;
-        //    }
-        //    int count = 2;
-        //    while (Directory.Exists(Path.Combine($"{fullPath} {count}")))
-        //    {
-        //        count++;
-        //    }
-        //    return $"{fullPath} {count}";
-        //}
-        public static List<string> ReadFile(string filePath)
+
+
+        /// <summary>
+        /// Saves an object as a JSON file.
+        /// </summary>
+        public static void SaveJSON(object obj, string directoryPath, string fileName, bool prettyPrint = false)
         {
+            string filePath = Path.Combine(directoryPath, fileName);
+
+            try
+            {
+                Directory.CreateDirectory(directoryPath);
+
+                using StreamWriter sw = new StreamWriter(File.Open(filePath, FileMode.Create));
+                sw.WriteLine(JsonUtility.ToJson(obj, prettyPrint));
+            }
+            catch (Exception)
+            {
+                Debug.Log($"Could not save file, path: {filePath}");
+            }
+        }
+        /// <summary>
+        /// Loads a JSON file and deserializes it into the specified type.
+        /// </summary>
+        public static T LoadJSON<T>(string directory, string fileName) where T : class
+        {
+            string path = Path.Combine(directory, fileName);
+
+            try
+            {
+                if (!File.Exists(path))
+                {
+                    return default;
+                }
+
+                using StreamReader sr = new StreamReader(path);
+                return JsonUtility.FromJson<T>(sr.ReadToEnd());
+            }
+            catch (Exception)
+            {
+                Debug.Log($"Could not load file, path: {path}");
+                return null;
+            }
+        }
+        /// <summary>
+        /// Loads all JSON files in a directory into a list of objects.
+        /// </summary>
+        public static List<T> LoadJSONAll<T>(string directoryPath) where T : class
+        {
+            List<string> results = FindAllFiles(directoryPath);
+            List<T> items = new List<T>();
+
+            if (results == null)
+            {
+                return items;
+            }
+
+            foreach (string result in results)
+            {
+                items.Add(LoadJSON<T>(directoryPath, GetEndOfPathName(result)));
+            }
+
+            return items;
+        }
+
+
+        /// <summary>
+        /// Saves an object as an XML file.
+        /// </summary>
+        public static void SaveXML(object obj, string directoryPath, string fileName)
+        {
+            string filePath = Path.Combine(directoryPath, fileName);
+            Directory.CreateDirectory(directoryPath);
+
+            XmlSerializer serializer = new XmlSerializer(obj.GetType());
+
+            using FileStream stream = new FileStream(filePath, FileMode.Create);
+            serializer.Serialize(stream, obj);
+        }
+
+        /// <summary>
+        /// Loads an XML file and deserializes it into the specified type.
+        /// </summary>
+        public static T LoadXML<T>(string directoryPath, string fileName) where T : class
+        {
+            string filePath = Path.Combine(directoryPath, fileName);
+
             if (!File.Exists(filePath))
             {
-                Debug.LogWarning("File does not exist: " + filePath);
+                Debug.LogWarning($"{filePath} does not exist");
+                return default;
+            }
+
+            XmlSerializer serializer = new XmlSerializer(typeof(T));
+
+            using FileStream stream = new FileStream(filePath, FileMode.Open);
+            return serializer.Deserialize(stream) as T;
+        }
+
+        /// <summary>
+        /// Loads all XML files in a directory into a list of objects.
+        /// </summary>
+        public static List<T> LoadXMLAll<T>(string directoryPath) where T : class
+        {
+            List<string> results = FindAllFiles(directoryPath);
+            List<T> items = new List<T>();
+
+            if (results == null)
+            {
+                return items;
+            }
+
+            foreach (string result in results)
+            {
+                items.Add(LoadXML<T>(directoryPath, GetEndOfPathName(result)));
+            }
+
+            return items;
+        }
+
+
+        /// <summary>
+        /// Loads a sprite from disk using a file name and directory.
+        /// </summary>
+        public static Sprite LoadSprite(string name, string directoryPath, string fileEnding = ".png")
+        {
+            string filePath = Path.Combine(directoryPath, name + fileEnding);
+
+            if (!File.Exists(filePath))
+            {
+                Debug.Log($"File does not exist: {filePath}");
                 return null;
             }
 
-            List<string> text = new List<string>();
-
-            using (StreamReader sr = new StreamReader(filePath))
-            {
-                string line;
-                while ((line = sr.ReadLine()) != null)
-                {
-                    text.Add(line);
-                }
-            }
-            return text;
-        }
-
-        public static void WriteBytes(byte[] data, string path, string name, string fileEnding)
-        {
-            File.WriteAllBytes(Path.Combine(path, name + fileEnding), data);
-        }
-        public static Sprite LoadSprite(string path, string name, string fileEnding = ".png")
-        {
-            string fullPath = Path.Combine(path, name + fileEnding);
-            if (!File.Exists(fullPath))
-            {
-                Debug.Log("File does not exists: " + fullPath);
-                return null;
-            }
-            byte[] bytes = File.ReadAllBytes(fullPath);
+            byte[] bytes = File.ReadAllBytes(filePath);
             Texture2D tex2D = new Texture2D(1, 1);
             tex2D.LoadImage(bytes);
-            return Sprite.Create(tex2D, new Rect(new Vector2(0, 0), new Vector2(tex2D.width, tex2D.height)), Vector2.zero);
-        }
 
-        public static List<string> ReadFile(string fileName, string subFolderName)
-        {
-            string filePath = Path.Combine(BaseDirectory, subFolderName, fileName, ".txt");
-
-            return ReadFile(filePath);
-        }
-        public static string GetSubFolderPath(string subfolderName)
-        {
-            return Path.Combine(BaseDirectory, subfolderName);
-        }
-        public static void WriteToFile(string fileName, string filePath, List<string> text)
-        {
-            CreateDirectory(BaseDirectory);
-            CreateDirectory(filePath);
-
-            //VerifyFile(Path.Combine(filePath, fileName + ".txt"));
-            using (StreamWriter sw = new StreamWriter(Path.Combine(filePath, fileName + ".txt")))
-            {
-                foreach (string line in text)
-                {
-                    sw.WriteLine(line);
-                }
-            }
+            return Sprite.Create(
+                tex2D,
+                new Rect(0, 0, tex2D.width, tex2D.height),
+                Vector2.zero);
         }
     }
 }

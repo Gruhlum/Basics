@@ -9,53 +9,26 @@ using UnityEngine;
 
 namespace HexTecGames.Basics
 {
+    /// <summary>
+    /// Centralized system for managing profiles, settings, and save data.
+    /// Handles JSON/XML serialization, profile switching, and directory routing.
+    /// </summary>
     public static class SaveSystem
     {
         private static readonly string defaultFolderName = "Data";
         private static readonly string settingsFileName = "Settings.txt";
         private static readonly string defaultProfileName = "Profile 1";
         private static readonly string backupFolderName = "backup";
-        //private static readonly string profileKey = "profile";
 
         private static SettingsData settingsData;
-
         private static List<Profile> profiles = new List<Profile>();
         private static bool loadedProfiles;
-
-        public static string DataDirectory
-        {
-            get
-            {
-                return Path.Combine(ProfilePath, defaultFolderName);
-            }
-        }
-
-        public static Profile CurrentProfile
-        {
-            get
-            {
-                if (!loadedProfiles)
-                {
-                    LoadProfiles();
-                }
-                return currentProfile;
-            }
-            private set
-            {
-                currentProfile = value;
-            }
-        }
         private static Profile currentProfile;
 
+
         /// <summary>
-        /// The base folder path. Usually inside a folder named after the product in the user's Document folder.
-        /// <code>
-        /// if (Application.platform == RuntimePlatform.WebGLPlayer)
-        /// {
-        ///     return Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), Application.productName)
-        /// }
-        /// else return Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), Application.productName);
-        /// </code>
+        /// The base directory where all profiles and data are stored.
+        /// On WebGL, this uses IDBFS. On other platforms, it uses the user's Documents folder.
         /// </summary>
         public static string BaseDirectory
         {
@@ -67,7 +40,12 @@ namespace HexTecGames.Basics
                     {
                         baseDirectory = Path.Combine("idbfs", Application.productName + "_" + Application.companyName);
                     }
-                    else baseDirectory = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), Application.productName);
+                    else
+                    {
+                        baseDirectory = Path.Combine(
+                            Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments),
+                            Application.productName);
+                    }
                 }
                 return baseDirectory;
             }
@@ -75,89 +53,164 @@ namespace HexTecGames.Basics
         private static string baseDirectory;
 
         /// <summary>
-        /// The BaseDirectory + the current profile folder.
+        /// The directory for the currently active profile.
+        /// If no profile is selected, the default profile name is used.
         /// </summary>
-        public static string ProfilePath
+        public static string ProfilePath =>
+            CurrentProfile != null
+                ? Path.Combine(BaseDirectory, CurrentProfile.Name)
+                : Path.Combine(BaseDirectory, defaultProfileName);
+
+        /// <summary>
+        /// The directory where general data files are stored for the current profile.
+        /// </summary>
+        public static string DataDirectory => Path.Combine(ProfilePath, defaultFolderName);
+
+
+
+        /// <summary>
+        /// The currently active profile. Automatically loads profiles if needed.
+        /// </summary>
+        public static Profile CurrentProfile
         {
             get
             {
-                if (CurrentProfile != null)
+                if (!loadedProfiles)
                 {
-                    return Path.Combine(BaseDirectory, CurrentProfile.Name);
+                    LoadProfiles();
                 }
-                else return Path.Combine(BaseDirectory, defaultProfileName);
+                return currentProfile;
+            }
+            private set => currentProfile = value;
+        }
+
+        /// <summary>
+        /// Loads all profile folders from disk.
+        /// Creates a default profile if none exist.
+        /// </summary>
+        private static void LoadProfiles()
+        {
+            loadedProfiles = true;
+            profiles.Clear();
+
+            List<string> results = FileManager.GetDirectoryNames(BaseDirectory);
+
+            if (results == null)
+            {
+                Debug.Log("No profiles found, creating default profile.");
+                AddProfile(defaultProfileName, true);
+                return;
+            }
+
+            foreach (string result in results)
+            {
+                if (result == defaultFolderName)
+                    continue;
+
+                profiles.Add(new Profile(result));
             }
         }
+
+        /// <summary>
+        /// Returns a copy of all available profiles.
+        /// </summary>
+        public static List<Profile> GetProfiles()
+        {
+            if (!loadedProfiles)
+            {
+                LoadProfiles();
+            }
+
+            return new List<Profile>(profiles);
+        }
+
+        /// <summary>
+        /// Sets the active profile if it exists.
+        /// </summary>
         public static void SetProfile(Profile profile)
         {
             if (!loadedProfiles)
             {
                 LoadProfiles();
             }
+
             if (profile == null)
             {
                 CurrentProfile = null;
-                //SaveSettings(profileKey, null);
                 return;
             }
+
             Profile result = profiles.Find(x => x == profile);
             if (result == null)
             {
-                Debug.Log("Could not find profile with name " + profile.Name);
+                Debug.Log($"Could not find profile with name {profile.Name}");
                 return;
             }
-            //SaveSettings(profileKey, result.Name);
+
             CurrentProfile = result;
         }
+
+        /// <summary>
+        /// Creates a new profile with a unique name and optionally selects it.
+        /// </summary>
         public static void AddProfile(string name, bool select = true)
         {
             if (!loadedProfiles)
             {
                 LoadProfiles();
             }
+
             name.RemoveInvalidSymbols();
             name = name.GetUniqueName(profiles.Select(x => x.Name));
+
             Profile profile = new Profile(name);
             profiles.Add(profile);
+
             Directory.CreateDirectory(Path.Combine(BaseDirectory, name));
+
             if (CurrentProfile == null || select)
             {
                 SetProfile(profile);
             }
         }
+
+        /// <summary>
+        /// Renames an existing profile and moves its directory.
+        /// </summary>
         public static void RenameProfile(Profile profile, string name)
         {
             name.RemoveInvalidSymbols();
-            List<Profile> allProfiles = new List<Profile>();
-            allProfiles.AddRange(profiles);
-            allProfiles.Remove(profile);
-            name = name.GetUniqueName(allProfiles.Select(x => x.Name));
+
+            List<Profile> others = profiles.Where(x => x != profile).ToList();
+            name = name.GetUniqueName(others.Select(x => x.Name));
+
             if (profile.Name == name)
-            {
                 return;
-            }
+
             string oldName = profile.Name;
             profile.Rename(name);
+
             Directory.Move(Path.Combine(BaseDirectory, oldName), Path.Combine(BaseDirectory, name));
-            //if (CurrentProfile == profile)
-            //{
-            //    SaveSettings(profileKey, profile.Name);
-            //}
         }
+
+        /// <summary>
+        /// Removes a profile and deletes its directory.
+        /// </summary>
         public static void RemoveProfile(Profile profile)
         {
             if (!loadedProfiles)
             {
                 LoadProfiles();
             }
+
             Profile result = profiles.Find(x => x == profile);
             if (result == null)
             {
-                Debug.Log("Could not find profile with name " + profile.Name);
+                Debug.Log($"Could not find profile with name {profile.Name}");
                 return;
             }
-            profiles.Remove(result);
 
+            profiles.Remove(result);
             Directory.Delete(Path.Combine(BaseDirectory, result.Name), true);
 
             if (CurrentProfile == result)
@@ -165,88 +218,69 @@ namespace HexTecGames.Basics
                 SetProfile(null);
             }
         }
-        private static void LoadProfiles()
-        {
-            loadedProfiles = true;
-            //Debug.Log("Loading Profiles");
-            List<string> results = FileManager.GetDirectoryNames(BaseDirectory);
-            profiles.Clear();
-            if (results == null)
-            {
-                Debug.Log("No Profile found, adding default profile");
-                AddProfile(defaultProfileName, true);
-                return;
-            }
-            foreach (string result in results)
-            {
-                if (result == defaultFolderName)
-                {
-                    continue;
-                }
-                profiles.Add(new Profile(result));
-            }
 
-            //SetProfile(profiles.Find(x => x.Name == LoadSettings(profileKey)));
-        }
-        public static List<Profile> GetProfiles()
-        {
-            if (!loadedProfiles)
-            {
-                LoadProfiles();
-            }
-            List<Profile> results = new List<Profile>();
-            results.AddRange(profiles);
-            return results;
-        }
 
         private static void SaveSettingsToFile()
         {
-            SaveJSON(settingsData, settingsFileName);
+            SaveJSON(settingsData, defaultFolderName, settingsFileName);
         }
+
         /// <summary>
-        /// Saves a value under a specified key inside a JSON file. 
+        /// Saves a string setting value under the given key.
         /// </summary>
-        /// <see cref="BaseDirectory"/>
-        /// <param name="key"></param>
-        /// <param name="value"></param>
         public static void SaveSettings(string key, string value)
         {
             settingsData ??= LoadSettingsData();
             settingsData.SetOption(key, value);
-            SaveJSON(settingsData, settingsFileName);
+            SaveSettingsToFile();
         }
+
+        /// <summary>
+        /// Saves a boolean setting value under the given key.
+        /// </summary>
         public static void SaveSettings(string key, bool value)
         {
             settingsData ??= LoadSettingsData();
             settingsData.SetOption(key, value.ToString());
-            SaveJSON(settingsData, settingsFileName);
+            SaveSettingsToFile();
         }
+
+        /// <summary>
+        /// Saves an integer setting value under the given key.
+        /// </summary>
         public static void SaveSettings(string key, int value)
         {
             settingsData ??= LoadSettingsData();
             settingsData.SetOption(key, value.ToString());
-            SaveJSON(settingsData, settingsFileName);
+            SaveSettingsToFile();
         }
+
+        /// <summary>
+        /// Saves a float setting value under the given key.
+        /// </summary>
         public static void SaveSettings(string key, float value)
         {
             settingsData ??= LoadSettingsData();
             settingsData.SetOption(key, value.ToString());
             SaveSettingsToFile();
         }
+
         /// <summary>
-        /// Retrieves a value assigned to the key.
+        /// Attempts to load a string setting value.
         /// </summary>
-        /// <param name="key">The key that this value is saved under.</param>
-        /// <returns>A string value, or null if none could be found.</returns>
         private static string LoadSettings(string key)
         {
             settingsData ??= LoadSettingsData();
-
             return settingsData.GetOption(key);
         }
+
+        /// <summary>
+        /// Attempts to load a string setting value with a default fallback.
+        /// </summary>
         public static bool LoadSettings(string key, out string value, string defaultValue = null)
         {
             string result = LoadSettings(key);
+
             if (string.IsNullOrEmpty(result))
             {
                 value = defaultValue;
@@ -256,9 +290,14 @@ namespace HexTecGames.Basics
             value = result;
             return true;
         }
+
+        /// <summary>
+        /// Attempts to load an integer setting value with a default fallback.
+        /// </summary>
         public static bool LoadSettings(string key, out int value, int defaultValue = 0)
         {
             string result = LoadSettings(key);
+
             if (string.IsNullOrEmpty(result))
             {
                 value = defaultValue;
@@ -272,14 +311,19 @@ namespace HexTecGames.Basics
             }
             catch (Exception e)
             {
-                Debug.Log("Key: " + key + " Error: " + e.Message);
+                Debug.Log($"Key: {key} Error: {e.Message}");
                 value = defaultValue;
                 return false;
             }
         }
+
+        /// <summary>
+        /// Attempts to load a float setting value with a default fallback.
+        /// </summary>
         public static bool LoadSettings(string key, out float value, float defaultValue = 0)
         {
             string result = LoadSettings(key);
+
             if (string.IsNullOrEmpty(result))
             {
                 value = defaultValue;
@@ -293,14 +337,19 @@ namespace HexTecGames.Basics
             }
             catch (Exception e)
             {
-                Debug.Log("Key: " + key + " Error: " + e.Message);
+                Debug.Log($"Key: {key} Error: {e.Message}");
                 value = defaultValue;
                 return false;
             }
         }
+
+        /// <summary>
+        /// Attempts to load a boolean setting value with a default fallback.
+        /// </summary>
         public static bool LoadSettings(string key, out bool value, bool defaultValue = false)
         {
             string result = LoadSettings(key);
+
             if (string.IsNullOrEmpty(result))
             {
                 value = defaultValue;
@@ -314,11 +363,31 @@ namespace HexTecGames.Basics
             }
             catch (Exception e)
             {
-                Debug.Log("Key: " + key + " Error: " + e.Message);
+                Debug.Log($"Key: {key} Error: {e.Message}");
                 value = defaultValue;
                 return false;
             }
         }
+
+        /// <summary>
+        /// Deletes a setting value by key.
+        /// </summary>
+        public static void DeleteSettings(string key)
+        {
+            settingsData ??= LoadSettingsData();
+            settingsData.DeleteOption(key);
+            SaveSettingsToFile();
+        }
+
+        /// <summary>
+        /// Loads the settings file or creates a new one if missing.
+        /// </summary>
+        private static SettingsData LoadSettingsData()
+        {
+            SettingsData data = LoadJSON<SettingsData>(settingsFileName);
+            return data ?? new SettingsData();
+        }
+
 #if UNITY_EDITOR
         [MenuItem("Tools/SaveSystem/Delete All Settings")]
 #endif
@@ -327,6 +396,7 @@ namespace HexTecGames.Basics
             settingsData = new SettingsData();
             SaveSettingsToFile();
         }
+
 #if UNITY_EDITOR
         [MenuItem("Tools/SaveSystem/Delete All Data")]
 #endif
@@ -334,236 +404,132 @@ namespace HexTecGames.Basics
         {
             FileManager.DeleteFolder(BaseDirectory);
         }
-        public static void DeleteSettings(string key)
-        {
-            settingsData ??= LoadSettingsData();
-            settingsData.DeleteOption(key);
-            SaveSettingsToFile();
-        }
-        private static SettingsData LoadSettingsData()
-        {
-            SettingsData data = LoadJSON<SettingsData>(settingsFileName);
-            if (data == null)
-            {
-                return new SettingsData();
-            }
-            else return data;
-        }
-        public static void DeleteFile(string fileName)
-        {
-            DeleteFile(fileName, defaultFolderName);
-        }
-        public static void DeleteFile(string fileName, string directory)
-        {
-            string path = CreatePath(fileName, directory);
-            FileManager.DeleteFile(path);
-        }
-        private static void CheckDirectories(string directory)
-        {
-            if (!Directory.Exists(BaseDirectory))
-            {
-                Directory.CreateDirectory(BaseDirectory);
-            }
-            if (CurrentProfile != null && !Directory.Exists(ProfilePath))
-            {
-                Directory.CreateDirectory(ProfilePath);
-            }
-            if (!Directory.Exists(Path.Combine(ProfilePath, directory)))
-            {
-                Directory.CreateDirectory(Path.Combine(ProfilePath, directory));
-            }
-        }
-        private static string CreatePath(string fileName, string directory)
-        {
-            return Path.Combine(ProfilePath, directory, fileName);
-        }
-        public static List<string> FindAllFiles(string directory)
-        {
-            string path = Path.Combine(ProfilePath, directory);
-            return FileManager.GetFileNames(path);
-        }
+
+
         /// <summary>
-        /// Saves an object as a JSON file inside the BaseDirectory folder.
+        /// Saves an object as JSON inside the default data folder.
         /// </summary>
-        /// <see cref="BaseDirectory"/>
-        /// <param name="obj">The object that will be saved.</param>
-        /// <param name="fileName">The name the file will have.</param>
-        /// <param name="prettyPrint">Should the JSON file have "prettyPrint" or not.</param>
         public static void SaveJSON(object obj, string fileName, bool prettyPrint = false)
         {
-            SaveJSON(obj, fileName, defaultFolderName, prettyPrint);
+            SaveJSON(obj, defaultFolderName, fileName, prettyPrint);
         }
+
         /// <summary>
-        /// Saves an object as a JSON file inside the BaseDirectory folder.
+        /// Saves an object as JSON inside a specific subfolder of the current profile.
         /// </summary>
-        /// <see cref="BaseDirectory"/>
-        /// <param name="obj">The object that will be saved.</param>
-        /// <param name="fileName">The name the file will have.</param>
-        /// <param name="directory">The name of the subfolder.</param>
-        /// <param name="prettyPrint">Should the JSON file have "prettyPrint" or not.</param>
-        public static void SaveJSON(object obj, string fileName, string directory, bool prettyPrint = false)
+        public static void SaveJSON(object obj, string directoryName, string fileName, bool prettyPrint = false)
         {
-            string path = CreatePath(fileName, directory);
-            try
-            {
-                CheckDirectories(directory);
-                //Debug.Log($"Saving {obj} as JSON file to: {path}");
-                using (StreamWriter sw = new StreamWriter(File.Open(path, FileMode.Create)))
-                {
-                    sw.WriteLine(JsonUtility.ToJson(obj, prettyPrint));
-                }
-            }
-            catch (Exception)
-            {
-                Debug.Log($"Could not save file, path: {path}");
-            }
+            FileManager.SaveJSON(obj, GetProfileDirectoryPath(directoryName), fileName, prettyPrint);
         }
+
         /// <summary>
-        /// Tries to load a JSON file with a specified name and returns it as a specified type.
+        /// Loads a JSON file from the default data folder.
         /// </summary>
-        /// <typeparam name="T">The type that the object will be returned as.</typeparam>
-        /// <param name="fileName">The name of the file that should be loaded.</param>
-        /// <returns>The loaded object, or null if it could not be found.</returns>
         public static T LoadJSON<T>(string fileName) where T : class
         {
-            return LoadJSON<T>(fileName, defaultFolderName);
+            return LoadJSON<T>(defaultFolderName, fileName);
         }
+
         /// <summary>
-        /// Tries to load a JSON file with a specified name and returns it as a specified type.
+        /// Loads a JSON file from a specific subfolder of the current profile.
         /// </summary>
-        /// <typeparam name="T">The type that the object will be returned as.</typeparam>
-        /// <param name="fileName">The name of the file that should be loaded.</param>
-        /// <param name="directory">The name of the Folder containing the JSON file.</param>
-        /// <returns>The loaded object, or null if it could not be found.</returns>
-        public static T LoadJSON<T>(string fileName, string directory) where T : class
+        public static T LoadJSON<T>(string directoryName, string fileName) where T : class
         {
-            string path = Path.Combine(ProfilePath, directory, fileName);
-            try
-            {
-                if (!File.Exists(path))
-                {
-                    //Debug.LogWarning(path + " does not exist");
-                    return default;
-                }
-                using (StreamReader sr = new StreamReader(path))
-                {
-                    return JsonUtility.FromJson<T>(sr.ReadToEnd());
-                }
-            }
-            catch (Exception)
-            {
-                Debug.Log($"Could not load file, path: {path}");
-                return null;
-            }
+            return FileManager.LoadJSON<T>(GetProfileDirectoryPath(directoryName), fileName);
         }
+
         /// <summary>
-        /// Tries to load any JSON files that are inside the specified folder.
+        /// Loads all JSON files inside a specific subfolder of the current profile.
         /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="directory">The name of the folder containing the JSON Files</param>
-        /// <returns>The loaded objects, or an empty list of none could be found.</returns>
-        public static List<T> LoadJSONAll<T>(string directory) where T : class
+        public static List<T> LoadJSONAll<T>(string directoryName) where T : class
         {
-            List<string> results = FindAllFiles(directory);
-            List<T> levels = new List<T>();
-            if (results == null)
-            {
-                return levels;
-            }
-            foreach (string result in results)
-            {
-                levels.Add(LoadJSON<T>(FileManager.GetEndOfPathName(result), directory));
-            }
-            return levels;
+            return FileManager.LoadJSONAll<T>(GetProfileDirectoryPath(directoryName));
         }
+
+
+
         /// <summary>
-        /// Saves an object as an XML file inside the BaseDirectory folder.
+        /// Saves an object as XML inside the default data folder.
         /// </summary>
-        /// <see cref="BaseDirectory"/>
-        /// <param name="obj">The object that will be saved.</param>
-        /// <param name="fileName">The name the file will have.</param>
         public static void SaveXML(object obj, string fileName)
         {
-            SaveXML(obj, fileName, defaultFolderName);
+            SaveXML(obj, defaultFolderName, fileName);
         }
+
         /// <summary>
-        /// Saves an object as an XML file inside the BaseDirectory folder.
+        /// Saves an object as XML inside a specific subfolder of the current profile.
         /// </summary>
-        /// <see cref="BaseDirectory"/>
-        /// <param name="obj">The object that will be saved.</param>
-        /// <param name="fileName">The name the file will have.</param>
-        /// <param name="directory">The name of the subfolder.</param>
-        public static void SaveXML(object obj, string fileName, string directory)
+        public static void SaveXML(object obj, string directoryName, string fileName)
         {
-            string path = CreatePath(fileName, directory);
-            CheckDirectories(directory);
-            XmlSerializer serializer = new XmlSerializer(obj.GetType());
-            using (FileStream stream = new FileStream(path, FileMode.Create))
-            {
-                serializer.Serialize(stream, obj);
-            }
+            string path = Path.Combine(ProfilePath, directoryName);
+            FileManager.SaveXML(obj, path, fileName);
         }
+
         /// <summary>
-        /// Tries to load an XML file with a specified name and returns it as a specified type.
+        /// Loads an XML file from the default data folder.
         /// </summary>
-        /// <typeparam name="T">The type that the object will be returned as.</typeparam>
-        /// <param name="fileName">The name of the file that should be loaded.</param>
-        /// <returns>The loaded object, or null if it could not be found.</returns>
         public static T LoadXML<T>(string fileName) where T : class
         {
-            return LoadXML<T>(fileName, defaultFolderName);
+            return LoadXML<T>(defaultFolderName, fileName);
         }
-        /// <summary>
-        /// Tries to load an XML file with a specified name and returns it as a specified type.
-        /// </summary>
-        /// <typeparam name="T">The type that the object will be returned as.</typeparam>
-        /// <param name="fileName">The name of the file that should be loaded.</param>
-        /// <param name="directory">The name of the Folder containing the JSON file.</param>
-        /// <returns>The loaded object, or null if it could not be found.</returns>
-        public static T LoadXML<T>(string fileName, string directory) where T : class
-        {
-            string path = Path.Combine(ProfilePath, directory, fileName);
 
-            if (!File.Exists(path))
-            {
-                Debug.LogWarning(path + " does not exist");
-                return default;
-            }
-            XmlSerializer serializer = new XmlSerializer(typeof(T));
-            using (FileStream stream = new FileStream(path, FileMode.Open))
-            {
-                return serializer.Deserialize(stream) as T;
-            }
-        }
         /// <summary>
-        /// Tries to load any XML files that are inside the specified folder.
+        /// Loads an XML file from a specific subfolder of the current profile.
         /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="directory">The name of the folder containing the JSON Files</param>
-        /// <returns>The loaded objects, or an empty list of none could be found.</returns>
+        public static T LoadXML<T>(string directoryName, string fileName) where T : class
+        {
+            return FileManager.LoadXML<T>(Path.Combine(ProfilePath, directoryName), fileName);
+        }
+
+        /// <summary>
+        /// Loads all XML files inside a specific subfolder of the current profile.
+        /// </summary>
         public static List<T> LoadXMLAll<T>(string directory) where T : class
         {
-            List<string> results = FindAllFiles(directory);
-            List<T> levels = new List<T>();
-            if (results == null)
-            {
-                return levels;
-            }
-            foreach (string result in results)
-            {
-                levels.Add(LoadXML<T>(FileManager.GetEndOfPathName(result), directory));
-            }
-            return levels;
+            return FileManager.LoadXMLAll<T>(GetProfileDirectoryPath(directory));
         }
 
+
+
+        /// <summary>
+        /// Deletes a file inside the default data folder.
+        /// </summary>
+        public static void DeleteFile(string fileName)
+        {
+            DeleteFile(defaultFolderName, fileName);
+        }
+
+        /// <summary>
+        /// Deletes a file inside a specific subfolder of the current profile.
+        /// </summary>
+        public static void DeleteFile(string directoryName, string fileName)
+        {
+            string path = Path.Combine(ProfilePath, directoryName, fileName);
+            FileManager.DeleteFile(path);
+        }
+
+        /// <summary>
+        /// Checks whether a file exists inside the default data folder.
+        /// </summary>
         public static bool FileExists(string fileName)
         {
-            return FileExists(fileName, defaultFolderName);
+            return FileExists(defaultFolderName, fileName);
         }
-        public static bool FileExists(string fileName, string directory)
+
+        /// <summary>
+        /// Checks whether a file exists inside a specific subfolder of the current profile.
+        /// </summary>
+        public static bool FileExists(string directory, string fileName)
         {
-            string path = Path.Combine(ProfilePath, directory, fileName);
-            return File.Exists(path);
+            return FileManager.FileExists(Path.Combine(ProfilePath, directory), fileName);
+        }
+
+        /// <summary>
+        /// Returns the full path to a subfolder inside the current profile.
+        /// </summary>
+        private static string GetProfileDirectoryPath(string directoryName)
+        {
+            return Path.Combine(ProfilePath, directoryName);
         }
     }
 }
