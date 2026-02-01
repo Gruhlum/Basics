@@ -141,11 +141,18 @@ namespace HexTecGames.Basics
         {
             Directory.CreateDirectory(path);
 
-            using StreamWriter sw = new StreamWriter(Path.Combine(path, fileName + ".txt"));
+            using StreamWriter sw = new StreamWriter(Path.Combine(path, fileName));
             foreach (string line in text)
             {
                 sw.WriteLine(line);
             }
+        }
+        public static void WriteToFile(string path, string fileName, string text)
+        {
+            Directory.CreateDirectory(path);
+            string filePath = Path.Combine(path, fileName);
+            using StreamWriter sw = new StreamWriter(filePath);
+            sw.WriteLine(text);
         }
         /// <summary>
         /// Writes raw bytes to a file.
@@ -159,7 +166,9 @@ namespace HexTecGames.Basics
         /// </summary>
         public static bool FileExists(string directory, string fileName)
         {
-            return File.Exists(Path.Combine(directory, fileName));
+            string filePath = Path.Combine(directory, fileName);
+            Debug.Log(filePath);
+            return File.Exists(filePath);
         }
 
 

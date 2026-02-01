@@ -163,6 +163,5 @@ namespace MackySoft.SerializeReferenceExtensions.Editor
                 OnItemSelected?.Invoke(typePopupItem);
             }
         }
-
     }
 }

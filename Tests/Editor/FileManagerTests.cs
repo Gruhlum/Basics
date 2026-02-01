@@ -88,11 +88,11 @@ namespace HexTecGames.Basics.Tests
         public void WriteToFile_And_ReadFile_Works()
         {
             string fileName = "textfile";
-            var lines = new System.Collections.Generic.List<string> { "A", "B", "C" };
+            var lines = new List<string> { "A", "B", "C" };
 
             FileManager.WriteToFile(tempDir, fileName, lines);
 
-            var read = FileManager.ReadFile(tempDir, fileName + ".txt");
+            var read = FileManager.ReadFile(tempDir, fileName);
 
             Assert.IsNotNull(read);
             Assert.AreEqual(lines.Count, read.Count);
