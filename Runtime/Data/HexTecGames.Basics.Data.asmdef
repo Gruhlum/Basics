@@ -1,0 +1,16 @@
+{
+    "name": "HexTecGames.Basics.Data",
+    "rootNamespace": "",
+    "references": [
+        "GUID:86a10f0d297811748a0773de20111031"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}
